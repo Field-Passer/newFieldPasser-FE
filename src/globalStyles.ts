@@ -8,12 +8,18 @@ const GlobalStyles = createGlobalStyle`
     font-weight: normal;
     font-style: normal;
   }
+  @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
   main, section {
     max-width: 1024px;
   }
   a{
-      text-decoration: none;
-      color: inherit;
+    text-decoration: none;
+    color: inherit;
   }
   input, textarea { 
     -moz-user-select: auto;
@@ -32,13 +38,28 @@ const GlobalStyles = createGlobalStyle`
   }
 
   #root {
-    font-family: 'NanumSquareNeo-Variable', 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
     position:relative;
     min-height:100%;
+
+    /* Screen max-width */
+    $screen-pc: 360px;
+    $screen-tab: 834px;
+    $screen-m: 1440px;
+
+    /* Font size */
+    $font-pc: 16px;
+    $font-pc-lg: 20px;
+    $font-m: 14px;
+    $font-m-lg: 16px;
+
     /* Color */
-    --color-main: #5FCA7B;
-    --color-font: #3A3A3A;
-    --color-mint: #E2FFEA;
+    $color-green: #5FCA7B;
+    $color-font: #3A3A3A;
+    $color-darkgray: #AAAAAA;
+    $color-gray: #CCCCCC;
+    $color-lightgray: #D9D9D9;
+    $color-ghostgray: #FAFAFA;
   }
 `
 export default GlobalStyles
