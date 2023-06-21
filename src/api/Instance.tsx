@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = import.meta.env.BASE_URL
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const axiosApi = (url: string, options?: any) => {
@@ -17,5 +17,6 @@ const axiosAuthApi = (url: string, options?: any) => {
   })
   return instance
 }
+
 export const defaultInstance = axiosApi(BASE_URL)
 export const authInstance = axiosAuthApi(BASE_URL)
