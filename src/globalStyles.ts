@@ -89,6 +89,7 @@ const GlobalStyles = createGlobalStyle`
     border: none;
     background: none;
     padding: 0;
+    border-radius: 10px;
     cursor: pointer;
   }
 
@@ -102,19 +103,22 @@ const GlobalStyles = createGlobalStyle`
     $screen-tab: 834px;
     $screen-m: 1440px;
 
-    /* Font size */
-    $font-pc: 16px;
-    $font-pc-lg: 20px;
-    $font-m: 14px;
-    $font-m-lg: 16px;
-
-    /* Color */
-    $color-green: #5FCA7B;
-    $color-font: #3A3A3A;
-    $color-darkgray: #AAAAAA;
-    $color-gray: #CCCCCC;
-    $color-lightgray: #D9D9D9;
-    $color-ghostgray: #FAFAFA;
   }
 `
+export const COLORS = {
+  green: '#5FCA7B',
+  font: '#3A3A3A',
+  gray40: '#AAAAAA',
+  gray30: '#CCCCCC',
+  gray20: '#D9D9D9',
+  gray10: '#FAFAFA',
+}
+
+export const FONT = {
+  pc: '16px',
+  'pc-lg': '20px',
+  m: '14px',
+  'm-lg': '16px',
+}
+
 export default GlobalStyles
