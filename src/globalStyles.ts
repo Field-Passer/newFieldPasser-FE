@@ -95,8 +95,8 @@ const GlobalStyles = createGlobalStyle`
 
   #root {
     font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
-    position:relative;
-    min-height:100%;
+    position: relative;
+    min-height: 100%;
 
     /* Screen max-width */
     $screen-pc: 360px;
