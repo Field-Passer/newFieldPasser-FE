@@ -34,6 +34,7 @@ const Container = styled.header`
   padding: 12px 20px;
   height: 60px;
   box-sizing: border-box;
+  border-bottom: 1px solid ${COLORS.gray20};
 `
 const Inner = styled.div`
   max-width: var(--screen-pc);
@@ -42,6 +43,7 @@ const Inner = styled.div`
   margin: 0 auto;
 
   .logo {
+    margin: auto 0;
     img {
       width: 160px;
       height: 24px;
