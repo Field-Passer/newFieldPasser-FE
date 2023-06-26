@@ -2,9 +2,11 @@ import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
+import Sidebar from './Sidebar'
+import { Mobile } from '@src/hooks/useScreenHook'
+import { FiMenu } from 'react-icons/fi'
 
 const Header = () => {
-  // 모바일버전에는 없음
   const isMobile = useMediaQuery({
     query: '(max-width: 380px)',
   })
@@ -12,6 +14,16 @@ const Header = () => {
 
   return (
     <>
+      <Mobile>
+        <MContainer>
+          <FiMenu
+            onClick={() => console.log('사이드바 오픈')}
+            className="menu"
+          />
+          <img src="/logo.png" alt="logo" onClick={() => navigate('/')} />
+        </MContainer>
+        {/* <Sidebar /> */}
+      </Mobile>
       {!isMobile && (
         <Container>
           <Inner>
@@ -19,9 +31,17 @@ const Header = () => {
               <img src="/logo.png" alt="필드패서" />
             </Link>
             <div className="menu">
-              <Link to="/">회원가입</Link>
-              <Link to="/">로그인</Link>
-              <button>양도하기</button>
+              <Link to="/join">회원가입</Link>
+              <Link to="/login">로그인</Link>
+              <button
+                onClick={() => {
+                  // 로그인 상태 / 아닐경우 조건문 달기
+                  navigate('/login')
+                  alert('로그인 후 이용 가능합니다.')
+                }}
+              >
+                양도하기
+              </button>
             </div>
           </Inner>
         </Container>
@@ -29,6 +49,28 @@ const Header = () => {
     </>
   )
 }
+
+const MContainer = styled.header`
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  .menu {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    cursor: pointer;
+  }
+
+  img {
+    width: 160px;
+    margin: auto auto;
+    cursor: pointer;
+  }
+`
 
 const Container = styled.header`
   padding: 12px 20px;
@@ -44,6 +86,7 @@ const Inner = styled.div`
 
   .logo {
     margin: auto 0;
+    cursor: pointer;
     img {
       width: 160px;
       height: 24px;
