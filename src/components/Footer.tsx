@@ -6,7 +6,7 @@ const Footer = () => {
     <FooterContainer>
       <div className="inner">
         <a
-          href="https://github.com/Field-Passer/Field-Passer-BE"
+          href="https://github.com/Field-Passer/newFieldPasser-BE"
           target="_blank"
           rel="noopener noreferrer"
           className="link"
@@ -15,7 +15,7 @@ const Footer = () => {
           Backend Repository
         </a>
         <a
-          href="https://github.com/Field-Passer/Field-Passer-FE"
+          href="https://github.com/Field-Passer/newFieldPasser-FE"
           target="_blank"
           rel="noopener noreferrer"
           className="link"
@@ -49,6 +49,7 @@ const FooterContainer = styled.footer`
     flex-direction: column;
     justify-content: center;
     gap: 12px;
+    box-sizing: border-box;
 
     .link {
       padding: 0 4px;
