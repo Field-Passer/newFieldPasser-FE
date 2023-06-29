@@ -12,7 +12,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
-      <Header sideOpen={sideOpen} setSideOpen={setSideOpen} />
+      <Header setSideOpen={setSideOpen} />
       <Outlet />
       <Footer />
     </ThemeProvider>

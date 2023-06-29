@@ -6,11 +6,10 @@ import { Mobile } from '@src/hooks/useScreenHook'
 import { FiMenu } from 'react-icons/fi'
 
 type PropsType = {
-  sideOpen: boolean
   setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Header = ({ sideOpen, setSideOpen }: PropsType) => {
+const Header = ({ setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 380px)',
   })
