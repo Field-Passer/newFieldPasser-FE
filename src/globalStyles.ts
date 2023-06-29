@@ -99,9 +99,9 @@ const GlobalStyles = createGlobalStyle`
     min-height: 100%;
 
     /* Screen max-width */
-    $screen-pc: 360px;
-    $screen-tab: 834px;
-    $screen-m: 1440px;
+    --screen-m: 360px;
+    --screen-tab: 834px;
+    --screen-pc: 1440px;
 
   }
 `
