@@ -1,20 +1,29 @@
 import { COLORS, FONT } from '@src/globalStyles'
-import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
 
-const Sidebar = () => {
-  const navigate = useNavigate()
+type PropsType = {
+  sideOpen: boolean
+  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
+  const closeSidebar = () => {
+    setSideOpen(false)
+  }
 
   return (
-    <SideContainer>
+    <SideContainer className={sideOpen ? 'open' : ''}>
       <FirstSection>
-        <div
-          onClick={() => {
-            console.log('사이드바 닫기')
-          }}
-        >
-          <img src="/close.svg" alt="닫기" className="close" />
+        <div>
+          <img
+            src="/close.svg"
+            alt="닫기"
+            className="close"
+            onClick={() => {
+              closeSidebar()
+            }}
+          />
         </div>
         <div>
           <Link to="/">
@@ -64,13 +73,20 @@ const Sidebar = () => {
 }
 
 const SideContainer = styled.div`
-  position: relative;
+  position: fixed;
   width: 240px;
   height: 100%;
   padding: 32px 0;
   border-right: 1px solid ${COLORS.gray20};
   font-size: ${FONT.m};
   z-index: 10;
+  background-color: white;
+  left: -100%;
+  transition: 0.3s ease;
+
+  &.open {
+    left: 0;
+  }
 `
 const FirstSection = styled.section`
   display: flex;
@@ -121,10 +137,15 @@ const MiddleSection = styled.section`
   }
 `
 const LastSection = styled.section`
+  position: fixed;
+  width: 240px;
+  box-sizing: border-box;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 32px 16px 0;
+  padding: 32px 16px;
+  border-top: 1px solid ${COLORS.gray20};
 
   div {
     cursor: pointer;

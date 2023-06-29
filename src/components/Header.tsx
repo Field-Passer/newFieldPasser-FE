@@ -2,27 +2,35 @@ import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
-import Sidebar from './Sidebar'
 import { Mobile } from '@src/hooks/useScreenHook'
 import { FiMenu } from 'react-icons/fi'
 
-const Header = () => {
+type PropsType = {
+  sideOpen: boolean
+  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const Header = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 380px)',
   })
   const navigate = useNavigate()
+  const openSidebar = () => {
+    setSideOpen(true)
+  }
 
   return (
     <>
       <Mobile>
         <MContainer>
           <FiMenu
-            onClick={() => console.log('사이드바 오픈')}
+            onClick={() => {
+              openSidebar()
+            }}
             className="menu"
           />
           <img src="/logo.png" alt="logo" onClick={() => navigate('/')} />
         </MContainer>
-        {/* <Sidebar /> */}
       </Mobile>
       {!isMobile && (
         <Container>
