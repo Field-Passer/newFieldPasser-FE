@@ -32,7 +32,7 @@ const Login = () => {
 }
 
 const Container = styled.div`
-  // reset css 적용되면 지우기
+  // reset-css 적용되면 지우기
   * {
     margin: 0;
     padding: 0;
