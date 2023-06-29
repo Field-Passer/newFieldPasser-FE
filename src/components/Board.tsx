@@ -1,5 +1,7 @@
+import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
-import { styled } from 'styled-components'
+import { ThemeProvider, styled } from 'styled-components'
+
 // 임시 type들 api 완성후 전부 빼겠습니다.
 interface data {
   image: string
@@ -18,47 +20,62 @@ interface Props {
 // eslint-disable-next-line react/prop-types
 const Board = ({ data }: Props) => {
   return (
-    <BoardContainer>
-      <ul>
-        {data.map((list, i) => (
-          <li key={i}>
-            <div className="imgae_wrap">
-              <img src={list.image} alt="이미지" />
-            </div>
-            <div className="info_wrap">
-              <p className="stadium">{list.stadium}</p>
-              <p className="title">{list.title}</p>
-              <p className="price">{list.price.toLocaleString()} 원</p>
-              <p className="date">{list.date}</p>
-              <p className="view_like">
-                <span>조회수</span>
-                <span>{list.view}</span>
-                <span>하트</span>
-                <span>{list.like}</span>
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </BoardContainer>
+    <ThemeProvider theme={theme}>
+      <BoardContainer>
+        <ul>
+          {data.map((list, i) => (
+            <li key={i}>
+              <div className="imgae_wrap">
+                <img src={list.image} alt="이미지" />
+              </div>
+              <div className="info_wrap">
+                <p className="stadium">{list.stadium}</p>
+                <p className="title">{list.title}</p>
+                <p className="price">{list.price.toLocaleString()} 원</p>
+                <p className="date">{list.date}</p>
+                <p className="view_like">
+                  <span>조회수</span>
+                  <span>{list.view}</span>
+                  <span>하트</span>
+                  <span>{list.like}</span>
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </BoardContainer>
+    </ThemeProvider>
   )
 }
 
 export default Board
 
 const BoardContainer = styled.div`
-  max-width: 1408px;
   padding: 16px;
   padding-right: 0;
+  display: flex;
+  justify-content: center;
 
   ul {
-    width: 100%;
+    @media ${({ theme }) => theme.device.laptop} {
+      max-width: 100%;
+    }
+    max-width: 1408px;
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
 
     li {
       width: calc(100% / 4 - 16px);
+      @media ${({ theme }) => theme.device.laptop} {
+        width: calc(100% / 3 - 16px);
+      }
+      @media ${({ theme }) => theme.device.tablet} {
+        width: calc(100% / 2 - 16px);
+      }
+      @media ${({ theme }) => theme.device.mobile} {
+        width: calc(100% - 16px);
+      }
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -66,12 +83,17 @@ const BoardContainer = styled.div`
 
       .imgae_wrap {
         width: 100%;
-        height: 340px;
         background: #ddd;
         border-radius: 20px;
 
         img {
           width: 100%;
+        }
+
+        &:after {
+          content: '';
+          display: block;
+          padding-bottom: 100%;
         }
       }
 
