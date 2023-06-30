@@ -84,6 +84,7 @@ const Container = styled.div`
   }
 
   .btn_join {
+    margin-top: 48px;
     width: 100%;
     height: 47px;
     background-color: ${COLORS.green};
