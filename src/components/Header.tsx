@@ -62,6 +62,7 @@ const MContainer = styled.header`
   display: flex;
   justify-content: center;
   position: relative;
+  background-color: white;
 
   .menu {
     width: 24px;
