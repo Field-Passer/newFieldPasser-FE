@@ -6,7 +6,7 @@ type propsType = {
 }
 const Overlay = ({ sideOpen }: propsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 380px)',
+    query: '(max-width: 450px)',
   })
   return <>{sideOpen && isMobile ? <Container></Container> : null}</>
 }

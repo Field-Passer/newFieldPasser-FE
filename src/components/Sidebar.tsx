@@ -10,7 +10,7 @@ type PropsType = {
 
 const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 380px)',
+    query: '(max-width: 450px)',
   })
 
   const closeSidebar = () => {
