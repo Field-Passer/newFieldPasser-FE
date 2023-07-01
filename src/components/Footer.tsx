@@ -37,6 +37,9 @@ const FooterContainer = styled.footer`
   color: white;
   margin-top: 40px;
   padding-top: 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 
   .inner {
     position: relative;

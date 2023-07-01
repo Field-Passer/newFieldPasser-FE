@@ -99,7 +99,7 @@ const GlobalStyles = createGlobalStyle`
     min-height: 100%;
 
     /* Screen max-width */
-    --screen-m: 360px;
+    --screen-m: 450px;
     --screen-tab: 834px;
     --screen-pc: 1440px;
 
