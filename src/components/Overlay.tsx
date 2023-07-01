@@ -1,15 +1,19 @@
+import { useMediaQuery } from 'react-responsive'
 import { styled } from 'styled-components'
 
 type propsType = {
   sideOpen: boolean
 }
 const Overlay = ({ sideOpen }: propsType) => {
-  return <>{sideOpen && <Container></Container>}</>
+  const isMobile = useMediaQuery({
+    query: '(max-width: 380px)',
+  })
+  return <>{sideOpen && isMobile ? <Container></Container> : null}</>
 }
 
 const Container = styled.div`
   position: fixed;
-  background-color: rgba(79, 77, 77, 0.7);
+  background-color: rgba(79, 77, 77, 0.2);
   inset: 0;
   z-index: 8;
 `
