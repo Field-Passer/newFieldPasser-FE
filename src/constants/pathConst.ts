@@ -8,6 +8,7 @@ const PATH = {
   JOIN: '/join',
   LOGIN: '/login',
   MYPAGE: '/mypage',
+  MYPAGE_DETAIL: '/mypage_detail',
 }
 
 export default PATH

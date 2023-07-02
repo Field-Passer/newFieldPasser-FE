@@ -44,6 +44,8 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     line-height: 1;
+    color: #3a3a3a;
+    font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
   }
 
   ol, ul, menu {
@@ -79,6 +81,7 @@ const GlobalStyles = createGlobalStyle`
     -webkit-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
+    font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
   }
 
   input:focus {
@@ -91,12 +94,14 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     border-radius: 10px;
     cursor: pointer;
+    font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
   }
 
   #root {
     font-family: 'Pretendard-Regular', 'Noto Sans KR', sans-serif;
     position: relative;
     min-height: 100%;
+    color: #3a3a3a;
 
     /* Screen max-width */
     --screen-m: 360px;
