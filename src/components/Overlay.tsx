@@ -1,14 +1,27 @@
 import { useMediaQuery } from 'react-responsive'
 import { styled } from 'styled-components'
 
-type propsType = {
+type PropsType = {
   sideOpen: boolean
+  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
-const Overlay = ({ sideOpen }: propsType) => {
+
+const Overlay = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 450px)',
   })
-  return <>{sideOpen && isMobile ? <Container></Container> : null}</>
+
+  return (
+    <>
+      {sideOpen && isMobile ? (
+        <Container
+          onClick={() => {
+            setSideOpen(false)
+          }}
+        ></Container>
+      ) : null}
+    </>
+  )
 }
 
 const Container = styled.div`

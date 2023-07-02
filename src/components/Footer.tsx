@@ -35,11 +35,10 @@ const Footer = () => {
 const FooterContainer = styled.footer`
   background-color: black;
   color: white;
-  margin-top: 40px;
-  padding-top: 20px;
-  position: fixed;
-  bottom: 0;
+  margin-top: 50px;
+  /* bottom: 0 */
   width: 100%;
+  position: relative;
 
   .inner {
     position: relative;

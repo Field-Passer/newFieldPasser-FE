@@ -20,7 +20,10 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   return (
     <>
       {!isMobile && closeSidebar()}
-      <SideContainer className={sideOpen && isMobile ? 'open' : ''}>
+      <SideContainer
+        id="sidebar"
+        className={sideOpen && isMobile ? 'open' : ''}
+      >
         <FirstSection>
           <div>
             <img
