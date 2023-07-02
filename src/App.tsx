@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import theme from './constants/theme'
 import Sidebar from './components/Sidebar'
 import { useState } from 'react'
+import Overlay from './components/Overlay'
 
 const App = () => {
   const [sideOpen, setSideOpen] = useState<boolean>(false)
@@ -12,6 +13,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
+      <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} />
       <Header setSideOpen={setSideOpen} />
       <Outlet />
       <Footer />
