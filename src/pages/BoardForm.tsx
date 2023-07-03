@@ -47,8 +47,8 @@ const BoardForm = () => {
         <div>세부사항</div>
         <Detail>
           <div className="option">
-            <select name="district" required>
-              <option value="" selected disabled className="default">
+            <select name="district" required defaultValue="지역">
+              <option value="지역" disabled className="default">
                 지역
               </option>
               {districtOptions.map((item) => {
@@ -59,8 +59,8 @@ const BoardForm = () => {
                 )
               })}
             </select>
-            <select name="category" required>
-              <option value="" selected disabled className="default">
+            <select name="category" required defaultValue="종목">
+              <option value="종목" disabled className="default">
                 종목
               </option>
               {categoryOptions.map((item) => {
