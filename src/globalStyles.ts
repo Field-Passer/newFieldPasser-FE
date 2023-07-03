@@ -109,6 +109,11 @@ const GlobalStyles = createGlobalStyle`
     --screen-pc: 1440px;
 
   }
+
+  .stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+  }
 `
 export const COLORS = {
   green: '#5FCA7B',

@@ -1,4 +1,5 @@
 import Board from '@src/components/Board'
+import SearchForm from '@src/components/SearchForm'
 
 // 임시 data api 완성후 전부 빼겠습니다.
 const dummyData = [
@@ -94,9 +95,10 @@ const dummyData = [
   },
 ]
 
-const BoardList: React.FC = () => {
+const BoardList = () => {
   return (
     <>
+      <SearchForm />
       <Board data={dummyData} />
     </>
   )

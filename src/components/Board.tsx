@@ -51,7 +51,7 @@ const Board = ({ data }: Props) => {
 export default Board
 
 const BoardContainer = styled.div`
-  padding: 16px;
+  padding: 20px;
   padding-right: 0;
   display: flex;
   justify-content: center;
@@ -60,7 +60,7 @@ const BoardContainer = styled.div`
     @media ${({ theme }) => theme.device.laptop} {
       max-width: 100%;
     }
-    max-width: 1408px;
+    max-width: calc(var(--screen-pc) + 16px);
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
