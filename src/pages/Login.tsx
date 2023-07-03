@@ -2,31 +2,78 @@
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
+import { FormEvent, useState } from 'react'
+import axios from 'axios'
+
+// interface FormElements {
+//   userId: string
+//   userPw: string
+// }
 
 const Login = () => {
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
+
+  // 첫 로그인 요청은 id, pw
+  // 새 at 재발급 요청 시 rt 필요 (=at 만료되서 UNAUTHORIZED(401) 돌아오면)
+  // 로그아웃 요청 시 유효한 at, rt 모두 필요
+  axios({
+    method: 'post',
+    url: 'https://field-passer.store/auth/login',
+    data: {
+      memberId: 'test@test.com',
+      password: 'a12341234',
+    },
+  }).then((res) => {
+    console.log(res)
+  })
+
+  const [disabled, setDisabled] = useState(false)
+
+  const onSubmit = async () => {
+    console.log('onSubmit 작동..')
+  }
 
   return (
     <Container>
-      <div className="logo">
-        <img src="/logo.png" alt="필드패서" />
-      </div>
+      <form onSubmit={onSubmit}>
+        <div className="logo">
+          <img src="/logo.png" alt="필드패서" />
+        </div>
 
-      <div className="input_wrap">
-        <label>이메일</label>
-        <input type="text" placeholder="아이디를 적어주세요" />
-        <label>비밀번호</label>
-        <input type="password" placeholder="비밀번호를 적어주세요" />
-      </div>
+        <div className="input_wrap">
+          <label>이메일</label>
+          <input
+            type="text"
+            name="userId"
+            pattern="^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+            placeholder="이메일을 적어주세요"
+            title="올바른 형식의 이메일을 적어주세요"
+            //required
+          />
+          <label>비밀번호</label>
+          <input
+            type="password"
+            name="userPw"
+            //minLength={8}
+            //maxLength={16}
+            //pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$"
+            placeholder="비밀번호를 적어주세요"
+            title="최소 8자리, 최대 16자리 숫자, 영문, 특수문자를 1개 이상 포함해주세요"
+            required
+          />
+        </div>
 
-      <button className="btn_login">로그인</button>
+        <button type="submit" className="btn_login" disabled={disabled}>
+          로그인
+        </button>
 
-      <div className="find_wrap">
-        <Link to="/findpw">비밀번호 찾기</Link>
-        <Link to="/join">회원가입하기</Link>
-      </div>
+        <div className="find_wrap">
+          <Link to="/findpw">비밀번호 찾기</Link>
+          <Link to="/join">회원가입하기</Link>
+        </div>
 
-      {/* <div>소셜 로그인 버튼 자리</div> */}
+        {/* <div>소셜 로그인 버튼 자리</div> */}
+      </form>
     </Container>
   )
 }
