@@ -2,14 +2,50 @@ import { districtOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { FiSearch } from 'react-icons/fi'
+import { ReactElement, useState } from 'react'
+import {
+  BadmintonIcon,
+  BasketballIcon,
+  FutsalIcon,
+  SoccerIcon,
+  TennisIcon,
+} from '@src/constants/icons'
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
+}
 
 const Main = () => {
-  const categories = [
-    ['futsal', '풋살'],
-    ['soccer', '축구'],
-    ['basketball', '농구'],
-    ['tennis', '테니스'],
-    ['badminton', '배드민턴'],
+  const [isActive, setIsActive] = useState(false)
+
+  const categories: ICategories[] = [
+    {
+      category: 'futsal',
+      name: '풋살',
+      icon: <FutsalIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'soccer',
+      name: '축구',
+      icon: <SoccerIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'basketball',
+      name: '농구',
+      icon: <BasketballIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'tennis',
+      name: '테니스',
+      icon: <TennisIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'badminton',
+      name: '배드민턴',
+      icon: <BadmintonIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
   ]
 
   const sortOptions = ['가장 최신 순', '인기순', '낮은 가격 순', '높은 가격 순']
@@ -34,9 +70,14 @@ const Main = () => {
         <Category>
           {categories.map((item) => {
             return (
-              <div key={item[0]} className="icon">
-                <img src={`/${item[0]}.svg`} alt={item[1]} />
-                <span>{item[1]}</span>
+              <div key={item.category} className="icon">
+                {/* <img
+                  src={`/${item.category}.svg`}
+                  alt={item.name}
+                  className={isActive ? 'active' : ''}
+                /> */}
+                {item.icon}
+                <span>{item.name}</span>
               </div>
             )
           })}
@@ -109,6 +150,7 @@ const SearchSection = styled.section`
         gap: 20px;
         font-size: 12px;
         color: #777;
+        cursor: pointer;
       }
 
       input {
@@ -121,6 +163,10 @@ const SearchSection = styled.section`
           color: black;
         }
       }
+    }
+
+    img {
+      cursor: pointer;
     }
   }
 `
@@ -135,10 +181,6 @@ const Category = styled.div`
   display: flex;
   gap: 16px;
   border-bottom: 1px solid ${COLORS.gray20};
-
-  :hover {
-    color: ${COLORS.green};
-  }
 
   .icon {
     display: flex;
