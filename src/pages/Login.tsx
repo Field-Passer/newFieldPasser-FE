@@ -1,36 +1,97 @@
 // import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import {
+  Link, //useNavigate
+} from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
+import { DELETE_TOKEN, SET_TOKEN } from '@src/store/slices/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  getCookieToken,
+  removeCookieToken,
+  setRefreshToken,
+} from '@src/storage/Cookie'
 
 // interface FormElements {
-//   userId: string
+//   userEmail: string
 //   userPw: string
 // }
 
 const Login = () => {
   //const navigate = useNavigate()
-
-  // 첫 로그인 요청은 id, pw
-  // 새 at 재발급 요청 시 rt 필요 (=at 만료되서 UNAUTHORIZED(401) 돌아오면)
-  // 로그아웃 요청 시 유효한 at, rt 모두 필요
-  axios({
-    method: 'post',
-    url: 'https://field-passer.store/auth/login',
-    data: {
-      memberId: 'test@test.com',
-      password: 'a12341234',
-    },
-  }).then((res) => {
-    console.log(res)
+  const dispatch = useDispatch()
+  const [inputs, setInputs] = useState({
+    userEmail: '',
+    userPw: '',
   })
+  const { userEmail, userPw } = inputs
 
-  const [disabled, setDisabled] = useState(false)
+  const authenticated = useSelector((state) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
+  console.log(authenticated)
+  const savedAt = useSelector((state) => state.accessToken.accessToken)
+  const savedRt = getCookieToken()
 
-  const onSubmit = async () => {
-    console.log('onSubmit 작동..')
+  // 첫 로그인 요청은 id(email), pw 필요
+  // 새 at 재발급 요청 시 at, rt 둘 다 필요 (at 만료되서 UNAUTHORIZED(401) 돌아오면)
+  // 로그아웃 요청 시 유효한 at 필요 (rt는 필요없음 쿠키스토리지에서 삭제만ㄱ)
+
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setInputs({
+      ...inputs,
+      [name]: value,
+    })
+  }
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('onSubmit 작동..', 'email:', '/', userEmail, 'pw:', userPw)
+    axios({
+      method: 'post',
+      url: 'https://field-passer.store/auth/login',
+      data: {
+        memberId: userEmail,
+        password: userPw,
+      },
+    }).then((res) => {
+      console.log(res)
+      if (res.status) {
+        // 쿠키에 Refresh Token, store에 Access Token 저장
+        dispatch(SET_TOKEN(res.data.data.accessToken))
+        setRefreshToken(res.data.data.refreshToken)
+        console.log(savedAt)
+        console.log(savedRt)
+        //return Navigate("/")
+      }
+    })
+  }
+
+  const logoutHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    axios({
+      method: 'post',
+      url: 'https://field-passer.store/auth/logout',
+      headers: {
+        //'Content-Type': 'application/json;charset=UTF-8',
+        authorization: `Bearer ${savedAt}`,
+      },
+    }).then((res) => {
+      console.log(res)
+      if (res.status) {
+        // 쿠키에 저장된 Refresh Token 삭제, store의 Access Token 삭제
+        removeCookieToken()
+        dispatch(DELETE_TOKEN())
+        console.log(getCookieToken())
+        console.log(savedAt)
+        console.log('logout 작동')
+        //return Navigate("/")
+      }
+    })
+    // console.log(savedAt)
+    // console.log(savedRt)
+    // console.log('logout 작동')
   }
 
   return (
@@ -44,10 +105,11 @@ const Login = () => {
           <label>이메일</label>
           <input
             type="text"
-            name="userId"
-            pattern="^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+            name="userEmail"
+            //pattern="^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
             placeholder="이메일을 적어주세요"
             title="올바른 형식의 이메일을 적어주세요"
+            onChange={onChangeHandler}
             //required
           />
           <label>비밀번호</label>
@@ -59,11 +121,12 @@ const Login = () => {
             //pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$"
             placeholder="비밀번호를 적어주세요"
             title="최소 8자리, 최대 16자리 숫자, 영문, 특수문자를 1개 이상 포함해주세요"
-            required
+            onChange={onChangeHandler}
+            //required
           />
         </div>
 
-        <button type="submit" className="btn_login" disabled={disabled}>
+        <button type="submit" className="btn_login">
           로그인
         </button>
 
@@ -73,6 +136,9 @@ const Login = () => {
         </div>
 
         {/* <div>소셜 로그인 버튼 자리</div> */}
+        <button type="button" onClick={logoutHandler} className="btn_login">
+          로그아웃
+        </button>
       </form>
     </Container>
   )
