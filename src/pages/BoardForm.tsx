@@ -1,7 +1,7 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const BoardForm = () => {
   const [imgSrc, setImgSrc]: any = useState(null)
@@ -23,20 +23,13 @@ const BoardForm = () => {
       }
     })
   }
-  const removeImg = () => {
-    console.log('이미지 삭제')
-  }
+  // const removeImg = () => {
+  //   console.log('이미지 삭제')
+  // }
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  // useEffect(() => {
-  //   if (imgFile && imgFile.length > 0) {
-  //     const file = imgFile[0]
-  //     setImgPreview(URL.createObjectURL(file))
-  //   }
-  // }, [imgFile])
-
-  const [selectedData, setSelectedData] = useState()
+  // const [selectedData, setSelectedData] = useState()
   // const [isOptionsValid, setIsOptionsValid] = useState(false)
   // useEffect(() => {
   //   setIsOptionsValid(selectedData ? true : false)
@@ -81,10 +74,6 @@ const BoardForm = () => {
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
           {imgSrc && (
-            // <div
-            //   className="preview"
-            //   style={{ backgroundImage: `url(${imgSrc})` }}
-            // ></div>
             <img src={imgSrc} alt="업로드된 이미지" className="preview" />
           )}
         </FileUpload>
