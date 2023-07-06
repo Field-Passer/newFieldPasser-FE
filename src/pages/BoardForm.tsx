@@ -1,126 +1,171 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
+import { useEffect, useState } from 'react'
 
 const BoardForm = () => {
-  const previewImg = () => {
-    console.log('이미지 미리보기')
+  const [imgSrc, setImgSrc]: any = useState(null)
+
+  const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 함수실행 전 단계에서 thisFile true인지 검사해도?
+    const thisFile = event.target.files![0]
+    const fileReader = new FileReader()
+    if (thisFile && thisFile.size > 1048576) {
+      alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
+      event.target.files = null
+      return false
+    }
+    thisFile && fileReader.readAsDataURL(thisFile)
+    return new Promise<void>((resolve) => {
+      fileReader.onload = () => {
+        setImgSrc(fileReader.result || null)
+        resolve()
+      }
+    })
+  }
+  const removeImg = () => {
+    console.log('이미지 삭제')
+  }
+
+  const currentDate = new Date().toISOString().substring(0, 10)
+
+  // useEffect(() => {
+  //   if (imgFile && imgFile.length > 0) {
+  //     const file = imgFile[0]
+  //     setImgPreview(URL.createObjectURL(file))
+  //   }
+  // }, [imgFile])
+
+  const [selectedData, setSelectedData] = useState()
+  // const [isOptionsValid, setIsOptionsValid] = useState(false)
+  // useEffect(() => {
+  //   setIsOptionsValid(selectedData ? true : false)
+  // }, [selectedData])
+  //셀렉트박스 선택 안돼있으면 제출 막기 추가
+  //    <Select ... />
+  //{!isValid && <p>You must choose a value</p>}
+  //<button disabled={!isValid}>Submit</button>
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    alert('등록됨!')
   }
 
   return (
-    <Container>
-      <div className="logo">
-        <img src="/logo.png" alt="logo" />
-      </div>
-      <form>
-        <Section>
-          <div>제목</div>
+    <Form onSubmit={(event) => handleSubmit(event)}>
+      <Section>
+        <div>제목</div>
+        <div>
+          <input
+            type="text"
+            placeholder="제목을 입력해주세요"
+            required
+            minLength={2}
+            maxLength={20}
+            title="제목은 2~20자 이내로 입력해주세요"
+          />
+        </div>
+      </Section>
+      <Section>
+        <div>사진 추가</div>
+        <FileUpload htmlFor="file">
+          <input
+            id="file"
+            type="file"
+            name="file"
+            accept="image/gif,image/jpeg,image/png"
+            onChange={(event) => {
+              previewImg(event)
+            }}
+          />
+          <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+          <span>여기에 사진을 올려주세요</span>
+          {imgSrc && (
+            // <div
+            //   className="preview"
+            //   style={{ backgroundImage: `url(${imgSrc})` }}
+            // ></div>
+            <img src={imgSrc} alt="업로드된 이미지" className="preview" />
+          )}
+        </FileUpload>
+      </Section>
+      <Section>
+        <div>가격</div>
+        <div>
+          <input type="number" placeholder="50,000" min={0} required />
+          <span className="won">원</span>
+        </div>
+      </Section>
+      <Section>
+        <div>세부사항</div>
+        <Detail>
+          <div className="option">
+            <select name="district" defaultValue="지역" required>
+              <option value="" disabled className="default">
+                지역
+              </option>
+              {districtOptions.map((item) => {
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+            <select name="category" required defaultValue="종목">
+              <option value="종목" disabled className="default">
+                종목
+              </option>
+              {categoryOptions.map((item) => {
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
           <div>
+            <input type="text" placeholder="구장명을 입력해주세요" />
+          </div>
+        </Detail>
+      </Section>
+      <Section>
+        <div>예약일시</div>
+        <Reservation>
+          <div className="date">
             <input
-              type="text"
-              placeholder="제목을 입력해주세요"
-              required
-              pattern=".{2, 20}"
-              title="제목은 2~20자 이내로 입력해주세요"
+              type="date"
+              name="date"
+              defaultValue={currentDate}
+              min={currentDate}
             />
           </div>
-        </Section>
-        <Section>
-          <div>사진 추가</div>
-          <FileUpload htmlFor="file">
-            <input
-              id="file"
-              type="file"
-              accept="image/gif,image/jpeg,image/png"
-            />
-            <img src="/upload.png" alt="파일 추가" />
-            <span>여기에 사진을 올려주세요</span>
-          </FileUpload>
-        </Section>
-        <Section>
-          <div>가격</div>
-          <div>
-            <input type="number" placeholder="50,000" />
-            <span className="won">원</span>
+          <div className="time">
+            <input type="time" name="startTime" defaultValue={'00:00'} />
+            <span>부터</span>
+            <input type="time" name="endTime" defaultValue={'00:00'} />
+            <span>까지</span>
           </div>
-        </Section>
-        <Section>
-          <div>세부사항</div>
-          <Detail>
-            <div className="option">
-              <select name="district" required defaultValue="지역">
-                <option value="지역" disabled className="default">
-                  지역
-                </option>
-                {districtOptions.map((item) => {
-                  return (
-                    <option value={item} key={item}>
-                      {item}
-                    </option>
-                  )
-                })}
-              </select>
-              <select name="category" required defaultValue="종목">
-                <option value="종목" disabled className="default">
-                  종목
-                </option>
-                {categoryOptions.map((item) => {
-                  return (
-                    <option value={item} key={item}>
-                      {item}
-                    </option>
-                  )
-                })}
-              </select>
-            </div>
-            <div>
-              <input type="text" placeholder="구장명을 입력해주세요" />
-            </div>
-          </Detail>
-        </Section>
-        <Section>
-          <div>예약일시</div>
-          <Reservation>
-            <div className="date">
-              <input type="date" />
-            </div>
-            <div className="time">
-              <input type="time" />
-              <span>부터</span>
-              <input type="time" />
-              <span>까지</span>
-            </div>
-          </Reservation>
-        </Section>
-        <Section>
-          <div>본문내용</div>
-          <div>
-            <textarea placeholder="내용을 입력해주세요" />
-          </div>
-        </Section>
-        <button type="submit">등록하기</button>
-      </form>
-    </Container>
+        </Reservation>
+      </Section>
+      <Section>
+        <div>본문내용</div>
+        <div>
+          <textarea placeholder="내용을 입력해주세요" />
+        </div>
+      </Section>
+      <button type="submit">등록하기</button>
+    </Form>
   )
 }
 
-const Container = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
   font-size: ${FONT.m};
-
-  .logo {
-    margin: auto;
-    height: 48px;
-    line-height: 48px;
-    margin-top: 12px;
-
-    img {
-      width: 160px;
-      height: 24px;
-    }
-  }
+  padding-top: 32px;
 
   button {
     width: 328px;
@@ -210,11 +255,19 @@ const FileUpload = styled.label`
   align-items: center;
   color: ${COLORS.gray40};
 
+  .preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
   input {
     display: none;
   }
 
-  img {
+  .uploadIcon {
     width: 40px;
     height: 40px;
   }
@@ -226,14 +279,13 @@ const Reservation = styled.div`
   gap: 10px;
   color: ${COLORS.gray40};
 
+  input {
+    color: ${COLORS.gray40}; //change-> 어두운색 변경
+  }
+
   .date {
     input {
       height: 32px;
-      color: ${COLORS.gray40};
-    }
-
-    ::placeholder {
-      /* color: ${COLORS.gray20}; */
     }
   }
   .time {

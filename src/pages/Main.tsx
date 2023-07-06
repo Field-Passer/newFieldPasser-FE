@@ -18,7 +18,7 @@ interface ICategories {
 }
 
 const Main = () => {
-  const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState<boolean>(false)
 
   const categories: ICategories[] = [
     {
