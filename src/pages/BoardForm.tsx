@@ -10,6 +10,7 @@ const BoardForm = () => {
     // 함수실행 전 단계에서 thisFile true인지 검사해도?
     const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
+
     if (thisFile && thisFile.size > 1048576) {
       alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
       event.target.files = null
@@ -24,9 +25,9 @@ const BoardForm = () => {
       }
     })
   }
-  // const removeImg = () => {
-  //   console.log('이미지 삭제')
-  // }
+  const removeImg = () => {
+    console.log('이미지 삭제')
+  }
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
@@ -69,6 +70,16 @@ const BoardForm = () => {
           <span>여기에 사진을 올려주세요</span>
           {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
+        {imgSrc && (
+          <div
+            className="delete"
+            onClick={() => {
+              removeImg()
+            }}
+          >
+            삭제
+          </div>
+        )}
       </Section>
       <Section>
         <div>가격</div>
@@ -205,6 +216,18 @@ const Section = styled.section`
     top: 39px;
     right: 30px;
     color: ${COLORS.gray40};
+  }
+
+  .delete {
+    position: absolute;
+    background-color: ${COLORS.gray40};
+    right: 10px;
+    bottom: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
   }
 `
 
