@@ -4,12 +4,13 @@ import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useState } from 'react'
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc]: any = useState(null)
+  const [imgSrc, setImgSrc] = useState<string | null>(null)
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     // 함수실행 전 단계에서 thisFile true인지 검사해도?
-    const thisFile = event.target.files![0]
+    const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
+
     if (thisFile && thisFile.size > 1048576) {
       alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
       event.target.files = null
@@ -17,15 +18,16 @@ const BoardForm = () => {
     }
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
+      // promise 안 쓰면 동작 안됨...
       fileReader.onload = () => {
-        setImgSrc(fileReader.result || null)
+        setImgSrc(fileReader.result + '')
         resolve()
       }
     })
   }
-  // const removeImg = () => {
-  //   console.log('이미지 삭제')
-  // }
+  const removeImg = () => {
+    console.log('이미지 삭제')
+  }
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
@@ -49,14 +51,7 @@ const BoardForm = () => {
       <Section>
         <div>제목</div>
         <div>
-          <input
-            type="text"
-            placeholder="제목을 입력해주세요"
-            required
-            minLength={2}
-            maxLength={20}
-            title="제목은 2~20자 이내로 입력해주세요"
-          />
+          <input type="text" placeholder="제목을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
         </div>
       </Section>
       <Section>
@@ -73,10 +68,18 @@ const BoardForm = () => {
           />
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
-          {imgSrc && (
-            <img src={imgSrc} alt="업로드된 이미지" className="preview" />
-          )}
+          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
+        {imgSrc && (
+          <div
+            className="delete"
+            onClick={() => {
+              removeImg()
+            }}
+          >
+            삭제
+          </div>
+        )}
       </Section>
       <Section>
         <div>가격</div>
@@ -88,47 +91,43 @@ const BoardForm = () => {
       <Section>
         <div>세부사항</div>
         <Detail>
-          <div className="option">
-            <select name="district" defaultValue="지역" required>
-              <option value="" disabled className="default">
-                지역
-              </option>
-              {districtOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-            <select name="category" required defaultValue="종목">
-              <option value="종목" disabled className="default">
-                종목
-              </option>
-              {categoryOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
-          <div>
-            <input type="text" placeholder="구장명을 입력해주세요" />
-          </div>
+          <select name="district" defaultValue="지역" required>
+            <option value="" disabled className="default">
+              지역
+            </option>
+            {districtOptions.map((item) => {
+              return (
+                <option value={item} key={item}>
+                  {item}
+                </option>
+              )
+            })}
+          </select>
+          <select name="category" required defaultValue="종목">
+            <option value="종목" disabled className="default">
+              종목
+            </option>
+            {categoryOptions.map((item) => {
+              return (
+                <option value={item} key={item}>
+                  {item}
+                </option>
+              )
+            })}
+          </select>
         </Detail>
+      </Section>
+      <Section>
+        <div>구장명</div>
+        <div>
+          <input type="text" placeholder="구장명을 입력해주세요" />
+        </div>
       </Section>
       <Section>
         <div>예약일시</div>
         <Reservation>
           <div className="date">
-            <input
-              type="date"
-              name="date"
-              defaultValue={currentDate}
-              min={currentDate}
-            />
+            <input type="date" name="date" defaultValue={currentDate} min={currentDate} />
           </div>
           <div className="time">
             <input type="time" name="startTime" defaultValue={'00:00'} />
@@ -218,17 +217,23 @@ const Section = styled.section`
     right: 30px;
     color: ${COLORS.gray40};
   }
+
+  .delete {
+    position: absolute;
+    background-color: ${COLORS.gray40};
+    right: 10px;
+    bottom: 10px;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+  }
 `
 
 const Detail = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 10px;
-
-  .option {
-    display: flex;
-    justify-content: space-between;
-  }
 `
 
 const FileUpload = styled.label`
@@ -248,7 +253,8 @@ const FileUpload = styled.label`
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    background-color: white;
+    object-fit: contain;
     border-radius: 8px;
   }
 
