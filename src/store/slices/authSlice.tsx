@@ -1,10 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// export type authState = {
-//   authenticated: boolean
-//   accessToken: string
-// }
-
 export const TOKEN_TIME_OUT = 600 * 1000
 
 export const authSlice = createSlice({
