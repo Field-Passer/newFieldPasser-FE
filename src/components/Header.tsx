@@ -24,9 +24,7 @@ const Header = ({ setSideOpen }: PropsType) => {
   }
   const dispatch = useDispatch()
 
-  const authenticated = useSelector(
-    (state: RootState) => state.accessToken.authenticated
-  ) // 스토어에 저장된 로그인 상태
+  const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
   const logoutHandler = async () => {
     const { status } = await userLogout()
@@ -36,6 +34,11 @@ const Header = ({ setSideOpen }: PropsType) => {
       console.log('로그아웃!')
       return navigate('/login')
     }
+  }
+
+  const clickWithoutLogin = () => {
+    navigate('/login')
+    alert('로그인 후 이용 가능합니다.')
   }
 
   return (
@@ -58,17 +61,15 @@ const Header = ({ setSideOpen }: PropsType) => {
               <img src="/logo.png" alt="필드패서" />
             </Link>
             <div className="menu">
+              <Link to="/help">고객센터</Link>
+              {authenticated && <Link to="/mypage">마이페이지</Link>}
               {!authenticated && <Link to="/join">회원가입</Link>}
-              {authenticated ? (
-                <a onClick={logoutHandler}>로그아웃</a>
-              ) : (
-                <Link to="/login">로그인</Link>
-              )}
+              {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to="/login">로그인</Link>}
               <button
                 onClick={() => {
-                  // 로그인 상태 / 아닐경우 조건문 달기
-                  navigate('/login')
-                  alert('로그인 후 이용 가능합니다.')
+                  {
+                    authenticated ? navigate('/board_form') : clickWithoutLogin()
+                  }
                 }}
               >
                 양도하기
@@ -132,12 +133,22 @@ const Inner = styled.div`
     height: 32px;
     align-items: center;
 
+    @media (max-width: 540px) {
+      font-size: 14px;
+      gap: 10px;
+    }
+
     button {
       width: 100px;
       height: 32px;
       font-size: ${FONT.pc};
       background-color: ${COLORS.green};
       color: white;
+
+      @media (max-width: 540px) {
+        font-size: 14px;
+        width: 80px;
+      }
     }
 
     a {
