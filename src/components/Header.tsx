@@ -135,12 +135,22 @@ const Inner = styled.div`
     height: 32px;
     align-items: center;
 
+    @media (max-width: 540px) {
+      font-size: 14px;
+      gap: 10px;
+    }
+
     button {
       width: 100px;
       height: 32px;
       font-size: ${FONT.pc};
       background-color: ${COLORS.green};
       color: white;
+
+      @media (max-width: 540px) {
+        font-size: 14px;
+        width: 80px;
+      }
     }
 
     a {
