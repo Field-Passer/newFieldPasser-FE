@@ -4,11 +4,11 @@ import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useState } from 'react'
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc]: any = useState(null)
+  const [imgSrc, setImgSrc] = useState<string | null>(null)
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     // 함수실행 전 단계에서 thisFile true인지 검사해도?
-    const thisFile = event.target.files![0]
+    const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
     if (thisFile && thisFile.size > 1048576) {
       alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
@@ -17,8 +17,9 @@ const BoardForm = () => {
     }
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
+      // promise 안 쓰면 동작 안됨...
       fileReader.onload = () => {
-        setImgSrc(fileReader.result || null)
+        setImgSrc(fileReader.result + '')
         resolve()
       }
     })
@@ -114,10 +115,13 @@ const BoardForm = () => {
               })}
             </select>
           </div>
-          <div>
-            <input type="text" placeholder="구장명을 입력해주세요" />
-          </div>
         </Detail>
+      </Section>
+      <Section>
+        <div>구장명</div>
+        <div>
+          <input type="text" placeholder="구장명을 입력해주세요" />
+        </div>
       </Section>
       <Section>
         <div>예약일시</div>
