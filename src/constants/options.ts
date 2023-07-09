@@ -29,9 +29,8 @@ export const districtOptions: string[] = [
 export const categoryOptions: string[] = [
   '전체',
   '축구',
-  '야구',
   '풋살',
   '농구',
   '테니스',
-  '베드민턴',
+  '배드민턴',
 ]

@@ -89,6 +89,7 @@ const MContainer = styled.header`
   justify-content: center;
   position: relative;
   background-color: white;
+  border-bottom: 1px solid ${COLORS.gray20};
 
   .menu {
     width: 24px;
