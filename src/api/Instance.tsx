@@ -1,6 +1,7 @@
-import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
+import { removeCookieToken } from '@src/storage/Cookie'
 import axios from 'axios'
 import { DELETE_TOKEN, SET_TOKEN } from '@src/store/slices/authSlice'
+import { postRefereshToken } from './authApi'
 import store from '@src/store/config'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -75,11 +76,3 @@ privateApi.interceptors.response.use(
     }
   }
 )
-
-// refreshToken 재발급 api
-async function postRefereshToken() {
-  const response = await publicApi.post('auth/reissue', {
-    refreshToken: getCookieToken(),
-  })
-  return response
-}

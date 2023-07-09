@@ -1,4 +1,5 @@
 import { privateApi, publicApi } from './Instance'
+import { getCookieToken } from '@src/storage/Cookie'
 
 // 로그인
 export const userLogin = async ({ userEmail, userPw }: LoginType) => {
@@ -43,6 +44,14 @@ export const userLogout = async () => {
   }
 }
 
-// at 검사
+// accessToken 검사
 
-// rt 재발급
+// refreshToken 재발급 api
+export async function postRefereshToken() {
+  const response = await publicApi.post('auth/reissue', {
+    refreshToken: getCookieToken(),
+  })
+  return response
+}
+
+// (회원가입시)이메일 인증 절차
