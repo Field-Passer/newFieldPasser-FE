@@ -50,14 +50,7 @@ const BoardForm = () => {
       <Section>
         <div>제목</div>
         <div>
-          <input
-            type="text"
-            placeholder="제목을 입력해주세요"
-            required
-            minLength={2}
-            maxLength={20}
-            title="제목은 2~20자 이내로 입력해주세요"
-          />
+          <input type="text" placeholder="제목을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
         </div>
       </Section>
       <Section>
@@ -74,9 +67,7 @@ const BoardForm = () => {
           />
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
-          {imgSrc && (
-            <img src={imgSrc} alt="업로드된 이미지" className="preview" />
-          )}
+          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
       </Section>
       <Section>
@@ -89,32 +80,30 @@ const BoardForm = () => {
       <Section>
         <div>세부사항</div>
         <Detail>
-          <div className="option">
-            <select name="district" defaultValue="지역" required>
-              <option value="" disabled className="default">
-                지역
-              </option>
-              {districtOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-            <select name="category" required defaultValue="종목">
-              <option value="종목" disabled className="default">
-                종목
-              </option>
-              {categoryOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
+          <select name="district" defaultValue="지역" required>
+            <option value="" disabled className="default">
+              지역
+            </option>
+            {districtOptions.map((item) => {
+              return (
+                <option value={item} key={item}>
+                  {item}
+                </option>
+              )
+            })}
+          </select>
+          <select name="category" required defaultValue="종목">
+            <option value="종목" disabled className="default">
+              종목
+            </option>
+            {categoryOptions.map((item) => {
+              return (
+                <option value={item} key={item}>
+                  {item}
+                </option>
+              )
+            })}
+          </select>
         </Detail>
       </Section>
       <Section>
@@ -127,12 +116,7 @@ const BoardForm = () => {
         <div>예약일시</div>
         <Reservation>
           <div className="date">
-            <input
-              type="date"
-              name="date"
-              defaultValue={currentDate}
-              min={currentDate}
-            />
+            <input type="date" name="date" defaultValue={currentDate} min={currentDate} />
           </div>
           <div className="time">
             <input type="time" name="startTime" defaultValue={'00:00'} />
@@ -226,13 +210,7 @@ const Section = styled.section`
 
 const Detail = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 10px;
-
-  .option {
-    display: flex;
-    justify-content: space-between;
-  }
 `
 
 const FileUpload = styled.label`
@@ -252,7 +230,8 @@ const FileUpload = styled.label`
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    background-color: white;
+    object-fit: contain;
     border-radius: 8px;
   }
 
