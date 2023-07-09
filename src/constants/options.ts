@@ -27,9 +27,11 @@ export const districtOptions: string[] = [
 ]
 
 export const categoryOptions: string[] = [
-  '풋살장',
-  '축구장',
-  '농구장',
-  '테니스장',
-  '배드민턴장',
+  '전체',
+  '축구',
+  '야구',
+  '풋살',
+  '농구',
+  '테니스',
+  '베드민턴',
 ]

@@ -1,41 +1,25 @@
 // import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
 import styled from 'styled-components'
-import {
-  Link, //useNavigate
-} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useState } from 'react'
-import axios from 'axios'
-import { DELETE_TOKEN, SET_TOKEN } from '@src/store/slices/authSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  getCookieToken,
-  removeCookieToken,
-  setRefreshToken,
-} from '@src/storage/Cookie'
+import { SET_TOKEN } from '@src/store/slices/authSlice'
+import { useDispatch } from 'react-redux'
+import { setRefreshToken } from '@src/storage/Cookie'
+import { userLogin } from '@src/api/authApi'
 
-// interface FormElements {
-//   userEmail: string
-//   userPw: string
-// }
+// 첫 로그인 요청은 id(email), pw 필요
+// 새 at 재발급 요청 시 at, rt 둘 다 필요 (at 만료되서 UNAUTHORIZED(401) 돌아오면)
+// 로그아웃 요청 시 유효한 at 필요 (rt는 필요없음 쿠키스토리지에서 삭제만ㄱ)
 
 const Login = () => {
-  //const navigate = useNavigate()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [inputs, setInputs] = useState({
     userEmail: '',
     userPw: '',
   })
   const { userEmail, userPw } = inputs
-
-  const authenticated = useSelector((state) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
-  console.log(authenticated)
-  const savedAt = useSelector((state) => state.accessToken.accessToken)
-  const savedRt = getCookieToken()
-
-  // 첫 로그인 요청은 id(email), pw 필요
-  // 새 at 재발급 요청 시 at, rt 둘 다 필요 (at 만료되서 UNAUTHORIZED(401) 돌아오면)
-  // 로그아웃 요청 시 유효한 at 필요 (rt는 필요없음 쿠키스토리지에서 삭제만ㄱ)
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -45,58 +29,24 @@ const Login = () => {
     })
   }
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('onSubmit 작동..', 'email:', '/', userEmail, 'pw:', userPw)
-    axios({
-      method: 'post',
-      url: 'https://field-passer.store/auth/login',
-      data: {
-        memberId: userEmail,
-        password: userPw,
-      },
-    }).then((res) => {
-      console.log(res)
-      if (res.status) {
-        // 쿠키에 Refresh Token, store에 Access Token 저장
-        dispatch(SET_TOKEN(res.data.data.accessToken))
-        setRefreshToken(res.data.data.refreshToken)
-        console.log(savedAt)
-        console.log(savedRt)
-        //return Navigate("/")
-      }
+    const { status, result, message, tokens } = await userLogin({
+      userEmail,
+      userPw,
     })
-  }
-
-  const logoutHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    axios({
-      method: 'post',
-      url: 'https://field-passer.store/auth/logout',
-      headers: {
-        //'Content-Type': 'application/json;charset=UTF-8',
-        authorization: `Bearer ${savedAt}`,
-      },
-    }).then((res) => {
-      console.log(res)
-      if (res.status) {
-        // 쿠키에 저장된 Refresh Token 삭제, store의 Access Token 삭제
-        removeCookieToken()
-        dispatch(DELETE_TOKEN())
-        console.log(getCookieToken())
-        console.log(savedAt)
-        console.log('logout 작동')
-        //return Navigate("/")
-      }
-    })
-    // console.log(savedAt)
-    // console.log(savedRt)
-    // console.log('logout 작동')
+    //console.log(status, result, message, tokens)
+    if (status === 200) {
+      dispatch(SET_TOKEN(tokens.accessToken))
+      setRefreshToken(tokens.refreshToken)
+      console.log('로그인 성공!')
+      return navigate('/')
+    }
   }
 
   return (
     <Container>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmitHandler}>
         <div className="logo">
           <img src="/logo.png" alt="필드패서" />
         </div>
@@ -135,22 +85,18 @@ const Login = () => {
           <Link to="/join">회원가입하기</Link>
         </div>
 
-        {/* <div>소셜 로그인 버튼 자리</div> */}
-        <button type="button" onClick={logoutHandler} className="btn_login">
-          로그아웃
-        </button>
+        {/* <button type="button" className="btn_googleLogin">
+          구글로 계속하기
+        </button> */}
       </form>
     </Container>
   )
 }
 
 const Container = styled.div`
-  // reset-css 적용되면 지우기
+  // reset-css에 border-box 추가?
   * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    color: ${COLORS.font};
   }
 
   @media screen and (max-width: 360px) {
@@ -198,6 +144,9 @@ const Container = styled.div`
     width: 100%;
     font-size: 12px;
   }
+
+  /* .btn_googleLogin {
+  } */
 `
 
 export default Login
