@@ -1,13 +1,21 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+
+interface ISaveFile {
+  imgFile: File | null
+  imgSrc: string | undefined
+}
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc] = useState<string | null>(null)
+  const [imgSrc, setImgSrc] = useState<ISaveFile>({
+    imgFile: null,
+    imgSrc: '',
+  })
+  const imgRef = useRef<HTMLInputElement>(null)
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 함수실행 전 단계에서 thisFile true인지 검사해도?
     const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
 
@@ -18,15 +26,22 @@ const BoardForm = () => {
     }
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
-      // promise 안 쓰면 동작 안됨...
+      // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
+      // 파일은 삭제버튼 동작을 위해 state에 담아서 전송하기
       fileReader.onload = () => {
-        setImgSrc(fileReader.result + '')
+        setImgSrc({
+          imgFile: thisFile,
+          imgSrc: fileReader.result + '',
+        })
         resolve()
       }
     })
   }
   const removeImg = () => {
-    console.log('이미지 삭제')
+    setImgSrc({
+      imgFile: null,
+      imgSrc: '',
+    })
   }
 
   const currentDate = new Date().toISOString().substring(0, 10)
@@ -43,7 +58,7 @@ const BoardForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    alert('등록됨!')
+    // alert('등록됨!')
   }
 
   return (
@@ -61,6 +76,7 @@ const BoardForm = () => {
             id="file"
             type="file"
             name="file"
+            ref={imgRef}
             accept="image/gif,image/jpeg,image/png"
             onChange={(event) => {
               previewImg(event)
@@ -68,7 +84,7 @@ const BoardForm = () => {
           />
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
-          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+          {imgSrc.imgSrc && <img src={imgSrc.imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
         {imgSrc && (
           <div
