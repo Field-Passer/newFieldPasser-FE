@@ -2,17 +2,24 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState } from 'react'
-
-interface ISaveFile {
-  imgFile: File | null
-  imgSrc: string | undefined
-}
+import { IPostingPayload, ISaveImgFile } from '@src/constants/types'
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc] = useState<ISaveFile>({
+  const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
     imgFile: null,
     imgSrc: '',
   })
+  const [payLoad, setPayload] = useState<IPostingPayload>({
+    title: '',
+    imgFile: null,
+    price: 0,
+    district: '',
+    category: '',
+    name: '',
+    reservation: '',
+    content: '',
+  })
+
   const imgRef = useRef<HTMLInputElement>(null)
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +65,9 @@ const BoardForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // alert('등록됨!')
+    console.log(event)
+    alert('등록됨!')
+    // const formData = new FormData()
   }
 
   return (
