@@ -2,21 +2,20 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState } from 'react'
-import { IPostingPayload, ISaveImgFile } from '@src/constants/types'
 
 const BoardForm = () => {
   const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
     imgFile: null,
     imgSrc: '',
   })
-  const [payLoad, setPayload] = useState<IPostingPayload>({
+  const [payLoad, setPayload] = useState<IPostPayload>({
     title: '',
-    imgFile: null,
+    file: null,
     price: 0,
-    district: '',
-    category: '',
-    name: '',
-    reservation: '',
+    districtName: '',
+    categoryName: '',
+    startTime: '',
+    endTime: '',
     content: '',
   })
 
@@ -26,8 +25,8 @@ const BoardForm = () => {
     const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
 
-    if (thisFile && thisFile.size > 1048576) {
-      alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
+    if (thisFile && thisFile.size > 10485760) {
+      alert('첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.')
       event.target.files = null
       return false
     }
@@ -53,29 +52,31 @@ const BoardForm = () => {
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  // const [selectedData, setSelectedData] = useState()
   // const [isOptionsValid, setIsOptionsValid] = useState(false)
   // useEffect(() => {
+  // 전체가 true일 경우?
   //   setIsOptionsValid(selectedData ? true : false)
   // }, [selectedData])
-  //셀렉트박스 선택 안돼있으면 제출 막기 추가
-  //    <Select ... />
-  //{!isValid && <p>You must choose a value</p>}
-  //<button disabled={!isValid}>Submit</button>
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log(event)
-    alert('등록됨!')
     // const formData = new FormData()
+    // 반복문으로 setPayload
+    // 선택된 select option 지역, 종목일 때 api 보내지 않고 alert('지역 / 종목 선택은 필수입니다.') 띄우기
+    // 시작시간, 끝나는 시간 동일할 경우 api보내지 않고 alert('예약 일시를 정확히 선택해주세요') 띄우기
+    // 이미지 첨부 안 했을 때 종목별 기본이미지 랜덤 추가
+
+    //{!isValid && <p>You must choose a value</p>} 아니면 이렇게..?
+    //<button disabled={!isValid}>Submit</button>
   }
 
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Section>
-        <div>제목</div>
+        <div>구장명</div>
         <div>
-          <input type="text" placeholder="제목을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
+          <input type="text" placeholder="양도할 구장명을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
         </div>
       </Section>
       <Section>
@@ -95,7 +96,7 @@ const BoardForm = () => {
           <span>여기에 사진을 올려주세요</span>
           {imgSrc.imgSrc && <img src={imgSrc.imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
-        {imgSrc && (
+        {imgSrc.imgSrc && (
           <div
             className="delete"
             onClick={() => {
@@ -143,21 +144,15 @@ const BoardForm = () => {
         </Detail>
       </Section>
       <Section>
-        <div>구장명</div>
-        <div>
-          <input type="text" placeholder="구장명을 입력해주세요" />
-        </div>
-      </Section>
-      <Section>
         <div>예약일시</div>
         <Reservation>
           <div className="date">
-            <input type="date" name="date" defaultValue={currentDate} min={currentDate} />
+            <input type="date" name="date" defaultValue={currentDate} min={currentDate} required />
           </div>
           <div className="time">
-            <input type="time" name="startTime" defaultValue={'00:00'} />
+            <input type="time" name="startTime" defaultValue={'00:00'} required />
             <span>부터</span>
-            <input type="time" name="endTime" defaultValue={'00:00'} />
+            <input type="time" name="endTime" defaultValue={'00:00'} required />
             <span>까지</span>
           </div>
         </Reservation>
@@ -165,7 +160,7 @@ const BoardForm = () => {
       <Section>
         <div>본문내용</div>
         <div>
-          <textarea placeholder="내용을 입력해주세요" />
+          <textarea placeholder="내용을 입력해주세요" required minLength={5} />
         </div>
       </Section>
       <button type="submit">등록하기</button>
