@@ -2,6 +2,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState } from 'react'
+import { FiClock } from 'react-icons/fi'
 
 const BoardForm = () => {
   const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
@@ -18,6 +19,9 @@ const BoardForm = () => {
     endTime: '',
     content: '',
   })
+  const [isStartChange, setIsStartChange] = useState<boolean>(false)
+  const [isEndChange, setIsEndChange] = useState<boolean>(false)
+  const [isDateChange, setIsDateChange] = useState<boolean>(false)
 
   const imgRef = useRef<HTMLInputElement>(null)
 
@@ -130,10 +134,7 @@ const BoardForm = () => {
       <Section>
         <div>세부사항</div>
         <Detail>
-          <select name="districtName" defaultValue="지역" required>
-            <option value="" disabled className="default">
-              지역
-            </option>
+          <select name="districtName" required>
             {districtOptions.map((item) => {
               return (
                 <option value={item} key={item}>
@@ -142,16 +143,14 @@ const BoardForm = () => {
               )
             })}
           </select>
-          <select name="categoryName" required defaultValue="종목">
-            <option value="종목" disabled className="default">
-              종목
-            </option>
-            {categoryOptions.map((item) => {
-              return (
-                <option value={item} key={item}>
-                  {item}
-                </option>
-              )
+          <select name="categoryName" required>
+            {categoryOptions.map((item, index) => {
+              if (index)
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
             })}
           </select>
         </Detail>
@@ -160,12 +159,40 @@ const BoardForm = () => {
         <div>예약일시</div>
         <Reservation>
           <div className="date">
-            <input type="date" name="date" defaultValue={currentDate} min={currentDate} required />
+            <input
+              type="date"
+              name="date"
+              defaultValue={currentDate}
+              min={currentDate}
+              required
+              onChange={() => {
+                setIsDateChange(true)
+              }}
+              className={isDateChange ? 'selected' : ''}
+            />
           </div>
           <div className="time">
-            <input type="time" name="start" defaultValue={'00:00'} required />
+            <input
+              type="time"
+              name="start"
+              defaultValue={'00:00'}
+              required
+              onChange={() => {
+                setIsStartChange(true)
+              }}
+              className={isStartChange ? 'selected' : ''}
+            />
             <span>부터</span>
-            <input type="time" name="end" defaultValue={'00:00'} required />
+            <input
+              type="time"
+              name="end"
+              defaultValue={'00:00'}
+              required
+              onChange={() => {
+                setIsEndChange(true)
+              }}
+              className={isEndChange ? 'selected' : ''}
+            />
             <span>까지</span>
           </div>
         </Reservation>
@@ -187,6 +214,11 @@ const Form = styled.form`
   gap: 16px;
   font-size: ${FONT.m};
   padding-top: 32px;
+
+  input,
+  textarea {
+    color: ${COLORS.font};
+  }
 
   button {
     width: 328px;
@@ -230,20 +262,6 @@ const Section = styled.section`
     padding: 10px;
   }
 
-  select {
-    width: 160px;
-    height: 32px;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    color: ${COLORS.gray40};
-
-    & option[value=''][disabled] {
-      display: none;
-    }
-  }
-
   .won {
     position: absolute;
     top: 39px;
@@ -267,6 +285,22 @@ const Section = styled.section`
 const Detail = styled.div`
   display: flex;
   gap: 10px;
+
+  select {
+    width: 160px;
+    height: 32px;
+    border: 1px solid ${COLORS.gray20};
+    border-radius: 8px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: ${COLORS.font};
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('select-arrow.png') no-repeat 95% 50%;
+    cursor: pointer;
+  }
 `
 
 const FileUpload = styled.label`
@@ -314,8 +348,36 @@ const Reservation = styled.div`
   .date {
     input {
       height: 32px;
+      padding-left: 35px;
+
+      &::-webkit-calendar-picker-indicator,
+      &::-webkit-inner-spin-button {
+        display: none;
+        appearance: none;
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        position: absolute;
+        opacity: 1;
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: url('calendar-light.png') no-repeat 90% 50%;
+        cursor: pointer;
+        right: -10px;
+        transform: translateX(-10px);
+        padding-left: 3000px;
+      }
+    }
+    .selected {
+      color: ${COLORS.font};
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('calendar-dark.png') no-repeat 90% 50%;
+      }
     }
   }
+
   .time {
     display: flex;
     justify-content: space-between;
@@ -324,6 +386,30 @@ const Reservation = styled.div`
     input {
       width: 128px;
       height: 32px;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-calendar-picker-indicator {
+        display: none;
+        appearance: none;
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock.png') no-repeat 98% 50%;
+        opacity: 1;
+        display: block;
+        width: 10px;
+        height: 10px;
+        cursor: pointer;
+      }
+    }
+
+    .selected {
+      background-color: ${COLORS.gray30};
+      color: white;
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock-fff.png') no-repeat 98% 50%;
+      }
     }
   }
 `
