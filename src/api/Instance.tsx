@@ -67,9 +67,7 @@ privateApi.interceptors.response.use(
         } else if (response.status === 404) {
           dispatch(DELETE_TOKEN())
           removeCookieToken()
-          console.log(
-            '토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.'
-          )
+          console.log('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
         }
       }
     }

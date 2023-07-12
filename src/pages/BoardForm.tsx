@@ -60,8 +60,13 @@ const BoardForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(event)
-    // const formData = new FormData()
+    console.log(event.target)
+    const formData = new FormData()
+    for (let i = 0; i < 8; i += 1) {
+      console.log(event.target[i])
+      // formData.append(event.target[i].name, event.target[i].value)
+    }
+
     // 반복문으로 setPayload
     // 선택된 select option 지역, 종목일 때 api 보내지 않고 alert('지역 / 종목 선택은 필수입니다.') 띄우기
     // 시작시간, 끝나는 시간 동일할 경우 api보내지 않고 alert('예약 일시를 정확히 선택해주세요') 띄우기
@@ -76,7 +81,15 @@ const BoardForm = () => {
       <Section>
         <div>구장명</div>
         <div>
-          <input type="text" placeholder="양도할 구장명을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
+          <input
+            type="text"
+            placeholder="양도할 구장명을 입력해주세요"
+            name="title"
+            required
+            minLength={2}
+            maxLength={20}
+            title="제목은 2~20자 이내로 입력해주세요"
+          />
         </div>
       </Section>
       <Section>
@@ -110,14 +123,14 @@ const BoardForm = () => {
       <Section>
         <div>가격</div>
         <div>
-          <input type="number" placeholder="50,000" min={0} required />
+          <input type="number" placeholder="50,000" min={0} required name="price" />
           <span className="won">원</span>
         </div>
       </Section>
       <Section>
         <div>세부사항</div>
         <Detail>
-          <select name="district" defaultValue="지역" required>
+          <select name="districtName" defaultValue="지역" required>
             <option value="" disabled className="default">
               지역
             </option>
@@ -129,7 +142,7 @@ const BoardForm = () => {
               )
             })}
           </select>
-          <select name="category" required defaultValue="종목">
+          <select name="categoryName" required defaultValue="종목">
             <option value="종목" disabled className="default">
               종목
             </option>
@@ -150,9 +163,9 @@ const BoardForm = () => {
             <input type="date" name="date" defaultValue={currentDate} min={currentDate} required />
           </div>
           <div className="time">
-            <input type="time" name="startTime" defaultValue={'00:00'} required />
+            <input type="time" name="start" defaultValue={'00:00'} required />
             <span>부터</span>
-            <input type="time" name="endTime" defaultValue={'00:00'} required />
+            <input type="time" name="end" defaultValue={'00:00'} required />
             <span>까지</span>
           </div>
         </Reservation>
@@ -160,7 +173,7 @@ const BoardForm = () => {
       <Section>
         <div>본문내용</div>
         <div>
-          <textarea placeholder="내용을 입력해주세요" required minLength={5} />
+          <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
         </div>
       </Section>
       <button type="submit">등록하기</button>
