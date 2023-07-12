@@ -1,8 +1,4 @@
-import {
-  SearchIcon,
-  SearchToggleIcon,
-  CalendarIcon,
-} from '@src/constants/icons'
+import { SearchIcon, SearchToggleIcon, CalendarIcon } from '@src/constants/icons'
 import { categoryOptions, districtOptions } from '@src/constants/options'
 import theme from '@src/constants/theme'
 import { FONT, COLORS } from '@src/globalStyles'
@@ -32,9 +28,7 @@ const SearchForm = () => {
   const [districtValue, setDistrictValue] = useState<string[]>([])
 
   // start,end TimeValues state
-  const [startTimeValue, setStartTimeValue] = useState<string | undefined>(
-    '00:00'
-  )
+  const [startTimeValue, setStartTimeValue] = useState<string | undefined>('00:00')
   const [endTimeValue, setEndTimeValue] = useState<string | undefined>('00:00')
 
   // DateValue state
@@ -65,10 +59,7 @@ const SearchForm = () => {
   const districtOpenFn = () => {
     setDistrictOpen(true)
   }
-  const districtValueFn = (
-    element: React.MouseEvent<HTMLButtonElement>,
-    value: string
-  ) => {
+  const districtValueFn = (element: React.MouseEvent<HTMLButtonElement>, value: string) => {
     const idx = districtValue.indexOf(value)
     const target = element.target as HTMLButtonElement
 
@@ -89,10 +80,7 @@ const SearchForm = () => {
   }
 
   // time input change function
-  const timeChangeFn = (
-    element: React.ChangeEvent<HTMLInputElement>,
-    type: string
-  ) => {
+  const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
     if (!timeOpen) setTimeOpen(true)
 
     if (type === 'start') {
@@ -113,15 +101,8 @@ const SearchForm = () => {
         {searchStart ? (
           <SearchInform>
             <StadiumForm>
-              <p className={InputFocus ? 'focused' : ''}>
-                찾는 구장을 검색해주세요
-              </p>
-              <input
-                type="text"
-                placeholder="보라매공원"
-                onFocus={inputFocusFn}
-                onBlur={inputBlurFn}
-              />
+              <p className={InputFocus ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
+              <input type="text" placeholder="보라매공원" onFocus={inputFocusFn} onBlur={inputBlurFn} />
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
@@ -170,10 +151,7 @@ const SearchForm = () => {
               </TimeForm>
             </FlexContainer>
             <DistrictForm>
-              <p
-                onClick={districtOpenFn}
-                className={districtOpen ? 'focused' : ''}
-              >
+              <p onClick={districtOpenFn} className={districtOpen ? 'focused' : ''}>
                 지역을 선택해주세요
               </p>
               {districtOpen && (
@@ -391,15 +369,12 @@ const DateForm = styled.div<{ datechange: string }>`
     .react-datepicker-ignore-onclickoutside,
     input[type='text'] {
       padding: 8px 12px;
-      border: 1px solid
-        ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
+      border: 1px solid ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
       border-radius: 10px;
       font-size: 13px;
-      color: ${(props) =>
-    props.datechange === 'true' ? '#fff' : COLORS.gray40};
+      color: ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray40)};
       width: 80px;
-      background: ${(props) =>
-    props.datechange === 'true' ? COLORS.green : '#fff'};
+      background: ${(props) => (props.datechange === 'true' ? COLORS.green : '#fff')};
     }
   }
 
@@ -588,8 +563,7 @@ const TimeForm = styled.div<{ timeopen: string }>`
     span {
       padding: 0 3px;
       font-size: 10px;
-      color: ${(props) =>
-    props.timeopen === 'true' ? COLORS.green : COLORS.gray40};
+      color: ${(props) => (props.timeopen === 'true' ? COLORS.green : COLORS.gray40)};
     }
 
     .medium {
@@ -601,13 +575,11 @@ const TimeForm = styled.div<{ timeopen: string }>`
       height: 27px;
       line-height: 27px;
       width: 63px;
-      background: ${(props) =>
-    props.timeopen === 'true' ? COLORS.green : 'rgba(0,0,0,0)'};
+      background: ${(props) => (props.timeopen === 'true' ? COLORS.green : 'rgba(0,0,0,0)')};
       text-align: center;
       border-radius: 10px;
       color: ${(props) => (props.timeopen === 'true' ? '#fff' : COLORS.gray40)};
-      border: 1px solid
-        ${(props) => (props.timeopen === 'true' ? '#fff' : '#d9d9d9')};
+      border: 1px solid ${(props) => (props.timeopen === 'true' ? '#fff' : '#d9d9d9')};
       font-size: 12px;
       letter-spacing: 1.5px;
     }
@@ -686,7 +658,7 @@ const FlexContainer = styled.div`
 
   & > div:last-child {
     flex-grow: 0;
-    max-height: 60px;
+    max-height: 67px;
   }
 
   @media ${({ theme }) => theme.device.tablet} {

@@ -17,7 +17,6 @@ interface Props {
   data: data[]
 }
 
-// eslint-disable-next-line react/prop-types
 const Board = ({ data }: Props) => {
   return (
     <ThemeProvider theme={theme}>
