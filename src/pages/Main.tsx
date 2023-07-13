@@ -1,15 +1,9 @@
 import { districtOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { FiSearch } from 'react-icons/fi'
 import { ReactElement, useState } from 'react'
-import {
-  BadmintonIcon,
-  BasketballIcon,
-  FutsalIcon,
-  SoccerIcon,
-  TennisIcon,
-} from '@src/constants/icons'
+import { BadmintonIcon, BasketballIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
+import SearchForm from '@src/components/SearchForm'
 
 interface ICategories {
   category: string
@@ -52,30 +46,12 @@ const Main = () => {
 
   return (
     <Container>
-      <SearchSection>
-        <div className="searchbox">
-          <FiSearch className="search-icon" />
-          <div className="search-input">
-            <input type="search" placeholder="어떤 구장을 찾으세요?" />
-            <div className="option">
-              <span>어디든지</span>
-              <span>원하는 시간</span>
-              <span>가격</span>
-            </div>
-          </div>
-          <img src="/search_option.svg" alt="검색 옵션" />
-        </div>
-      </SearchSection>
+      <SearchForm />
       <ListSection>
         <Category>
           {categories.map((item) => {
             return (
               <div key={item.category} className="icon">
-                {/* <img
-                  src={`/${item.category}.svg`}
-                  alt={item.name}
-                  className={isActive ? 'active' : ''}
-                /> */}
                 {item.icon}
                 <span>{item.name}</span>
               </div>
@@ -120,61 +96,11 @@ const Container = styled.main`
   margin: auto;
 `
 
-const SearchSection = styled.section`
-  .searchbox {
-    width: 320px;
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 16px;
-    box-shadow: 0px 4px 4px 0px #00000040;
-    padding: 4px 16px;
-    box-sizing: border-box;
-    margin: 16px;
-
-    .search-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
-
-    .search-input {
-      display: flex;
-      flex-direction: column;
-      gap: 13px;
-
-      .option {
-        display: flex;
-        gap: 20px;
-        font-size: 12px;
-        color: #777;
-        cursor: pointer;
-      }
-
-      input {
-        height: 16px;
-        font-size: ${FONT['m-lg']};
-        color: #000000b2;
-        border: none;
-
-        ::placeholder {
-          color: black;
-        }
-      }
-    }
-
-    img {
-      cursor: pointer;
-    }
-  }
-`
-
 const ListSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
 `
 const Category = styled.div`
   height: 70px;
