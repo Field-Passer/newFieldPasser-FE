@@ -22,7 +22,7 @@ export const privateApi = axios.create({
 
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config: any) {
+  async function (config) {
     // const access_token = store.getState().accessToken.accessToken
     const refresh_token = getCookieToken()
 

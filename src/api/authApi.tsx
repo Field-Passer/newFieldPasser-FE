@@ -36,6 +36,8 @@ export const userLogout = async () => {
     })
     return {
       status: response.status,
+      result: response.data.result,
+      message: response.data.message,
     }
   } catch (error) {
     return {
@@ -70,11 +72,6 @@ export async function checkTokenExpire() {
     }
   }
 }
-
-// interface PostRtType {
-//   status: number
-//   tokens: object | string
-// }
 
 // refreshToken 재발급
 export async function postRefereshToken() {
