@@ -3,20 +3,21 @@ import { Cookies } from 'react-cookie'
 const cookies = new Cookies()
 
 export const setRefreshToken = (refreshToken: string) => {
-  //const today = new Date()
-  //const expireDate = today.setDate(today.getDate() + 7)
+  const today = new Date()
+  const expireDate = today.setDate(today.getTime() + 90 * 2 * 10000) // 밀리초 // 15분
 
-  return cookies.set('refresh_token', refreshToken, {
-    sameSite: 'strict',
-    path: '/',
-    //expires: new Date(expireDate),
+  return cookies.set('refresh-token', refreshToken, {
+    sameSite: 'none',
+    secure: true,
+    expires: new Date(expireDate),
+    maxAge: 900, // 초 // 15분
   })
 }
 
 export const getCookieToken = () => {
-  return cookies.get('refresh_token')
+  return cookies.get('refresh-token')
 }
 
 export const removeCookieToken = () => {
-  return cookies.remove('refresh_token', { sameSite: 'strict', path: '/' })
+  return cookies.remove('refresh-token', { sameSite: 'strict', path: '/' })
 }
