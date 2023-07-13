@@ -196,7 +196,7 @@ const SideContainer = styled.div`
   padding: 32px 0;
   border-right: 1px solid ${COLORS.gray20};
   font-size: ${FONT.m};
-  z-index: 10;
+  z-index: 1000;
   background-color: white;
   left: -150%;
   transition: 0.3s ease;
