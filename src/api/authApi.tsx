@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
-import { getCookieToken } from '@src/storage/Cookie'
 
 // 로그인
 export const userLogin = async ({ userEmail, userPw }: LoginType) => {
@@ -30,7 +29,6 @@ export const userLogin = async ({ userEmail, userPw }: LoginType) => {
 // 로그아웃
 export const userLogout = async () => {
   const access_token = store.getState().accessToken.accessToken
-  console.log('로그아웃 요청')
   if (access_token == null) return console.log('로그아웃 요청에서 at=null')
   try {
     const response = await privateApi('/auth/logout', {
@@ -65,7 +63,7 @@ export async function checkTokenExpire() {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error)
+      //console.log(error)
       return {
         status: error.response?.status,
       }
@@ -81,7 +79,6 @@ export async function checkTokenExpire() {
 // refreshToken 재발급
 export async function postRefereshToken() {
   const access_token = store.getState().accessToken.accessToken
-  console.log(access_token)
   try {
     const response = await publicApi('/auth/reissue', {
       withCredentials: true,
@@ -96,7 +93,6 @@ export async function postRefereshToken() {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error)
       return {
         status: error.response?.status,
       }
