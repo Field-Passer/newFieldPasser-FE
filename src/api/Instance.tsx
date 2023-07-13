@@ -36,6 +36,7 @@ privateApi.interceptors.request.use(
     // if (atExpire > curExpire) {
     if (status === 200) {
       // console.log('at검사 응답 200일때')
+      config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
     } else {
       // console.log('at검사 응답 400 or 401 일때')
       if (refresh_token) {
