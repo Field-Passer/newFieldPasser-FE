@@ -1,57 +1,99 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { FiClock } from 'react-icons/fi'
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc] = useState<string | null>(null)
+  const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
+    imgFile: null,
+    imgSrc: '',
+  })
+  const [payLoad, setPayload] = useState<IPostPayload>({
+    title: '',
+    file: null,
+    price: 0,
+    districtName: '',
+    categoryName: '',
+    startTime: '',
+    endTime: '',
+    content: '',
+  })
+  const [isStartChange, setIsStartChange] = useState<boolean>(false)
+  const [isEndChange, setIsEndChange] = useState<boolean>(false)
+  const [isDateChange, setIsDateChange] = useState<boolean>(false)
+
+  const imgRef = useRef<HTMLInputElement>(null)
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 함수실행 전 단계에서 thisFile true인지 검사해도?
     const thisFile = event.target.files && event.target.files[0]
     const fileReader = new FileReader()
 
-    if (thisFile && thisFile.size > 1048576) {
-      alert('첨부파일 사이즈는 1MB 이내로만 등록 가능합니다.')
+    if (thisFile && thisFile.size > 10485760) {
+      alert('첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.')
       event.target.files = null
       return false
     }
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
-      // promise 안 쓰면 동작 안됨...
+      // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
+      // 파일은 삭제버튼 동작을 위해 state에 담아서 전송하기
       fileReader.onload = () => {
-        setImgSrc(fileReader.result + '')
+        setImgSrc({
+          imgFile: thisFile,
+          imgSrc: fileReader.result + '',
+        })
         resolve()
       }
     })
   }
   const removeImg = () => {
-    console.log('이미지 삭제')
+    setImgSrc({
+      imgFile: null,
+      imgSrc: '',
+    })
   }
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  // const [selectedData, setSelectedData] = useState()
   // const [isOptionsValid, setIsOptionsValid] = useState(false)
   // useEffect(() => {
+  // 전체가 true일 경우?
   //   setIsOptionsValid(selectedData ? true : false)
   // }, [selectedData])
-  //셀렉트박스 선택 안돼있으면 제출 막기 추가
-  //    <Select ... />
-  //{!isValid && <p>You must choose a value</p>}
-  //<button disabled={!isValid}>Submit</button>
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    alert('등록됨!')
+    console.log(event.target)
+    const formData = new FormData()
+    for (let i = 0; i < 8; i += 1) {
+      console.log(event.target[i])
+      // formData.append(event.target[i].name, event.target[i].value)
+    }
+
+    // 반복문으로 setPayload
+    // 선택된 select option 지역, 종목일 때 api 보내지 않고 alert('지역 / 종목 선택은 필수입니다.') 띄우기
+    // 시작시간, 끝나는 시간 동일할 경우 api보내지 않고 alert('예약 일시를 정확히 선택해주세요') 띄우기
+    // 이미지 첨부 안 했을 때 종목별 기본이미지 랜덤 추가
+
+    //{!isValid && <p>You must choose a value</p>} 아니면 이렇게..?
+    //<button disabled={!isValid}>Submit</button>
   }
 
   return (
     <Form onSubmit={(event) => handleSubmit(event)}>
       <Section>
-        <div>제목</div>
+        <div>구장명</div>
         <div>
-          <input type="text" placeholder="제목을 입력해주세요" required minLength={2} maxLength={20} title="제목은 2~20자 이내로 입력해주세요" />
+          <input
+            type="text"
+            placeholder="양도할 구장명을 입력해주세요"
+            name="title"
+            required
+            minLength={2}
+            maxLength={20}
+            title="제목은 2~20자 이내로 입력해주세요"
+          />
         </div>
       </Section>
       <Section>
@@ -61,6 +103,7 @@ const BoardForm = () => {
             id="file"
             type="file"
             name="file"
+            ref={imgRef}
             accept="image/gif,image/jpeg,image/png"
             onChange={(event) => {
               previewImg(event)
@@ -68,9 +111,9 @@ const BoardForm = () => {
           />
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
-          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+          {imgSrc.imgSrc && <img src={imgSrc.imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
-        {imgSrc && (
+        {imgSrc.imgSrc && (
           <div
             className="delete"
             onClick={() => {
@@ -84,17 +127,14 @@ const BoardForm = () => {
       <Section>
         <div>가격</div>
         <div>
-          <input type="number" placeholder="50,000" min={0} required />
+          <input type="number" placeholder="50,000" min={0} required name="price" />
           <span className="won">원</span>
         </div>
       </Section>
       <Section>
         <div>세부사항</div>
         <Detail>
-          <select name="district" defaultValue="지역" required>
-            <option value="" disabled className="default">
-              지역
-            </option>
+          <select name="districtName" required>
             {districtOptions.map((item) => {
               return (
                 <option value={item} key={item}>
@@ -103,36 +143,56 @@ const BoardForm = () => {
               )
             })}
           </select>
-          <select name="category" required defaultValue="종목">
-            <option value="종목" disabled className="default">
-              종목
-            </option>
-            {categoryOptions.map((item) => {
-              return (
-                <option value={item} key={item}>
-                  {item}
-                </option>
-              )
+          <select name="categoryName" required>
+            {categoryOptions.map((item, index) => {
+              if (index)
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
             })}
           </select>
         </Detail>
       </Section>
       <Section>
-        <div>구장명</div>
-        <div>
-          <input type="text" placeholder="구장명을 입력해주세요" />
-        </div>
-      </Section>
-      <Section>
         <div>예약일시</div>
         <Reservation>
           <div className="date">
-            <input type="date" name="date" defaultValue={currentDate} min={currentDate} />
+            <input
+              type="date"
+              name="date"
+              defaultValue={currentDate}
+              min={currentDate}
+              required
+              onChange={() => {
+                setIsDateChange(true)
+              }}
+              className={isDateChange ? 'selected' : ''}
+            />
           </div>
           <div className="time">
-            <input type="time" name="startTime" defaultValue={'00:00'} />
+            <input
+              type="time"
+              name="start"
+              defaultValue={'00:00'}
+              required
+              onChange={() => {
+                setIsStartChange(true)
+              }}
+              className={isStartChange ? 'selected' : ''}
+            />
             <span>부터</span>
-            <input type="time" name="endTime" defaultValue={'00:00'} />
+            <input
+              type="time"
+              name="end"
+              defaultValue={'00:00'}
+              required
+              onChange={() => {
+                setIsEndChange(true)
+              }}
+              className={isEndChange ? 'selected' : ''}
+            />
             <span>까지</span>
           </div>
         </Reservation>
@@ -140,7 +200,7 @@ const BoardForm = () => {
       <Section>
         <div>본문내용</div>
         <div>
-          <textarea placeholder="내용을 입력해주세요" />
+          <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
         </div>
       </Section>
       <button type="submit">등록하기</button>
@@ -154,6 +214,11 @@ const Form = styled.form`
   gap: 16px;
   font-size: ${FONT.m};
   padding-top: 32px;
+
+  input,
+  textarea {
+    color: ${COLORS.font};
+  }
 
   button {
     width: 328px;
@@ -197,20 +262,6 @@ const Section = styled.section`
     padding: 10px;
   }
 
-  select {
-    width: 160px;
-    height: 32px;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    color: ${COLORS.gray40};
-
-    & option[value=''][disabled] {
-      display: none;
-    }
-  }
-
   .won {
     position: absolute;
     top: 39px;
@@ -234,6 +285,22 @@ const Section = styled.section`
 const Detail = styled.div`
   display: flex;
   gap: 10px;
+
+  select {
+    width: 160px;
+    height: 32px;
+    border: 1px solid ${COLORS.gray20};
+    border-radius: 8px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: ${COLORS.font};
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('select-arrow.png') no-repeat 95% 50%;
+    cursor: pointer;
+  }
 `
 
 const FileUpload = styled.label`
@@ -281,8 +348,36 @@ const Reservation = styled.div`
   .date {
     input {
       height: 32px;
+      padding-left: 35px;
+
+      &::-webkit-calendar-picker-indicator,
+      &::-webkit-inner-spin-button {
+        display: none;
+        appearance: none;
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        position: absolute;
+        opacity: 1;
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: url('calendar-light.png') no-repeat 90% 50%;
+        cursor: pointer;
+        right: -10px;
+        transform: translateX(-10px);
+        padding-left: 3000px;
+      }
+    }
+    .selected {
+      color: ${COLORS.font};
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('calendar-dark.png') no-repeat 90% 50%;
+      }
     }
   }
+
   .time {
     display: flex;
     justify-content: space-between;
@@ -291,6 +386,30 @@ const Reservation = styled.div`
     input {
       width: 128px;
       height: 32px;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-calendar-picker-indicator {
+        display: none;
+        appearance: none;
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock.png') no-repeat 98% 50%;
+        opacity: 1;
+        display: block;
+        width: 10px;
+        height: 10px;
+        cursor: pointer;
+      }
+    }
+
+    .selected {
+      background-color: ${COLORS.gray30};
+      color: white;
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock-fff.png') no-repeat 98% 50%;
+      }
     }
   }
 `

@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+//import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 
 const Join = () => {
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   return (
     <Container>
@@ -15,15 +15,9 @@ const Join = () => {
         <label>이메일</label>
         <input type="text" placeholder="abc@gmail.com" />
         <label>비밀번호</label>
-        <input
-          type="password"
-          placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-        />
+        <input type="password" placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
         <label>비밀번호</label>
-        <input
-          type="password"
-          placeholder="영문, 숫자, 특수문자 포함 8자 이상"
-        />
+        <input type="password" placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
         <label>닉네임</label>
         <input type="password" placeholder="김필드필드" />
       </div>
@@ -34,12 +28,8 @@ const Join = () => {
 }
 
 const Container = styled.div`
-  // reset-css 적용되면 지우기
   * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    color: ${COLORS.font};
   }
 
   @media screen and (max-width: 360px) {

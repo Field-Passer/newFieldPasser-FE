@@ -7,6 +7,9 @@ import store from '@src/store/config'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 const { dispatch } = store
 
+// 전역에 쿠키 전송 허용 설정
+axios.defaults.withCredentials = true
+
 // 토큰이 필요 없는 api 요청을 보내는 axios 인스턴스
 export const publicApi = axios.create({
   baseURL: BASE_URL,
@@ -19,55 +22,27 @@ export const privateApi = axios.create({
 
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config: any) {
-    const access_token = store.getState().accessToken.accessToken
+  async function (config) {
+    // const access_token = store.getState().accessToken.accessToken
     const refresh_token = getCookieToken()
 
     const { status }: any = await checkTokenExpire()
-    console.log('checkTokenExpire :', status)
+    // console.log('checkTokenExpire :', status)
 
-    const atExpire = store.getState().accessToken.expireTime
-    const curExpire = new Date().getTime()
-    console.log(atExpire, curExpire)
+    // const atExpire = store.getState().accessToken.expireTime
+    // const curExpire = new Date().getTime()
+    // console.log(atExpire, curExpire)
 
-    // config.headers['Authorization'] = `Bearer ${access_token}`
-
-    if (atExpire > curExpire) {
-      // if (status === 200) {
-      console.log('at검사 응답 200일때')
-      // config.headers['Authorization'] = `Bearer ${access_token}`
+    // if (atExpire > curExpire) {
+    if (status === 200) {
+      // console.log('at검사 응답 200일때')
+      config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
     } else {
-      console.log('at검사 응답 400 or 401 일때')
+      // console.log('at검사 응답 400 or 401 일때')
       if (refresh_token) {
-        console.log('rt로 재발급 시도')
-        console.log('액세스 토큰:', access_token)
-        console.log('리프레시 토큰:', refresh_token)
-
-        // fetch
-        // await fetch('https://field-passer.store/auth/reissue', {
-        //   method: 'POST',
-        //   credentials: 'include',
-        //   headers: {
-        //     Authorization: `Bearer ${access_token}`,
-        //     Cookie: `refresh-token=${refresh_token}`,
-        //   },
-        // }).then((resp) => console.log(resp))
-
-        // const data = null
-        // publicApi
-        //   .post('/auth/reissue', data, {
-        //     withCredentials: true,
-        //     headers: {
-        //       Authorization: `Bearer ${access_token}`,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     // config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
-        //     console.log(response)
-        //   })
-        //   .catch((error) => {
-        //     console.log(error)
-        //   })
+        // console.log('rt로 재발급 시도')
+        // console.log('액세스 토큰:', access_token)
+        // console.log('리프레시 토큰:', refresh_token)
 
         const { code, tokens }: any = await postRefereshToken()
         if (code === 200) {
@@ -75,24 +50,23 @@ privateApi.interceptors.request.use(
           dispatch(SET_TOKEN(tokens.accessToken))
           setRefreshToken(tokens.refreshToken)
           config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
-          console.log('rt 재발급 완료')
+          // console.log('rt 재발급 완료')
         } else {
-          // removeCookieToken()
-          // dispatch(DELETE_TOKEN())
+          removeCookieToken()
+          dispatch(DELETE_TOKEN())
           // console.log('만료된 토큰으로 재발급 실패, 로그아웃')
         }
       } else {
-        console.log('rt 없어서 브라우저에서 강제 로그아웃')
+        // console.log('rt 없어서 브라우저에서 강제 로그아웃')
         removeCookieToken()
         dispatch(DELETE_TOKEN())
         alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
       }
     }
-    // return config
-    return
+    return config
   },
   function (error) {
-    console.log(error)
+    // console.log(error)
     return Promise.reject(error)
   }
 )

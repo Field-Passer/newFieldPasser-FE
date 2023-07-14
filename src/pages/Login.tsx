@@ -5,11 +5,11 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { useState } from 'react'
 import { SET_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch } from 'react-redux'
-import { setRefreshToken } from '@src/storage/Cookie'
+import { removeCookieToken, setRefreshToken } from '@src/storage/Cookie'
 import { userLogin } from '@src/api/authApi'
 
 // 첫 로그인 요청은 id(email), pw 필요
-// 새 at 재발급 요청 시 at, rt 둘 다 필요 (at 만료되서 UNAUTHORIZED(401) 돌아오면)
+// 새 at 재발급 요청 시 rt만 필요? 포스트맨에서 at도 필요한듯??? (at 만료되서 UNAUTHORIZED(401) 돌아오면)
 // 로그아웃 요청 시 유효한 at 필요 (rt는 필요없음 쿠키스토리지에서 삭제만ㄱ)
 
 const Login = () => {
@@ -31,15 +31,15 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, result, message, tokens } = await userLogin({
+    const { status, tokens } = await userLogin({
       userEmail,
       userPw,
     })
-    //console.log(status, result, message, tokens)
     if (status === 200) {
+      removeCookieToken()
       dispatch(SET_TOKEN(tokens.accessToken))
       setRefreshToken(tokens.refreshToken)
-      console.log('로그인 성공!')
+      console.log('로그인함', new Date())
       return navigate('/')
     }
   }
