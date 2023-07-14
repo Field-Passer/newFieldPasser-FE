@@ -2,13 +2,9 @@ import Inner from '@src/components/Inner'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
-import {
-  memberAccountList,
-  dealManagementList,
-  useEctlist,
-} from '@src/constants/helpList'
+import { memberAccountList, dealManagementList, useEctlist } from '@src/constants/helpList'
 import Ask from '@src/components/Ask'
-import { Mobile, Tablet } from '@src/hooks/useScreenHook'
+import { Mobile, PC } from '@src/hooks/useScreenHook'
 import MobileMenu from '@src/components/MobileMenu'
 import Title from '@src/components/Title'
 
@@ -26,7 +22,7 @@ const Help = () => {
   }
   return (
     <>
-      <Tablet>
+      <PC>
         <Inner padding="32px 16px">
           <Title screen="pc" name="자주 묻는 질문" />
           <MenuStyle>
@@ -45,12 +41,7 @@ const Help = () => {
           </MenuStyle>
           <AskListStyle screen="pc">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="pc"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="pc" />
             ))}
           </AskListStyle>
           <OtherAskStyle>
@@ -58,23 +49,14 @@ const Help = () => {
             <button>등록하기</button>
           </OtherAskStyle>
         </Inner>
-      </Tablet>
+      </PC>
       <Mobile>
         <Inner width="100%">
           <Title screen="mobile" name="자주 묻는 질문" />
-          <MobileMenu
-            menuLists={menuLists}
-            activeMenu={activeMenu}
-            setActiveMenu={setActiveMenu}
-          />
+          <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           <AskListStyle screen="mobile">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="mobile"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="mobile" />
             ))}
           </AskListStyle>
           <OtherAskStyle>
