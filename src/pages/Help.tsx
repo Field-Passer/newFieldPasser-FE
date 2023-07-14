@@ -2,11 +2,7 @@ import Inner from '@src/components/Inner'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
-import {
-  memberAccountList,
-  dealManagementList,
-  useEctlist,
-} from '@src/constants/helpList'
+import { memberAccountList, dealManagementList, useEctlist } from '@src/constants/helpList'
 import Ask from '@src/components/Ask'
 import { Mobile, Tablet } from '@src/hooks/useScreenHook'
 import MobileMenu from '@src/components/MobileMenu'
@@ -45,12 +41,7 @@ const Help = () => {
           </MenuStyle>
           <AskListStyle screen="pc">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="pc"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="pc" />
             ))}
           </AskListStyle>
           <OtherAskStyle>
@@ -62,19 +53,10 @@ const Help = () => {
       <Mobile>
         <Inner width="100%">
           <Title screen="mobile" name="자주 묻는 질문" />
-          <MobileMenu
-            menuLists={menuLists}
-            activeMenu={activeMenu}
-            setActiveMenu={setActiveMenu}
-          />
+          <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           <AskListStyle screen="mobile">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="mobile"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="mobile" />
             ))}
           </AskListStyle>
           <OtherAskStyle>
