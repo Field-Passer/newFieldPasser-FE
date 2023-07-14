@@ -32,13 +32,15 @@ const Board = ({ data }: Props) => {
                 <p className="stadium">{list.stadium}</p>
                 <p className="title">{list.title}</p>
                 <p className="price">{list.price.toLocaleString()} 원</p>
-                <p className="date">{list.date}</p>
-                <p className="view_like">
-                  <span>조회수</span>
-                  <span>{list.view}</span>
-                  <span>하트</span>
-                  <span>{list.like}</span>
-                </p>
+                <div className="date">
+                  <span>{list.date} </span>
+                  <div className="view_like">
+                    <span>조회수</span>
+                    <span>{list.view}</span>
+                    <span>하트</span>
+                    <span>{list.like}</span>
+                  </div>
+                </div>
               </div>
             </li>
           ))}
@@ -118,6 +120,8 @@ const BoardContainer = styled.div`
         }
 
         .date {
+          display: flex;
+          justify-content: space-between;
           font-size: ${FONT.m};
           font-weight: 400;
         }
