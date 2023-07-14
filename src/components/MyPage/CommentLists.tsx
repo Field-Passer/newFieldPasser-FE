@@ -1,7 +1,11 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
 
-const CommentLists = () => {
+interface IProps {
+  screen: string
+}
+
+const CommentLists = ({ screen }: IProps) => {
   const comments = [
     {
       commentId: 0,
@@ -40,12 +44,12 @@ const CommentLists = () => {
     },
   ]
   return (
-    <Container>
+    <Container screen={screen}>
       {comments.map((comment) => (
         <CommentBox key={comment.commentId}>
-          <BoardTitle>{comment.boardTitle}</BoardTitle>
-          <Content>{comment.content}</Content>
-          <Des>
+          <BoardTitle screen={screen}>{comment.boardTitle}</BoardTitle>
+          <Content screen={screen}>{comment.content}</Content>
+          <Des screen={screen}>
             <div>
               <img src="/calendar.svg" alt="달력" />
               <span>{comment.date}</span>
@@ -63,10 +67,10 @@ const CommentLists = () => {
 
 export default CommentLists
 
-const Container = styled.div`
+const Container = styled.div<IProps>`
   display: flex;
   flex-direction: column;
-  font-size: ${FONT.m};
+  font-size: ${({ screen }) => (screen === 'pc' ? FONT.pc : FONT.m)};
 `
 
 const CommentBox = styled.div`
@@ -76,16 +80,16 @@ const CommentBox = styled.div`
   border-bottom: 1px solid ${COLORS.gray10};
   padding: 16px;
 `
-const BoardTitle = styled.span`
-  font-size: 12px;
+const BoardTitle = styled.span<IProps>`
+  font-size: ${({ screen }) => (screen === 'pc' ? FONT.pc : FONT.m)};
   color: ${COLORS.gray40};
 `
 
-const Content = styled.span`
-  font-size: ${FONT.m};
+const Content = styled.span<IProps>`
+  font-size: ${({ screen }) => (screen === 'pc' ? FONT.pc : FONT.m)};
 `
 
-const Des = styled.div`
+const Des = styled.div<IProps>`
   display: flex;
   gap: 11px;
   div {
@@ -95,7 +99,7 @@ const Des = styled.div`
     span {
       color: ${COLORS.gray40};
       font-weight: 400;
-      font-size: 12px;
+      font-size: ${({ screen }) => (screen === 'pc' ? FONT.m : '12px ')};
     }
   }
 `

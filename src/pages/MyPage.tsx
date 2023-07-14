@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import Inner from '@src/components/Inner'
 import PCBoardCard from '@src/components/MyPage/PCBoardCard'
+import { useNavigate } from 'react-router'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
@@ -13,12 +14,14 @@ const MyPage = () => {
       const num = Math.floor(Math.random() * total + 1)
       setRandom(num)
     }
-    randomNumFn(4)
+    randomNumFn(3)
   })
 
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
   })
+
+  const navigate = useNavigate()
 
   return (
     <div>
@@ -66,15 +69,15 @@ const MyPage = () => {
           <p>안녕하세요</p>
         </NameStyle>
         <MyMenuStyle>
-          <li>
+          <li onClick={() => navigate('/mypage_detail', { state: 0 })}>
             <span>2</span>
             <span>양도</span>
           </li>
-          <li>
+          <li onClick={() => navigate('/mypage_detail', { state: 1 })}>
             <span>1</span>
             <span>좋아요</span>
           </li>
-          <li>
+          <li onClick={() => navigate('/mypage_detail', { state: 2 })}>
             <span>3</span>
             <span>댓글</span>
           </li>
@@ -145,6 +148,7 @@ const MyMenuStyle = styled.ul`
     align-items: center;
     gap: 12px;
     padding: 16px 45px;
+    cursor: pointer;
     span:first-child {
       font-weight: 700;
     }

@@ -50,7 +50,6 @@ interface StyleProps {
 
 const CardStyle = styled.div<StyleProps>`
   width: 100%;
-  height: 50px;
   display: flex;
   gap: 16px;
   font-size: ${FONT.m};
