@@ -8,20 +8,9 @@ interface IInner {
   padding?: string
   children: React.ReactNode
 }
-const Inner = ({
-  width = '834px',
-  height = '',
-  display = '',
-  padding = '',
-  children,
-}: IInner) => {
+const Inner = ({ width = '834px', height = '', display = '', padding = '', children }: IInner) => {
   return (
-    <InnerStyle
-      width={width}
-      height={height}
-      display={display}
-      padding={padding}
-    >
+    <InnerStyle width={width} height={height} display={display} padding={padding}>
       {children}
     </InnerStyle>
   )

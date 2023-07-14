@@ -1,7 +1,10 @@
-import { COLORS } from '@src/globalStyles'
+import { COLORS, FONT } from '@src/globalStyles'
 import { Mobile } from '@src/hooks/useScreenHook'
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
+import Inner from '@src/components/Inner'
+import PCBoardCard from '@src/components/MyPage/PCBoardCard'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
@@ -12,8 +15,49 @@ const MyPage = () => {
     }
     randomNumFn(4)
   })
+
+  const isPC = useMediaQuery({
+    query: '(min-width: 450px)',
+  })
+
   return (
     <div>
+      {isPC && (
+        <>
+          <PCNameContainer random={random}>
+            <Inner>
+              <PCName>
+                <p>
+                  <span>김필드</span> 님
+                </p>
+                <p>안녕하세요</p>
+              </PCName>
+            </Inner>
+          </PCNameContainer>
+          <Inner>
+            <PCBoardContainer>
+              <Title>작성 글 목록</Title>
+              <ul>
+                <li>
+                  <PCBoardCard title="양도" />
+                </li>
+                <li>
+                  <PCBoardCard title="좋아요" />
+                </li>
+                <li>
+                  <PCBoardCard title="댓글" />
+                </li>
+              </ul>
+            </PCBoardContainer>
+            <PCList>
+              <li>회원 정보 변경</li>
+              <li>고객센터</li>
+              <li>로그아웃</li>
+              <li>현재 버전 1.02</li>
+            </PCList>
+          </Inner>
+        </>
+      )}
       <Mobile>
         <NameStyle random={random}>
           <p>
@@ -127,5 +171,53 @@ const ListStlye = styled.ul`
       background: ${COLORS.green};
       margin-right: 8px;
     }
+  }
+`
+
+const PCNameContainer = styled.div<IStyleProps>`
+  background-image: ${(props) => `url(/my_page_banner/pc_${props.random}.jpg)`};
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 300px;
+  position: relative;
+`
+
+const PCName = styled.div`
+  position: absolute;
+  padding: 16px;
+  bottom: 30px;
+  font-size: 32px;
+  color: white;
+  span {
+    font-weight: 700;
+  }
+`
+
+const PCBoardContainer = styled.div`
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  ul {
+    display: flex;
+    gap: 15px;
+  }
+`
+
+const Title = styled.h2`
+  font-size: ${FONT['pc-lg']};
+  font-weight: 500;
+`
+
+const PCList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  font-size: ${FONT['pc-lg']};
+  li {
+    padding: 16px 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
   }
 `
