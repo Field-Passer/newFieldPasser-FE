@@ -20,11 +20,7 @@ const MyPageDetail = () => {
   return (
     <Mobile>
       <Title screen="mobile" name="작성 글 목록" />
-      <MobileMenu
-        menuLists={menuLists}
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-      />
+      <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       {activeList(activeMenu)}
     </Mobile>
   )
