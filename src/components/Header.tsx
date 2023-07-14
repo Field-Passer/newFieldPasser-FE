@@ -16,7 +16,7 @@ type PropsType = {
 
 const Header = ({ setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 450px)',
+    query: '(max-width: 833px)',
   })
   const navigate = useNavigate()
   const openSidebar = () => {

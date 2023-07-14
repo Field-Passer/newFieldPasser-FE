@@ -15,7 +15,7 @@ type PropsType = {
 
 const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 450px)',
+    query: '(max-width: 833px)',
   })
   const navigate = useNavigate()
 
@@ -28,7 +28,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
   const logoutHandler = async () => {
-    const { status } = await userLogout()
+    const { status }: any = await userLogout()
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())

@@ -2,7 +2,6 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState } from 'react'
-import { FiClock } from 'react-icons/fi'
 
 const BoardForm = () => {
   const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
@@ -64,15 +63,16 @@ const BoardForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(event.target)
+    // console.log(event.target)
     const formData = new FormData()
+    const target = event.target as HTMLFormElement
     for (let i = 0; i < 8; i += 1) {
-      console.log(event.target[i])
-      // formData.append(event.target[i].name, event.target[i].value)
+      const item = target[i] as HTMLInputElement
+      console.log(item.name)
+      formData.append(item.name, item.value)
     }
 
     // 반복문으로 setPayload
-    // 선택된 select option 지역, 종목일 때 api 보내지 않고 alert('지역 / 종목 선택은 필수입니다.') 띄우기
     // 시작시간, 끝나는 시간 동일할 경우 api보내지 않고 alert('예약 일시를 정확히 선택해주세요') 띄우기
     // 이미지 첨부 안 했을 때 종목별 기본이미지 랜덤 추가
 
@@ -315,6 +315,7 @@ const FileUpload = styled.label`
   justify-content: center;
   align-items: center;
   color: ${COLORS.gray40};
+  cursor: pointer;
 
   .preview {
     position: absolute;
