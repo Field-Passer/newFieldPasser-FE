@@ -128,6 +128,7 @@ export const FONT = {
   pc: '16px',
   'pc-lg': '20px',
   m: '14px',
+  'm-sm': '12px',
   'm-lg': '16px',
 }
 

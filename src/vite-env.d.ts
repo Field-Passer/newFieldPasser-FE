@@ -1,7 +1,9 @@
 /// <reference types="vite/client" />
-interface LoginType {
+interface userInfoType {
   userEmail: string
-  userPw: string
+  userPw?: string
+  userName?: string
+  userPhone?: string
 }
 interface ISaveImgFile {
   imgFile: File | null

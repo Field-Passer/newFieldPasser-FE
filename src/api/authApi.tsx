@@ -3,7 +3,7 @@ import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
 
 // 로그인
-export const userLogin = async ({ userEmail, userPw }: LoginType) => {
+export const userLogin = async ({ userEmail, userPw }: userInfoType) => {
   try {
     const response = await publicApi('/auth/login', {
       method: 'POST',
@@ -96,34 +96,35 @@ export async function postRefereshToken() {
     }
   }
 }
-// postRefereshToken()
 
 // 회원가입
-// export const join = async ({ userEmail, userPw }: LoginType) => {
-//   try {
-//     const response = await publicApi('/signup', {
-//       method: 'POST',
-//       data: {
-//         memberId: userEmail,
-//         password: userPw,
-//       },
-//     })
-//     return {
-//       status: response.status,
-//       result: response.data.result,
-//       message: response.data.message,
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     return {
-//       // message: error
-//     }
-//   }
-// }
+export const join = async ({ userEmail, userPw, userName, userPhone }: userInfoType) => {
+  try {
+    const response = await publicApi('/signup', {
+      method: 'POST',
+      data: {
+        memberId: userEmail,
+        password: userPw,
+        memberName: userName,
+        memberPhone: userPhone,
+      },
+    })
+    return {
+      status: response.status,
+      result: response.data.result,
+      message: response.data.message,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      // message: error
+    }
+  }
+}
 
 // (회원가입시) 이메일 중복 검사
-// export async function duplicationCheckEmail({ userEmail }: LoginType) {
-//   const response = await publicApi.post('auth/reissue', {
+// export async function checkDuplicateEmail({ userEmail }: userInfoType) {
+//   const response = await publicApi.post('/duplicate-email', {
 //     data: {
 //       memberId: userEmail,
 //     },
@@ -131,4 +132,4 @@ export async function postRefereshToken() {
 //   return response
 // }
 
-// (회원가입시) 이메일 인증 절차
+// (비번찾기에 쓸?) 이메일 인증 절차

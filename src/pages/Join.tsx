@@ -1,9 +1,45 @@
 import styled from 'styled-components'
-//import { Link, useNavigate } from 'react-router-dom'
+import {
+  // Link,
+  useNavigate,
+} from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
+import { useState } from 'react'
+import { join } from '@src/api/authApi'
 
 const Join = () => {
-  //const navigate = useNavigate()
+  const navigate = useNavigate()
+  const [duplicateEmail, setDuplicateEmail] = useState('')
+  const [checkDuplicateEmail, setCheckDuplicateEmail] = useState(false)
+  const [inputs, setInputs] = useState({
+    userEmail: '',
+    userPw: '',
+    userName: '',
+    userPhone: '',
+  })
+  const { userEmail, userPw, userName, userPhone } = inputs
+
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setInputs({
+      ...inputs,
+      [name]: value,
+    })
+  }
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log(userEmail, userPw, userName)
+    if (!checkDuplicateEmail) return
+    const { status, result, message } = await join({
+      userEmail,
+      userPw,
+      userName,
+      userPhone,
+    })
+    console.log(status, result, message) // 잘 오는구만
+    navigate('/login')
+  }
 
   return (
     <Container>
@@ -11,18 +47,26 @@ const Join = () => {
         <h3>이메일과 비밀번호를 입력해주세요</h3>
       </div>
 
-      <div className="input_wrap">
-        <label>이메일</label>
-        <input type="text" placeholder="abc@gmail.com" />
-        <label>비밀번호</label>
-        <input type="password" placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
-        <label>비밀번호</label>
-        <input type="password" placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
-        <label>닉네임</label>
-        <input type="password" placeholder="김필드필드" />
-      </div>
+      <form onSubmit={onSubmitHandler}>
+        <div className="input_wrap">
+          <div className="input_wrap_inner">
+            <label>이메일</label>
+            <input type="text" name="userEmail" onChange={onChangeHandler} placeholder="abc@gmail.com" />
+            <button type="button">이메일 중복검사</button>
+          </div>
+          <div></div>
+          <label>비밀번호</label>
+          <input type="password" name="userPw" onChange={onChangeHandler} placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
+          <label>비밀번호 확인</label>
+          <input type="password" name="userPw" onChange={onChangeHandler} placeholder="영문, 숫자, 특수문자 포함 8자 이상" />
+          <label>이름</label>
+          <input type="text" name="userName" onChange={onChangeHandler} placeholder="김필드" />
+          <label>전화번호</label>
+          <input type="text" name="userPhone" onChange={onChangeHandler} placeholder="010-1234-5678" />
+        </div>
 
-      <button className="btn_join">가입하기</button>
+        <button className="btn_join">가입하기</button>
+      </form>
     </Container>
   )
 }
@@ -50,12 +94,22 @@ const Container = styled.div`
     font-weight: 700;
   }
 
-  .logo {
-    margin-bottom: 60px;
-    text-align: center;
-    img {
-      width: 160px;
-      height: 24px;
+  .input_wrap {
+    &_inner {
+      position: relative;
+      button {
+        position: absolute;
+        top: 24px;
+        right: 0;
+        margin: 8px;
+        padding: 8px;
+        border: 1px solid;
+        border-radius: 8px;
+        border-color: ${COLORS.green};
+        font-size: ${FONT['m-sm']};
+        font-weight: 700;
+        color: ${COLORS.green};
+      }
     }
   }
 
