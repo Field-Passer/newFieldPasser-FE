@@ -1,23 +1,10 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const BoardForm = () => {
-  const [imgSrc, setImgSrc] = useState<ISaveImgFile>({
-    imgFile: null,
-    imgSrc: '',
-  })
-  const [payLoad, setPayload] = useState<IPostPayload>({
-    title: '',
-    file: null,
-    price: 0,
-    districtName: '',
-    categoryName: '',
-    startTime: '',
-    endTime: '',
-    content: '',
-  })
+  const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
@@ -38,64 +25,77 @@ const BoardForm = () => {
       // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
       // 파일은 삭제버튼 동작을 위해 state에 담아서 전송하기
       fileReader.onload = () => {
-        setImgSrc({
-          imgFile: thisFile,
-          imgSrc: fileReader.result + '',
-        })
+        setImgSrc(fileReader.result + '')
         resolve()
       }
     })
   }
   const removeImg = () => {
-    setImgSrc({
-      imgFile: null,
-      imgSrc: '',
-    })
+    if (imgRef.current) {
+      imgRef.current.value = ''
+    }
+    setImgSrc('')
   }
-
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  // const [isOptionsValid, setIsOptionsValid] = useState(false)
-  // useEffect(() => {
-  // 전체가 true일 경우?
-  //   setIsOptionsValid(selectedData ? true : false)
-  // }, [selectedData])
+  const setRandomImg = (category: string) => {
+    if (category === '축구') {
+      console.log('상태에 기본이미지 세팅')
+    } else if (category === '풋살') {
+      console.log('상태에 기본이미지 세팅')
+    } else if (category === '농구') {
+      console.log('상태에 기본이미지 세팅')
+    } else if (category === '테니스') {
+      console.log('상태에 기본이미지 세팅')
+    } else if (category === '배드민턴') {
+      console.log('상태에 기본이미지 세팅')
+    }
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // console.log(event.target)
     const formData = new FormData()
     const target = event.target as HTMLFormElement
-    for (let i = 0; i < 8; i += 1) {
-      const item = target[i] as HTMLInputElement
-      console.log(item.name)
-      formData.append(item.name, item.value)
+
+    //디자인 변경 시 인덱스 바뀌어야함
+    const category = target[4] as HTMLInputElement
+    const selectedStart = target[6] as HTMLInputElement
+    const selectedEnd = target[7] as HTMLInputElement
+
+    if (selectedStart.value === selectedEnd.value) {
+      alert('시작 시간과 끝나는 시간이 동일합니다. 예약 일시를 정확히 선택해주세요.')
+      return false
     }
 
-    // 반복문으로 setPayload
-    // 시작시간, 끝나는 시간 동일할 경우 api보내지 않고 alert('예약 일시를 정확히 선택해주세요') 띄우기
-    // 이미지 첨부 안 했을 때 종목별 기본이미지 랜덤 추가
+    let start = ''
+    let end = ''
 
-    //{!isValid && <p>You must choose a value</p>} 아니면 이렇게..?
-    //<button disabled={!isValid}>Submit</button>
+    for (let i = 0; i < 9; i += 1) {
+      const item = target[i] as HTMLInputElement
+      console.log(item.value)
+      if (item.name === 'file' && item.value === '') {
+        setRandomImg(category.value)
+      } else if (item.name === 'date') {
+        start += item.value
+        end += item.value
+      } else if (item.name === 'start') {
+        start += 'T' + item.value + ':00'
+      } else if (item.name === 'end') {
+        end += 'T' + item.value + ':00'
+      } else {
+        formData.append(item.name, item.value)
+      }
+    }
+    formData.append('start', start)
+    formData.append('end', end)
   }
 
   return (
-    <Form onSubmit={(event) => handleSubmit(event)}>
-      <Section>
-        <div>구장명</div>
-        <div>
-          <input
-            type="text"
-            placeholder="양도할 구장명을 입력해주세요"
-            name="title"
-            required
-            minLength={2}
-            maxLength={20}
-            title="제목은 2~20자 이내로 입력해주세요"
-          />
-        </div>
-      </Section>
+    <MobileForm
+      onSubmit={(event) => {
+        handleSubmit(event)
+      }}
+    >
       <Section>
         <div>사진 추가</div>
         <FileUpload htmlFor="file">
@@ -111,9 +111,9 @@ const BoardForm = () => {
           />
           <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
           <span>여기에 사진을 올려주세요</span>
-          {imgSrc.imgSrc && <img src={imgSrc.imgSrc} alt="업로드된 이미지" className="preview" />}
+          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
         </FileUpload>
-        {imgSrc.imgSrc && (
+        {imgSrc && (
           <div
             className="delete"
             onClick={() => {
@@ -125,6 +125,20 @@ const BoardForm = () => {
         )}
       </Section>
       <Section>
+        <div>구장명</div>
+        <div>
+          <input
+            type="text"
+            placeholder="양도할 구장명을 입력해주세요"
+            name="title"
+            required
+            minLength={2}
+            maxLength={20}
+            title="제목은 2~20자 이내로 입력해주세요"
+          />
+        </div>
+      </Section>
+      <Section>
         <div>가격</div>
         <div>
           <input type="number" placeholder="50,000" min={0} required name="price" />
@@ -132,28 +146,27 @@ const BoardForm = () => {
         </div>
       </Section>
       <Section>
-        <div>세부사항</div>
-        <Detail>
-          <select name="districtName" required>
-            {districtOptions.map((item) => {
+        <div>지역</div>
+        <select name="districtName" required>
+          {districtOptions.map((item) => {
+            return (
+              <option value={item} key={item}>
+                {item}
+              </option>
+            )
+          })}
+        </select>
+        <div>종목</div>
+        <select name="categoryName" required>
+          {categoryOptions.map((item, index) => {
+            if (index)
               return (
                 <option value={item} key={item}>
                   {item}
                 </option>
               )
-            })}
-          </select>
-          <select name="categoryName" required>
-            {categoryOptions.map((item, index) => {
-              if (index)
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-            })}
-          </select>
-        </Detail>
+          })}
+        </select>
       </Section>
       <Section>
         <div>예약일시</div>
@@ -204,11 +217,11 @@ const BoardForm = () => {
         </div>
       </Section>
       <button type="submit">등록하기</button>
-    </Form>
+    </MobileForm>
   )
 }
 
-const Form = styled.form`
+const MobileForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -255,6 +268,22 @@ const Section = styled.section`
     box-sizing: border-box;
   }
 
+  select {
+    width: 328px;
+    height: 40px;
+    border: 1px solid ${COLORS.gray20};
+    border-radius: 8px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: ${COLORS.font};
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('select-arrow.png') no-repeat 97% 50%;
+    cursor: pointer;
+  }
+
   textarea {
     height: 140px;
     resize: none;
@@ -279,27 +308,6 @@ const Section = styled.section`
     border-radius: 10px;
     cursor: pointer;
     color: white;
-  }
-`
-
-const Detail = styled.div`
-  display: flex;
-  gap: 10px;
-
-  select {
-    width: 160px;
-    height: 32px;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    color: ${COLORS.font};
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: url('select-arrow.png') no-repeat 95% 50%;
-    cursor: pointer;
   }
 `
 
