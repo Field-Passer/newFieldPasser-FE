@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useEffect, useRef, useState } from 'react'
 
-const BoardForm = () => {
+const Write = () => {
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
@@ -423,4 +423,4 @@ const Reservation = styled.div`
   }
 `
 
-export default BoardForm
+export default Write

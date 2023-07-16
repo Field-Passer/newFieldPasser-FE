@@ -4,7 +4,7 @@ import Error from '@pages/Error'
 import PATH from '@src/constants/pathConst'
 import Home from '@pages/Main'
 import BoardDetails from '@pages/BoardDetails'
-import BoardForm from '@pages/BoardForm'
+import Write from '@src/pages/Write'
 import BoardList from '@pages/BoardList'
 import Help from '@pages/Help'
 import HelpForm from '@pages/HelpForm'
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: PATH.HOME, element: <Home /> },
       { path: PATH.BOARD_DETAILS, element: <BoardDetails /> },
-      { path: PATH.BOARD_FORM, element: <BoardForm /> },
+      { path: PATH.WRITE, element: <Write /> },
       { path: PATH.BOARD_LIST, element: <BoardList /> },
       { path: PATH.HELP, element: <Help /> },
       { path: PATH.HELP_FORM, element: <HelpForm /> },
