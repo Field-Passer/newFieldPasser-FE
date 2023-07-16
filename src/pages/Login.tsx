@@ -2,42 +2,101 @@
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
+import { useState } from 'react'
+import { SET_TOKEN } from '@src/store/slices/authSlice'
+import { useDispatch } from 'react-redux'
+import { setRefreshToken } from '@src/storage/Cookie'
+import { userLogin } from '@src/api/authApi'
+
+// 첫 로그인 요청은 id(email), pw 필요
+// 새 at 재발급 요청 시 at, rt 둘 다 필요 (at 만료되서 UNAUTHORIZED(401) 돌아오면)
+// 로그아웃 요청 시 유효한 at 필요 (rt는 필요없음 쿠키스토리지에서 삭제만ㄱ)
 
 const Login = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [inputs, setInputs] = useState({
+    userEmail: '',
+    userPw: '',
+  })
+  const { userEmail, userPw } = inputs
+
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setInputs({
+      ...inputs,
+      [name]: value,
+    })
+  }
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const { status, result, message, tokens } = await userLogin({
+      userEmail,
+      userPw,
+    })
+    //console.log(status, result, message, tokens)
+    if (status === 200) {
+      dispatch(SET_TOKEN(tokens.accessToken))
+      setRefreshToken(tokens.refreshToken)
+      console.log('로그인 성공!')
+      return navigate('/')
+    }
+  }
 
   return (
     <Container>
-      <div className="logo">
-        <img src="/logo.png" alt="필드패서" />
-      </div>
+      <form onSubmit={onSubmitHandler}>
+        <div className="logo">
+          <img src="/logo.png" alt="필드패서" />
+        </div>
 
-      <div className="input_wrap">
-        <label>이메일</label>
-        <input type="text" placeholder="아이디를 적어주세요" />
-        <label>비밀번호</label>
-        <input type="password" placeholder="비밀번호를 적어주세요" />
-      </div>
+        <div className="input_wrap">
+          <label>이메일</label>
+          <input
+            type="text"
+            name="userEmail"
+            //pattern="^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+            placeholder="이메일을 적어주세요"
+            title="올바른 형식의 이메일을 적어주세요"
+            onChange={onChangeHandler}
+            //required
+          />
+          <label>비밀번호</label>
+          <input
+            type="password"
+            name="userPw"
+            //minLength={8}
+            //maxLength={16}
+            //pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$"
+            placeholder="비밀번호를 적어주세요"
+            title="최소 8자리, 최대 16자리 숫자, 영문, 특수문자를 1개 이상 포함해주세요"
+            onChange={onChangeHandler}
+            //required
+          />
+        </div>
 
-      <button className="btn_login">로그인</button>
+        <button type="submit" className="btn_login">
+          로그인
+        </button>
 
-      <div className="find_wrap">
-        <Link to="/findpw">비밀번호 찾기</Link>
-        <Link to="/join">회원가입하기</Link>
-      </div>
+        <div className="find_wrap">
+          <Link to="/findpw">비밀번호 찾기</Link>
+          <Link to="/join">회원가입하기</Link>
+        </div>
 
-      {/* <div>소셜 로그인 버튼 자리</div> */}
+        {/* <button type="button" className="btn_googleLogin">
+          구글로 계속하기
+        </button> */}
+      </form>
     </Container>
   )
 }
 
 const Container = styled.div`
-  // reset-css 적용되면 지우기
+  // reset-css에 border-box 추가?
   * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    color: ${COLORS.font};
   }
 
   @media screen and (max-width: 360px) {
@@ -85,6 +144,9 @@ const Container = styled.div`
     width: 100%;
     font-size: 12px;
   }
+
+  /* .btn_googleLogin {
+  } */
 `
 
 export default Login

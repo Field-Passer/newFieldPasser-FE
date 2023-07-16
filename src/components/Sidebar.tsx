@@ -1,6 +1,11 @@
+import { userLogout } from '@src/api/authApi'
 import { COLORS, FONT } from '@src/globalStyles'
+import { removeCookieToken } from '@src/storage/Cookie'
+import { RootState } from '@src/store/config'
+import { DELETE_TOKEN } from '@src/store/slices/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 
 type PropsType = {
@@ -12,18 +17,35 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 450px)',
   })
+  const navigate = useNavigate()
 
   const closeSidebar = () => {
     setSideOpen(false)
   }
 
+  const dispatch = useDispatch()
+
+  const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
+
+  const logoutHandler = async () => {
+    const { status } = await userLogout()
+    if (status === 200) {
+      removeCookieToken()
+      dispatch(DELETE_TOKEN())
+      alert('로그아웃 되었습니다.')
+      return navigate('/')
+    }
+  }
+
+  const clickWithoutLogin = () => {
+    navigate('/login')
+    alert('로그인 후 이용 가능합니다.')
+  }
+
   return (
     <>
       {!isMobile && closeSidebar()}
-      <SideContainer
-        id="sidebar"
-        className={sideOpen && isMobile ? 'open' : ''}
-      >
+      <SideContainer id="sidebar" className={sideOpen && isMobile ? 'open' : ''}>
         <FirstSection>
           <div>
             <img
@@ -36,115 +58,132 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             />
           </div>
           <div>
-            <Link to="/">
+            <Link to="/" onClick={() => closeSidebar()}>
               <img src="/logo.png" alt="로고" className="logo" />
             </Link>
           </div>
-          <div className="name">
-            <span>로그인하고 양도하기!</span>
-          </div>
-          {/* <div className="name">
-          <span>필드패서</span>
-          <span>님</span>
-        </div> */}
-          {/* <Link to="/board_form">
-          <button
-          onClick={() => {
-            closeSidebar()
-          }}
-          >
-          양도하기
-          </button>
-        </Link> */}
-          <div className="not-member">
-            <Link to="/login">
-              <button
-                className="login"
-                onClick={() => {
-                  closeSidebar()
-                }}
-              >
-                로그인
-              </button>
-            </Link>
-            <Link to="/join">
-              <button
-                className="join"
-                onClick={() => {
-                  closeSidebar()
-                }}
-              >
-                회원가입
-              </button>
-            </Link>
-          </div>
+          {authenticated ? (
+            <>
+              <div className="name">
+                <span>필드패서</span>
+                <span>님</span>
+              </div>
+              <Link to="/board_form">
+                <button
+                  onClick={() => {
+                    closeSidebar()
+                  }}
+                >
+                  양도하기
+                </button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="name">
+                <span>로그인하고 양도하기!</span>
+              </div>
+              <div className="not-member">
+                <Link to="/login">
+                  <button
+                    className="login"
+                    onClick={() => {
+                      closeSidebar()
+                    }}
+                  >
+                    로그인
+                  </button>
+                </Link>
+                <Link to="/join">
+                  <button
+                    className="join"
+                    onClick={() => {
+                      closeSidebar()
+                    }}
+                  >
+                    회원가입
+                  </button>
+                </Link>
+              </div>
+            </>
+          )}
         </FirstSection>
         <MiddleSection>
-          <Link
-            to="/mypage"
+          <div
             className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/mypage') : clickWithoutLogin()
             }}
           >
             <img src="/my_page.svg" alt="마이페이지" />
             <span>마이페이지</span>
-          </Link>
-          <Link
-            to="/mypage"
+          </div>
+          <div
             className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/mypage') : clickWithoutLogin()
             }}
           >
             <img src="/my_heart.svg" alt="내 좋아요 목록" />
             <span>내 좋아요 목록</span>
-          </Link>
-          <Link
-            to="/mypage"
+          </div>
+          <div
             className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/mypage') : clickWithoutLogin()
             }}
           >
             <img src="/my_comment.svg" alt="내가 남긴 댓글" />
             <span>내가 남긴 댓글</span>
-          </Link>
-          <Link
-            to="/mypage"
+          </div>
+          <div
             className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/mypage') : clickWithoutLogin()
             }}
           >
             <img src="/my_post.svg" alt="나의 양도글" />
             <span>나의 양도글</span>
-          </Link>
+          </div>
         </MiddleSection>
         <MiddleSection>
-          <Link
-            to="/help"
+          <div
+            className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/help') : clickWithoutLogin()
             }}
           >
             <span>고객센터</span>
-          </Link>
-          <Link
-            to="/mypage"
+          </div>
+          <div
+            className="block"
             onClick={() => {
               closeSidebar()
+              authenticated ? navigate('/mypage') : clickWithoutLogin()
             }}
           >
             1:1 문의하기
-          </Link>
-        </MiddleSection>
-        <LastSection>
-          <div onClick={() => console.log('로그아웃')}>로그아웃</div>
-          <div className="blur" onClick={() => console.log('회원탈퇴')}>
-            회원탈퇴
           </div>
-        </LastSection>
+        </MiddleSection>
+        {authenticated && (
+          <LastSection>
+            <div
+              onClick={() => {
+                logoutHandler()
+              }}
+            >
+              로그아웃
+            </div>
+            <div className="blur" onClick={() => console.log('회원탈퇴')}>
+              회원탈퇴
+            </div>
+          </LastSection>
+        )}
       </SideContainer>
     </>
   )
@@ -223,14 +262,15 @@ const MiddleSection = styled.section`
   padding: 32px 16px;
   border-bottom: 1px solid ${COLORS.gray20};
 
-  :hover {
-    font-weight: 900;
-  }
-
   .block {
     display: flex;
     gap: 10px;
     line-height: 20px;
+    cursor: pointer;
+
+    :hover {
+      font-weight: 900;
+    }
   }
 `
 const LastSection = styled.section`

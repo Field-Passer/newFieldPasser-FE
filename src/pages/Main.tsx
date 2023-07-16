@@ -1,42 +1,59 @@
 import { districtOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { FiSearch } from 'react-icons/fi'
+import { ReactElement, useState } from 'react'
+import { BadmintonIcon, BasketballIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
+import SearchForm from '@src/components/SearchForm'
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
+}
 
 const Main = () => {
-  const categories = [
-    ['futsal', '풋살'],
-    ['soccer', '축구'],
-    ['basketball', '농구'],
-    ['tennis', '테니스'],
-    ['badminton', '배드민턴'],
+  const [isActive, setIsActive] = useState<boolean>(false)
+
+  const categories: ICategories[] = [
+    {
+      category: 'futsal',
+      name: '풋살',
+      icon: <FutsalIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'soccer',
+      name: '축구',
+      icon: <SoccerIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'basketball',
+      name: '농구',
+      icon: <BasketballIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'tennis',
+      name: '테니스',
+      icon: <TennisIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
+    {
+      category: 'badminton',
+      name: '배드민턴',
+      icon: <BadmintonIcon color={isActive ? COLORS.green : '#00000099'} />,
+    },
   ]
 
   const sortOptions = ['가장 최신 순', '인기순', '낮은 가격 순', '높은 가격 순']
 
   return (
     <Container>
-      <SearchSection>
-        <div className="searchbox">
-          <FiSearch className="search-icon" />
-          <div className="search-input">
-            <input type="search" placeholder="어떤 구장을 찾으세요?" />
-            <div className="option">
-              <span>어디든지</span>
-              <span>원하는 시간</span>
-              <span>가격</span>
-            </div>
-          </div>
-          <img src="/search_option.svg" alt="검색 옵션" />
-        </div>
-      </SearchSection>
+      <SearchForm />
       <ListSection>
         <Category>
           {categories.map((item) => {
             return (
-              <div key={item[0]} className="icon">
-                <img src={`/${item[0]}.svg`} alt={item[1]} />
-                <span>{item[1]}</span>
+              <div key={item.category} className="icon">
+                {item.icon}
+                <span>{item.name}</span>
               </div>
             )
           })}
@@ -79,66 +96,17 @@ const Container = styled.main`
   margin: auto;
 `
 
-const SearchSection = styled.section`
-  .searchbox {
-    width: 320px;
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 16px;
-    box-shadow: 0px 4px 4px 0px #00000040;
-    padding: 4px 16px;
-    box-sizing: border-box;
-    margin: 16px;
-
-    .search-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
-
-    .search-input {
-      display: flex;
-      flex-direction: column;
-      gap: 13px;
-
-      .option {
-        display: flex;
-        gap: 20px;
-        font-size: 12px;
-        color: #777;
-      }
-
-      input {
-        height: 16px;
-        font-size: ${FONT['m-lg']};
-        color: #000000b2;
-        border: none;
-
-        ::placeholder {
-          color: black;
-        }
-      }
-    }
-  }
-`
-
 const ListSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
 `
 const Category = styled.div`
   height: 70px;
   display: flex;
   gap: 16px;
   border-bottom: 1px solid ${COLORS.gray20};
-
-  :hover {
-    color: ${COLORS.green};
-  }
 
   .icon {
     display: flex;
