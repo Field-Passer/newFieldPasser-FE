@@ -50,11 +50,11 @@ const SearchForm = () => {
   const [searchStart, setsearchStart] = useState(false)
   const [inputFocus, setInputFocus] = useState(searchTextValue ? true : false)
   const [categoryOpen, setCategoryOpen] = useState(false)
-  const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' || categoryValue !== '전체' ? true : false)
+  const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' && categoryValue !== '전체' ? true : false)
   const [districtOpen, setDistrictOpen] = useState(districtValue.length > 0 ? true : false)
   const [districtSelect, setDistrictSelect] = useState(selectVal.district.length > 0 || districtValue.length > 0 ? true : false)
-  const [timeOpen, setTimeOpen] = useState(selectVal.startTime ? true : false)
-  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== new Date().getDate() ? true : false)
+  const [timeOpen, setTimeOpen] = useState(selectVal.startTime !== '00:00' ? true : false)
+  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== dateCalcFn().getDate() ? true : false)
 
   // searchbox click function
   const searchStartFn = (check: string) => {
@@ -261,7 +261,7 @@ const SearchForm = () => {
               )}
             </DistrictForm>
             <CategoryForm>
-              <p className={categoryOpen || categorySelect ? 'focused' : ''}>종목을 선택해주세요</p>
+              <p className={categorySelect ? 'focused' : ''}>종목을 선택해주세요</p>
               <ul onClick={() => selectOpenFn()}>
                 <p>{categoryValue}</p>
                 {categoryOpen && (
