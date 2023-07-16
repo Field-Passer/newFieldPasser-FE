@@ -34,13 +34,9 @@ const SearchForm = () => {
   const location = useLocation()
   const urlPathname = location.pathname
   const navigate = useNavigate()
-  const textValue = useSelector((state: RootState) => {
-    return state.searchVlaue.title
-  })
 
   // text Input element
   const textEl = useRef<HTMLInputElement>(null)
-  const districtUlEl = useRef<HTMLUListElement>(null)
 
   // value state
   const [categoryValue, setCategoryValue] = useState(selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체')
@@ -57,8 +53,8 @@ const SearchForm = () => {
   const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' || categoryValue !== '전체' ? true : false)
   const [districtOpen, setDistrictOpen] = useState(districtValue.length > 0 ? true : false)
   const [districtSelect, setDistrictSelect] = useState(selectVal.district.length > 0 || districtValue.length > 0 ? true : false)
-  const [timeOpen, setTimeOpen] = useState(selectVal.startTime !== '00:00' ? true : false)
-  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== dateCalcFn().getDate() ? true : false)
+  const [timeOpen, setTimeOpen] = useState(selectVal.startTime ? true : false)
+  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== new Date().getDate() ? true : false)
 
   // searchbox click function
   const searchStartFn = (check: string) => {
@@ -247,7 +243,7 @@ const SearchForm = () => {
               </p>
               {districtOpen && (
                 <div>
-                  <ul ref={districtUlEl}>
+                  <ul>
                     {districtOptions.map((v, i) => (
                       <li key={i}>
                         <button
@@ -290,7 +286,7 @@ const SearchForm = () => {
           <SearchCorver onClick={() => searchStartFn('open')} path={urlPathname}>
             <SearchIcon size="24px" />
             <div>
-              <p>{textValue ? textValue : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
+              <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
               {urlPathname === '/' && (
                 <p>
                   <span>어디든지</span>
