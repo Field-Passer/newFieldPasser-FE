@@ -53,6 +53,3 @@ const BoardList = () => {
 }
 
 export default BoardList
-
-// startTime=2023-06-30T17:00:00&endTime=2023-06-30T19:30:00
-// Tue Jul 11 2023 20:30:40 GMT+0900 (한국 표준시)

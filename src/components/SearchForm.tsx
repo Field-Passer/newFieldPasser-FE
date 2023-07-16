@@ -66,7 +66,6 @@ const SearchForm = () => {
       document.querySelector('body')?.classList.remove('stop-scrolling')
     }
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    console.log(selectVal)
   }
 
   // input focus function
@@ -177,7 +176,7 @@ const SearchForm = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container searchstart={searchStart.toString()}>
+      <Container searchstart={searchStart.toString()} path={urlPathname}>
         {searchStart ? (
           <SearchInform>
             <StadiumForm>
@@ -306,21 +305,24 @@ const SearchForm = () => {
 export default SearchForm
 
 const boxline = {
-  border: '1px solid #e9e9e9',
+  border: '1px solid #d9d9d9',
   'border-radius': '16px',
-  'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+  'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.10)',
 }
 
-const Container = styled.div<{ searchstart: string }>`
-  padding: 0 20px;
-  max-width: var(--screen-pc);
+const Container = styled.div<{ searchstart: string; path: string }>`
+  padding: 20px 20px;
+  width: 100%;
   min-height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px auto 0;
+  margin: 0 auto;
   background: #fff;
   height: ${(props) => (props.searchstart === 'false' ? '' : '100vh')};
+  box-shadow: ${(props) => (props.path !== '/' ? '0px 4px 4px rgba(0, 0, 0, 0.10)' : 'none')};
+  box-sizing: border-box;
+
   * {
     box-sizing: border-box;
   }
@@ -335,6 +337,7 @@ const Container = styled.div<{ searchstart: string }>`
 `
 
 const SearchCorver = styled.div<{ path: string }>`
+  max-width: var(--screen-pc);
   width: 100%;
   height: 60px;
   padding: 4px 16px;
@@ -343,6 +346,7 @@ const SearchCorver = styled.div<{ path: string }>`
   align-items: center;
   cursor: pointer;
   ${boxline}
+  box-shadow : ${(props) => props.path !== '/' && 'none'};
 
   div {
     width: ${(props) => (props.path === '/' ? 'auto' : '100%')};
@@ -369,8 +373,8 @@ const SearchCorver = styled.div<{ path: string }>`
 const SearchInform = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: var(--screen-pc);
   width: 100%;
+  max-width: var(--screen-pc);
   padding: 20px 0 142px;
   gap: 16px;
   position: fixed;
