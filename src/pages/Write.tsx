@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/boardApi'
 
 const Write = () => {
+  //페이지 진입 시 토큰 확인
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -43,6 +44,16 @@ const Write = () => {
     }
     setImgSrc('')
   }
+
+  // 가격 자릿수 체크, 콤마
+  // const checkMaxLength = (value) => {
+  //   if (value.length > 7) {
+  //     value = value.slice(0, 7)
+  //   }
+  // 상태넣어주기
+  // value.toLocaleString('ko-KR)
+  // }
+
   const currentDate = new Date().toISOString().substring(0, 10)
 
   const setRandomImg = (category: string) => {
@@ -99,7 +110,7 @@ const Write = () => {
   }
 
   return (
-    <>
+    <Container>
       {isMobile ? (
         <MobileForm
           onSubmit={(event) => {
@@ -109,7 +120,7 @@ const Write = () => {
         >
           <section>
             <div>사진 추가</div>
-            <MobileFileUpload htmlFor="file">
+            <FileUpload htmlFor="file">
               <input
                 id="file"
                 type="file"
@@ -123,7 +134,7 @@ const Write = () => {
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
               <span>여기에 사진을 올려주세요</span>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-            </MobileFileUpload>
+            </FileUpload>
             {imgSrc && (
               <div
                 className="delete"
@@ -181,7 +192,7 @@ const Write = () => {
           </section>
           <section>
             <div>예약일시</div>
-            <MobileReservation>
+            <Reservation>
               <div className="date">
                 <input
                   type="date"
@@ -219,7 +230,7 @@ const Write = () => {
                 />
                 <span>까지</span>
               </div>
-            </MobileReservation>
+            </Reservation>
           </section>
           <section>
             <div>본문내용</div>
@@ -236,82 +247,93 @@ const Write = () => {
             handleSubmit(event)
           }}
         >
-          <section>
-            <div>사진 추가</div>
-            <label htmlFor="file">
-              <input
-                id="file"
-                type="file"
-                name="file"
-                ref={imgRef}
-                accept="image/gif,image/jpeg,image/png"
-                onChange={(event) => {
-                  previewImg(event)
-                }}
-              />
-              <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-              <span>여기에 사진을 올려주세요</span>
-              {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-            </label>
-            {imgSrc && (
-              <div
-                className="delete"
-                onClick={() => {
-                  removeImg()
-                }}
-              >
-                삭제
+          <div className="page-title">
+            <h1>게시물 등록</h1>
+          </div>
+          <PcDetail>
+            <section className="half-section">
+              <h2>사진 추가</h2>
+              <FileUpload htmlFor="file">
+                <input
+                  id="file"
+                  type="file"
+                  name="file"
+                  ref={imgRef}
+                  accept="image/gif,image/jpeg,image/png"
+                  onChange={(event) => {
+                    previewImg(event)
+                  }}
+                />
+                <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                <span>여기에 사진을 올려주세요</span>
+                {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+              </FileUpload>
+              {imgSrc && (
+                <div
+                  className="delete"
+                  onClick={() => {
+                    removeImg()
+                  }}
+                >
+                  삭제
+                </div>
+              )}
+            </section>
+            <section className="half-section">
+              <h2>세부사항</h2>
+              <div className="row-box">
+                <div className="box-title">구장명</div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="양도할 구장명을 입력해주세요"
+                    name="title"
+                    required
+                    minLength={2}
+                    maxLength={20}
+                    title="제목은 2~20자 이내로 입력해주세요"
+                  />
+                </div>
               </div>
-            )}
-          </section>
-          <section>
-            <div>구장명</div>
-            <div>
-              <input
-                type="text"
-                placeholder="양도할 구장명을 입력해주세요"
-                name="title"
-                required
-                minLength={2}
-                maxLength={20}
-                title="제목은 2~20자 이내로 입력해주세요"
-              />
-            </div>
-          </section>
-          <section>
-            <div>가격</div>
-            <div>
-              <input type="number" placeholder="50,000" min={0} required name="price" />
-              <span className="won">원</span>
-            </div>
-          </section>
-          <section>
-            <div>지역</div>
-            <select name="districtName" required>
-              {districtOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-            <div>종목</div>
-            <select name="categoryName" required>
-              {categoryOptions.map((item, index) => {
-                if (index)
-                  return (
-                    <option value={item} key={item}>
-                      {item}
-                    </option>
-                  )
-              })}
-            </select>
-          </section>
-          <section>
-            <div>예약일시</div>
-            <div>
+              <div className="row-box">
+                <div className="box-title">가격</div>
+                <div>
+                  <input type="number" placeholder="50,000" min={0} required name="price" />
+                  <span className="won">원</span>
+                </div>
+              </div>
+              <div className="row-box">
+                <div className="box-title">지역</div>
+                <select name="districtName" required>
+                  {districtOptions.map((item) => {
+                    return (
+                      <option value={item} key={item}>
+                        {item}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
+              <div className="row-box">
+                <div className="box-title">종목</div>
+                <select name="categoryName" required>
+                  {categoryOptions.map((item, index) => {
+                    if (index)
+                      return (
+                        <option value={item} key={item}>
+                          {item}
+                        </option>
+                      )
+                  })}
+                </select>
+              </div>
+            </section>
+          </PcDetail>
+          <section className="full-section">
+            <h2>예약일시</h2>
+            <Reservation>
               <div className="date">
+                <div>날짜</div>
                 <input
                   type="date"
                   name="date"
@@ -325,6 +347,7 @@ const Write = () => {
                 />
               </div>
               <div className="time">
+                <div>시작</div>
                 <input
                   type="time"
                   name="start"
@@ -335,7 +358,8 @@ const Write = () => {
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
-                <span>부터</span>
+                <span>~</span>
+                <div>종료</div>
                 <input
                   type="time"
                   name="end"
@@ -348,10 +372,10 @@ const Write = () => {
                 />
                 <span>까지</span>
               </div>
-            </div>
+            </Reservation>
           </section>
-          <section>
-            <div>본문내용</div>
+          <section className="full-section">
+            <h2>본문내용</h2>
             <div>
               <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
             </div>
@@ -359,16 +383,176 @@ const Write = () => {
           <button type="submit">등록하기</button>
         </PcForm>
       )}
-    </>
+    </Container>
   )
 }
+const Container = styled.main`
+  position: relative;
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  select {
+    color: ${COLORS.font};
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('select-arrow.png') no-repeat 97% 50%;
+    cursor: pointer;
+  }
+
+  input[type='time'] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+      appearance: none;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      background: url('/clock.png') no-repeat 98% 50%;
+      opacity: 1;
+      display: block;
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+    }
+  }
+
+  input[type='date'] {
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-inner-spin-button {
+      display: none;
+      appearance: none;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      position: absolute;
+      opacity: 1;
+      display: block;
+      width: 10px;
+      height: 10px;
+      background: url('calendar-light.png') no-repeat 90% 50%;
+      cursor: pointer;
+      right: -10px;
+      transform: translateX(-10px);
+      padding-left: 3000px;
+    }
+  }
+`
 
 const PcForm = styled.form`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 32px;
   font-size: ${FONT.pc};
   padding: 64px 32px;
+  width: 770px;
+  position: relative;
+  border: 1px solid blue;
+
+  h2 {
+    font-weight: 700;
+  }
+
+  input,
+  textarea {
+    color: ${COLORS.font};
+  }
+
+  input[type='text'],
+  input[type='number'],
+  select {
+    width: 300px;
+    height: 40px;
+    border: none;
+    border-bottom: 1px solid ${COLORS.gray30};
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    width: 100%;
+    height: 180px;
+    border: 1px solid ${COLORS.gray30};
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 328px;
+    height: 48px;
+    background-color: ${COLORS.green};
+    color: white;
+    font-size: ${FONT['m-lg']};
+    margin: auto;
+  }
+
+  .page-title {
+    width: 100%;
+    h1 {
+      font-size: ${FONT['pc-lg']};
+      font-weight: 700;
+    }
+  }
+
+  .full-section {
+    width: 100%;
+
+    h2 {
+      margin-bottom: 16px;
+    }
+    .date {
+      display: flex;
+      gap: 16px;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+`
+
+const PcDetail = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .half-section {
+    position: relative;
+    width: 360px;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .delete {
+      position: absolute;
+      background-color: ${COLORS.gray40};
+      right: 10px;
+      bottom: 10px;
+      padding: 8px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .row-box {
+      display: flex;
+      flex-direction: row;
+      line-height: 40px;
+      justify-content: space-between;
+
+      .won {
+        position: absolute;
+        left: 150px;
+      }
+    }
+  }
 `
 
 const MobileForm = styled.form`
@@ -425,13 +609,6 @@ const MobileForm = styled.form`
       border-radius: 8px;
       padding: 0 10px;
       box-sizing: border-box;
-      color: ${COLORS.font};
-
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background: url('select-arrow.png') no-repeat 97% 50%;
-      cursor: pointer;
     }
 
     textarea {
@@ -462,7 +639,7 @@ const MobileForm = styled.form`
   }
 `
 
-const MobileFileUpload = styled.label`
+const FileUpload = styled.label`
   position: relative;
   width: 328px;
   height: 160px;
@@ -493,9 +670,14 @@ const MobileFileUpload = styled.label`
     width: 40px;
     height: 40px;
   }
+
+  @media (min-width: 834px) {
+    width: 100%;
+    height: 100%;
+  }
 `
 
-const MobileReservation = styled.div`
+const Reservation = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -509,25 +691,6 @@ const MobileReservation = styled.div`
     input {
       height: 32px;
       padding-left: 35px;
-
-      &::-webkit-calendar-picker-indicator,
-      &::-webkit-inner-spin-button {
-        display: none;
-        appearance: none;
-      }
-
-      &::-webkit-calendar-picker-indicator {
-        position: absolute;
-        opacity: 1;
-        display: block;
-        width: 10px;
-        height: 10px;
-        background: url('calendar-light.png') no-repeat 90% 50%;
-        cursor: pointer;
-        right: -10px;
-        transform: translateX(-10px);
-        padding-left: 3000px;
-      }
     }
     .selected {
       color: ${COLORS.font};
@@ -546,21 +709,6 @@ const MobileReservation = styled.div`
     input {
       width: 128px;
       height: 32px;
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-calendar-picker-indicator {
-        display: none;
-        appearance: none;
-      }
-
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock.png') no-repeat 98% 50%;
-        opacity: 1;
-        display: block;
-        width: 10px;
-        height: 10px;
-        cursor: pointer;
-      }
     }
 
     .selected {
@@ -571,6 +719,10 @@ const MobileReservation = styled.div`
         background: url('/clock-fff.png') no-repeat 98% 50%;
       }
     }
+  }
+
+  @media (min-width: 834px) {
+    flex-direction: row;
   }
 `
 
