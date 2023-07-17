@@ -68,7 +68,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
                 <span>필드패서</span>
                 <span>님</span>
               </div>
-              <Link to="/board_form">
+              <Link to="/write">
                 <button
                   onClick={() => {
                     closeSidebar()

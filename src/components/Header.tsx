@@ -67,7 +67,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <button
                 onClick={() => {
                   {
-                    authenticated ? navigate('/board_form') : clickWithoutLogin()
+                    authenticated ? navigate('/write') : clickWithoutLogin()
                   }
                 }}
               >

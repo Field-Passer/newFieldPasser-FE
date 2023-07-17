@@ -2,8 +2,15 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useMediaQuery } from 'react-responsive'
+import { requestWrite } from '@src/api/boardApi'
 
 const Write = () => {
+  const isMobile = useMediaQuery({
+    query: '(max-width: 833px)',
+  })
+  const navigate = useNavigate()
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
@@ -53,11 +60,8 @@ const Write = () => {
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
     const formData = new FormData()
     const target = event.target as HTMLFormElement
-
-    //디자인 변경 시 인덱스 바뀌어야함
     const category = target[4] as HTMLInputElement
     const selectedStart = target[6] as HTMLInputElement
     const selectedEnd = target[7] as HTMLInputElement
@@ -72,9 +76,11 @@ const Write = () => {
 
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
-      console.log(item.value)
       if (item.name === 'file' && item.value === '') {
         setRandomImg(category.value)
+        // formData.append('file', item.value) // 상태에서 이미지 가져오기..?
+      } else if (item.name === 'price') {
+        formData.append('price', item.value)
       } else if (item.name === 'date') {
         start += item.value
         end += item.value
@@ -86,140 +92,284 @@ const Write = () => {
         formData.append(item.name, item.value)
       }
     }
-    formData.append('start', start)
-    formData.append('end', end)
+    formData.append('startTime', start)
+    formData.append('endTime', end)
+
+    requestWrite(formData)
   }
 
   return (
-    <MobileForm
-      onSubmit={(event) => {
-        handleSubmit(event)
-      }}
-    >
-      <Section>
-        <div>사진 추가</div>
-        <FileUpload htmlFor="file">
-          <input
-            id="file"
-            type="file"
-            name="file"
-            ref={imgRef}
-            accept="image/gif,image/jpeg,image/png"
-            onChange={(event) => {
-              previewImg(event)
-            }}
-          />
-          <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-          <span>여기에 사진을 올려주세요</span>
-          {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-        </FileUpload>
-        {imgSrc && (
-          <div
-            className="delete"
-            onClick={() => {
-              removeImg()
-            }}
-          >
-            삭제
-          </div>
-        )}
-      </Section>
-      <Section>
-        <div>구장명</div>
-        <div>
-          <input
-            type="text"
-            placeholder="양도할 구장명을 입력해주세요"
-            name="title"
-            required
-            minLength={2}
-            maxLength={20}
-            title="제목은 2~20자 이내로 입력해주세요"
-          />
-        </div>
-      </Section>
-      <Section>
-        <div>가격</div>
-        <div>
-          <input type="number" placeholder="50,000" min={0} required name="price" />
-          <span className="won">원</span>
-        </div>
-      </Section>
-      <Section>
-        <div>지역</div>
-        <select name="districtName" required>
-          {districtOptions.map((item) => {
-            return (
-              <option value={item} key={item}>
-                {item}
-              </option>
-            )
-          })}
-        </select>
-        <div>종목</div>
-        <select name="categoryName" required>
-          {categoryOptions.map((item, index) => {
-            if (index)
-              return (
-                <option value={item} key={item}>
-                  {item}
-                </option>
-              )
-          })}
-        </select>
-      </Section>
-      <Section>
-        <div>예약일시</div>
-        <Reservation>
-          <div className="date">
-            <input
-              type="date"
-              name="date"
-              defaultValue={currentDate}
-              min={currentDate}
-              required
-              onChange={() => {
-                setIsDateChange(true)
-              }}
-              className={isDateChange ? 'selected' : ''}
-            />
-          </div>
-          <div className="time">
-            <input
-              type="time"
-              name="start"
-              defaultValue={'00:00'}
-              required
-              onChange={() => {
-                setIsStartChange(true)
-              }}
-              className={isStartChange ? 'selected' : ''}
-            />
-            <span>부터</span>
-            <input
-              type="time"
-              name="end"
-              defaultValue={'00:00'}
-              required
-              onChange={() => {
-                setIsEndChange(true)
-              }}
-              className={isEndChange ? 'selected' : ''}
-            />
-            <span>까지</span>
-          </div>
-        </Reservation>
-      </Section>
-      <Section>
-        <div>본문내용</div>
-        <div>
-          <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
-        </div>
-      </Section>
-      <button type="submit">등록하기</button>
-    </MobileForm>
+    <>
+      {isMobile ? (
+        <MobileForm
+          onSubmit={(event) => {
+            event.preventDefault()
+            handleSubmit(event)
+          }}
+        >
+          <section>
+            <div>사진 추가</div>
+            <MobileFileUpload htmlFor="file">
+              <input
+                id="file"
+                type="file"
+                name="file"
+                ref={imgRef}
+                accept="image/gif,image/jpeg,image/png"
+                onChange={(event) => {
+                  previewImg(event)
+                }}
+              />
+              <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+              <span>여기에 사진을 올려주세요</span>
+              {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+            </MobileFileUpload>
+            {imgSrc && (
+              <div
+                className="delete"
+                onClick={() => {
+                  removeImg()
+                }}
+              >
+                삭제
+              </div>
+            )}
+          </section>
+          <section>
+            <div>구장명</div>
+            <div>
+              <input
+                type="text"
+                placeholder="양도할 구장명을 입력해주세요"
+                name="title"
+                required
+                minLength={2}
+                maxLength={20}
+                title="제목은 2~20자 이내로 입력해주세요"
+              />
+            </div>
+          </section>
+          <section>
+            <div>가격</div>
+            <div>
+              <input type="number" placeholder="50,000" min={0} required name="price" />
+              <span className="won">원</span>
+            </div>
+          </section>
+          <section>
+            <div>지역</div>
+            <select name="districtName" required>
+              {districtOptions.map((item) => {
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+            <div>종목</div>
+            <select name="categoryName" required>
+              {categoryOptions.map((item, index) => {
+                if (index)
+                  return (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  )
+              })}
+            </select>
+          </section>
+          <section>
+            <div>예약일시</div>
+            <MobileReservation>
+              <div className="date">
+                <input
+                  type="date"
+                  name="date"
+                  defaultValue={currentDate}
+                  min={currentDate}
+                  required
+                  onChange={() => {
+                    setIsDateChange(true)
+                  }}
+                  className={isDateChange ? 'selected' : ''}
+                />
+              </div>
+              <div className="time">
+                <input
+                  type="time"
+                  name="start"
+                  defaultValue={'00:00'}
+                  required
+                  onChange={() => {
+                    setIsStartChange(true)
+                  }}
+                  className={isStartChange ? 'selected' : ''}
+                />
+                <span>부터</span>
+                <input
+                  type="time"
+                  name="end"
+                  defaultValue={'00:00'}
+                  required
+                  onChange={() => {
+                    setIsEndChange(true)
+                  }}
+                  className={isEndChange ? 'selected' : ''}
+                />
+                <span>까지</span>
+              </div>
+            </MobileReservation>
+          </section>
+          <section>
+            <div>본문내용</div>
+            <div>
+              <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+            </div>
+          </section>
+          <button type="submit">등록하기</button>
+        </MobileForm>
+      ) : (
+        <PcForm
+          onSubmit={(event) => {
+            event.preventDefault()
+            handleSubmit(event)
+          }}
+        >
+          <section>
+            <div>사진 추가</div>
+            <label htmlFor="file">
+              <input
+                id="file"
+                type="file"
+                name="file"
+                ref={imgRef}
+                accept="image/gif,image/jpeg,image/png"
+                onChange={(event) => {
+                  previewImg(event)
+                }}
+              />
+              <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+              <span>여기에 사진을 올려주세요</span>
+              {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+            </label>
+            {imgSrc && (
+              <div
+                className="delete"
+                onClick={() => {
+                  removeImg()
+                }}
+              >
+                삭제
+              </div>
+            )}
+          </section>
+          <section>
+            <div>구장명</div>
+            <div>
+              <input
+                type="text"
+                placeholder="양도할 구장명을 입력해주세요"
+                name="title"
+                required
+                minLength={2}
+                maxLength={20}
+                title="제목은 2~20자 이내로 입력해주세요"
+              />
+            </div>
+          </section>
+          <section>
+            <div>가격</div>
+            <div>
+              <input type="number" placeholder="50,000" min={0} required name="price" />
+              <span className="won">원</span>
+            </div>
+          </section>
+          <section>
+            <div>지역</div>
+            <select name="districtName" required>
+              {districtOptions.map((item) => {
+                return (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                )
+              })}
+            </select>
+            <div>종목</div>
+            <select name="categoryName" required>
+              {categoryOptions.map((item, index) => {
+                if (index)
+                  return (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  )
+              })}
+            </select>
+          </section>
+          <section>
+            <div>예약일시</div>
+            <div>
+              <div className="date">
+                <input
+                  type="date"
+                  name="date"
+                  defaultValue={currentDate}
+                  min={currentDate}
+                  required
+                  onChange={() => {
+                    setIsDateChange(true)
+                  }}
+                  className={isDateChange ? 'selected' : ''}
+                />
+              </div>
+              <div className="time">
+                <input
+                  type="time"
+                  name="start"
+                  defaultValue={'00:00'}
+                  required
+                  onChange={() => {
+                    setIsStartChange(true)
+                  }}
+                  className={isStartChange ? 'selected' : ''}
+                />
+                <span>부터</span>
+                <input
+                  type="time"
+                  name="end"
+                  defaultValue={'00:00'}
+                  required
+                  onChange={() => {
+                    setIsEndChange(true)
+                  }}
+                  className={isEndChange ? 'selected' : ''}
+                />
+                <span>까지</span>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div>본문내용</div>
+            <div>
+              <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+            </div>
+          </section>
+          <button type="submit">등록하기</button>
+        </PcForm>
+      )}
+    </>
   )
 }
+
+const PcForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-size: ${FONT.pc};
+  padding: 64px 32px;
+`
 
 const MobileForm = styled.form`
   display: flex;
@@ -241,77 +391,78 @@ const MobileForm = styled.form`
     font-size: ${FONT['m-lg']};
     margin: auto;
   }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: auto;
+    position: relative;
+
+    :focus {
+      outline: none;
+      border-color: ${COLORS.gray20};
+    }
+
+    ::placeholder {
+      color: ${COLORS.gray40};
+    }
+
+    input,
+    textarea {
+      width: 328px;
+      height: 48px;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    select {
+      width: 328px;
+      height: 40px;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      color: ${COLORS.font};
+
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background: url('select-arrow.png') no-repeat 97% 50%;
+      cursor: pointer;
+    }
+
+    textarea {
+      height: 140px;
+      resize: none;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .won {
+      position: absolute;
+      top: 39px;
+      right: 30px;
+      color: ${COLORS.gray40};
+    }
+
+    .delete {
+      position: absolute;
+      background-color: ${COLORS.gray40};
+      right: 10px;
+      bottom: 10px;
+      padding: 8px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+  }
 `
-const Section = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: auto;
-  position: relative;
 
-  :focus {
-    outline: none;
-    border-color: ${COLORS.gray20};
-  }
-
-  ::placeholder {
-    color: ${COLORS.gray40};
-  }
-
-  input,
-  textarea {
-    width: 328px;
-    height: 48px;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
-  }
-
-  select {
-    width: 328px;
-    height: 40px;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    color: ${COLORS.font};
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: url('select-arrow.png') no-repeat 97% 50%;
-    cursor: pointer;
-  }
-
-  textarea {
-    height: 140px;
-    resize: none;
-    overflow-y: auto;
-    padding: 10px;
-  }
-
-  .won {
-    position: absolute;
-    top: 39px;
-    right: 30px;
-    color: ${COLORS.gray40};
-  }
-
-  .delete {
-    position: absolute;
-    background-color: ${COLORS.gray40};
-    right: 10px;
-    bottom: 10px;
-    padding: 8px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-  }
-`
-
-const FileUpload = styled.label`
+const MobileFileUpload = styled.label`
   position: relative;
   width: 328px;
   height: 160px;
@@ -344,7 +495,7 @@ const FileUpload = styled.label`
   }
 `
 
-const Reservation = styled.div`
+const MobileReservation = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
