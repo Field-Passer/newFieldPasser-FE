@@ -26,6 +26,7 @@ const Header = ({ setSideOpen }: PropsType) => {
 
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
+<<<<<<< HEAD
   const logoutHandler = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
 
@@ -34,6 +35,13 @@ const Header = ({ setSideOpen }: PropsType) => {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       console.log('로그아웃!')
+=======
+  const logoutHandler = async () => {
+    const { status }: any = await userLogout()
+    if (status === 200) {
+      removeCookieToken()
+      dispatch(DELETE_TOKEN())
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
       return navigate('/login')
     }
   }

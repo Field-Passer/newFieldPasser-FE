@@ -2,15 +2,12 @@ import Inner from '@src/components/Inner'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
-import {
-  memberAccountList,
-  dealManagementList,
-  useEctlist,
-} from '@src/constants/helpList'
+import { memberAccountList, dealManagementList, useEctlist } from '@src/constants/helpList'
 import Ask from '@src/components/Ask'
-import { Mobile, Tablet } from '@src/hooks/useScreenHook'
+import { Mobile } from '@src/hooks/useScreenHook'
 import MobileMenu from '@src/components/MobileMenu'
 import Title from '@src/components/Title'
+import { useMediaQuery } from 'react-responsive'
 
 const Help = () => {
   const menuLists = ['회원 / 계정', '거래 분쟁 / 운영 정책', '이용 방법 / 기타']
@@ -24,9 +21,13 @@ const Help = () => {
       return useEctlist
     }
   }
+  const isPC = useMediaQuery({
+    query: '(min-width: 450px)',
+  })
+
   return (
     <>
-      <Tablet>
+      {isPC && (
         <Inner padding="32px 16px">
           <Title screen="pc" name="자주 묻는 질문" />
           <MenuStyle>
@@ -45,12 +46,7 @@ const Help = () => {
           </MenuStyle>
           <AskListStyle screen="pc">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="pc"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="pc" />
             ))}
           </AskListStyle>
           <OtherAskStyle>
@@ -58,23 +54,14 @@ const Help = () => {
             <button>등록하기</button>
           </OtherAskStyle>
         </Inner>
-      </Tablet>
+      )}
       <Mobile>
         <Inner width="100%">
           <Title screen="mobile" name="자주 묻는 질문" />
-          <MobileMenu
-            menuLists={menuLists}
-            activeMenu={activeMenu}
-            setActiveMenu={setActiveMenu}
-          />
+          <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           <AskListStyle screen="mobile">
             {askList(activeMenu)?.map((list) => (
-              <Ask
-                key={list.listId}
-                title={list.title}
-                comment={list.comment}
-                screen="mobile"
-              />
+              <Ask key={list.listId} title={list.title} comment={list.comment} screen="mobile" />
             ))}
           </AskListStyle>
           <OtherAskStyle>

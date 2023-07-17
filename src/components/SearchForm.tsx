@@ -48,6 +48,7 @@ const SearchForm = () => {
 
   // cheak State
   const [searchStart, setsearchStart] = useState(false)
+<<<<<<< HEAD
   const [inputFocus, setInputFocus] = useState(searchTextValue ? true : false)
   const [categoryOpen, setCategoryOpen] = useState(false)
   const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' && categoryValue !== '전체' ? true : false)
@@ -55,6 +56,30 @@ const SearchForm = () => {
   const [districtSelect, setDistrictSelect] = useState(selectVal.district.length > 0 || districtValue.length > 0 ? true : false)
   const [timeOpen, setTimeOpen] = useState(selectVal.startTime !== '00:00' ? true : false)
   const [dateChange, setDateChange] = useState(selectedDate.getDate() !== dateCalcFn().getDate() ? true : false)
+=======
+  // inputText focus check
+  const [InputFocus, setInputFocus] = useState(false)
+  // select click check
+  const [selectOpen, setSelectOpen] = useState(false)
+  // district form open check
+  const [districtOpen, setDistrictOpen] = useState(false)
+  // time value change check
+  const [timeOpen, setTimeOpen] = useState(false)
+  // time value change check
+  const [dateChange, setDateChange] = useState(false)
+
+  // category value state
+  const [selectValue, setSelectValue] = useState('전체')
+  // district value state
+  const [districtValue, setDistrictValue] = useState<string[]>([])
+
+  // start,end TimeValues state
+  const [startTimeValue, setStartTimeValue] = useState<string | undefined>('00:00')
+  const [endTimeValue, setEndTimeValue] = useState<string | undefined>('00:00')
+
+  // DateValue state
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
 
   // searchbox click function
   const searchStartFn = (check: string) => {
@@ -110,7 +135,10 @@ const SearchForm = () => {
 
   // time input change function
   const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
+<<<<<<< HEAD
     if (selectedDate.getDate() === dateCalcFn().getDate()) return alert('날짜 먼저 선택해 주세요.')
+=======
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
     if (!timeOpen) setTimeOpen(true)
 
     if (type === 'start') {
@@ -180,6 +208,7 @@ const SearchForm = () => {
         {searchStart ? (
           <SearchInform>
             <StadiumForm>
+<<<<<<< HEAD
               <p className={inputFocus || searchTextValue ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
               <input
                 type="text"
@@ -189,6 +218,10 @@ const SearchForm = () => {
                 onChange={(e) => searchTextFn(e)}
                 ref={textEl}
               />
+=======
+              <p className={InputFocus ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
+              <input type="text" placeholder="보라매공원" onFocus={inputFocusFn} onBlur={inputBlurFn} />
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
@@ -237,7 +270,11 @@ const SearchForm = () => {
               </TimeForm>
             </FlexContainer>
             <DistrictForm>
+<<<<<<< HEAD
               <p onClick={districtOpenFn} className={districtOpen || districtSelect ? 'focused' : ''}>
+=======
+              <p onClick={districtOpenFn} className={districtOpen ? 'focused' : ''}>
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
                 지역을 선택해주세요
               </p>
               {districtOpen && (
@@ -276,8 +313,13 @@ const SearchForm = () => {
             </CategoryForm>
             <SearchBtnContainer>
               <div>
+<<<<<<< HEAD
                 <button onClick={() => formResetFn()}>전체 삭제</button>
                 <button onClick={dispatchSearchValue}>검색</button>
+=======
+                <button>전체 삭제</button>
+                <button>검색</button>
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
               </div>
             </SearchBtnContainer>
           </SearchInform>
@@ -374,7 +416,10 @@ const SearchInform = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+<<<<<<< HEAD
   max-width: var(--screen-pc);
+=======
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
   padding: 20px 0 142px;
   gap: 16px;
   position: fixed;
@@ -384,6 +429,18 @@ const SearchInform = styled.div`
   overflow: auto;
   height: 100%;
 
+<<<<<<< HEAD
+=======
+  @media ${({ theme }) => theme.device.mobile} {
+    top: 48px;
+  }
+
+  @media ${({ theme }) => theme.device.laptop} {
+    padding: 20px;
+    padding-bottom: 130px;
+  }
+
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
   & > div {
     padding: 16px 18px;
 
@@ -399,11 +456,14 @@ const SearchInform = styled.div`
     color: ${COLORS.gray40};
   }
 
+<<<<<<< HEAD
   @media ${({ theme }) => theme.device.laptop} {
     padding: 20px;
     padding-bottom: 130px;
   }
 
+=======
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
   @media ${({ theme }) => theme.device.mobile} {
     top: 48px;
 
@@ -420,6 +480,14 @@ const SearchInform = styled.div`
       font-size: ${FONT.m};
     }
   }
+<<<<<<< HEAD
+=======
+
+  @media ${({ theme }) => theme.device.laptop} {
+    padding: 20px;
+    padding-bottom: 130px;
+  }
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
 `
 
 const StadiumForm = styled.div`
@@ -483,6 +551,7 @@ const DateForm = styled.div<{ datechange: string }>`
     transform: none !important;
   }
 
+<<<<<<< HEAD
   .react-datepicker-ignore-onclickoutside,
   input[type='text'] {
     padding: 8px 12px;
@@ -497,6 +566,18 @@ const DateForm = styled.div<{ datechange: string }>`
 
   input:focus {
     cursor: pointer;
+=======
+    .react-datepicker-ignore-onclickoutside,
+    input[type='text'] {
+      padding: 8px 12px;
+      border: 1px solid ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
+      border-radius: 10px;
+      font-size: 13px;
+      color: ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray40)};
+      width: 61px;
+      background: ${(props) => (props.datechange === 'true' ? COLORS.green : '#fff')};
+    }
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
   }
 
   .react-datepicker__tab-loop {
@@ -541,6 +622,13 @@ const DateForm = styled.div<{ datechange: string }>`
   .react-datepicker__time-name {
     width: calc((100% / 7) - (0.166rem * 2));
     line-height: 3;
+  }
+
+  .react-datepicker__day-name::after,
+  .react-datepicker__day::after,
+  .react-datepicker__day-name::after {
+    content: '';
+    display: block;
   }
 
   .react-datepicker__day--selected {
@@ -595,7 +683,11 @@ const DistrictForm = styled.div`
 
     li {
       button {
+<<<<<<< HEAD
         padding: 6px 12px;
+=======
+        padding: 8px 16px;
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
         background: #e9e9e9;
         box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
         border-radius: 11px;
@@ -710,13 +802,24 @@ const TimeForm = styled.div<{ timeopen: string }>`
     label {
       display: inline-block;
       height: 33px;
+<<<<<<< HEAD
       width: 63px;
       line-height: 33px;
       background: ${(props) => (props.timeopen === 'true' ? COLORS.green : 'rgba(0,0,0,0)')};
+=======
+      line-height: 33px;
+      width: 63px;
+      background: ${(props) => (props.timeopen === 'true' ? COLORS.green : 'rgba(0,0,0,0)')};
+      text-align: center;
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
       border-radius: 10px;
       border: 1px solid ${(props) => (props.timeopen === 'true' ? '#fff' : '#d9d9d9')};
       color: ${(props) => (props.timeopen === 'true' ? '#fff' : COLORS.gray40)};
+<<<<<<< HEAD
       text-align: center;
+=======
+      border: 1px solid ${(props) => (props.timeopen === 'true' ? '#fff' : '#d9d9d9')};
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
       font-size: 12px;
       letter-spacing: 1.5px;
     }
@@ -775,6 +878,14 @@ const SearchBtnContainer = styled.div`
     background-size: 14px;
     background-position: 15px center;
     text-align: right;
+<<<<<<< HEAD
+=======
+    background-image: url('data:image/svg+xml;utf8,<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 15.5L12.1945 12.1886M14.0263 7.76316C14.0263 9.42425 13.3664 11.0173 12.1919 12.1919C11.0173 13.3664 9.42425 14.0263 7.76316 14.0263C6.10207 14.0263 4.50901 13.3664 3.33444 12.1919C2.15987 11.0173 1.5 9.42425 1.5 7.76316C1.5 6.10207 2.15987 4.50901 3.33444 3.33444C4.50901 2.15987 6.10207 1.5 7.76316 1.5C9.42425 1.5 11.0173 2.15987 12.1919 3.33444C13.3664 4.50901 14.0263 6.10207 14.0263 7.76316Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+    background-color: ${COLORS.green};
+    background-repeat: no-repeat;
+    background-size: 14px;
+    background-position: 15px center;
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
     font-size: 16px;
     font-weight: 600;
     color: #fff;
@@ -783,12 +894,25 @@ const SearchBtnContainer = styled.div`
 
   & > div {
     position: relative;
+<<<<<<< HEAD
     max-width: 1440px;
     height: 62px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
+=======
+  }
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1440px;
+    margin: 0 auto;
+    position: relative;
+    height: 62px;
+>>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
     line-height: 62px;
   }
 `
