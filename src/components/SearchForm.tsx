@@ -1,4 +1,4 @@
-import { SearchIcon, SearchToggleIcon, CalendarIcon } from '@src/constants/icons'
+import { SearchIcon, SearchToggleIcon, CalendarIcon, CloseIcon } from '@src/constants/icons'
 import { categoryOptions, districtOptions } from '@src/constants/options'
 import { useDispatch, useSelector } from 'react-redux'
 import theme from '@src/constants/theme'
@@ -40,13 +40,13 @@ const SearchForm = () => {
 
   // value state
   const [categoryValue, setCategoryValue] = useState(selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체')
-  const [districtValue, setDistrictValue] = useState<string[]>(selectVal.district ? selectVal.district : [])
+  const [districtValue, setDistrictValue] = useState<string[]>(selectVal.district.length > 0 ? selectVal.district : [])
   const [startTimeValue, setStartTimeValue] = useState<string>(selectVal.startTime ? selectVal.startTime : '00:00')
   const [endTimeValue, setEndTimeValue] = useState<string>(selectVal.endTime ? selectVal.endTime : '23:59')
   const [selectedDate, setSelectedDate] = useState<Date>(selectVal.date ? new Date(selectVal.date) : dateCalcFn())
   const [searchTextValue, setSearchTextValue] = useState(selectVal.title ? selectVal.title : '')
 
-  // cheak State
+  // cheack State
   const [searchStart, setsearchStart] = useState(false)
   const [inputFocus, setInputFocus] = useState(searchTextValue ? true : false)
   const [categoryOpen, setCategoryOpen] = useState(false)
@@ -151,12 +151,17 @@ const SearchForm = () => {
   }
 
   // search text input function
+  let timeoutId: number | null = null
   const searchTextFn = (element: React.ChangeEvent<HTMLInputElement>) => {
-    const debounce = setTimeout(() => {
-      return setSearchTextValue(element.target.value)
-    }, 500)
+    const { value } = element.target
 
-    return () => clearTimeout(debounce)
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+
+    timeoutId = setTimeout(() => {
+      setSearchTextValue(value)
+    }, 500)
   }
 
   // search value dispatch function
@@ -174,11 +179,63 @@ const SearchForm = () => {
     return dispatch(createSearchValue(valueState)), navigate('/board_list'), searchStartFn('close')
   }
 
+  // search keyWord btn function
+  const dispatchSearchKewordValue = (type: string, value?: string) => {
+    const valueState = {
+      title: selectVal.title,
+      date: selectVal.date,
+      startTime: selectVal.startTime,
+      endTime: selectVal.endTime,
+      district: selectVal.district,
+      category: selectVal.category,
+    }
+
+    switch (type) {
+      case 'title':
+        valueState.title = ''
+        setSearchTextValue('')
+        setInputFocus(false)
+        break
+      case 'date':
+        valueState.date = dateCalcFn().toISOString()
+        setSelectedDate(dateCalcFn())
+        setDateChange(false)
+        break
+      case 'time':
+        valueState.startTime = '00:00'
+        valueState.endTime = '23:59'
+        setStartTimeValue('00:00')
+        setEndTimeValue('59:59')
+        setTimeOpen(false)
+        break
+      case 'district':
+        let district = [...valueState.district]
+        district.splice(district.indexOf(value as string), 1)
+        valueState.district = district
+        setDistrictValue(district)
+        setDistrictSelect(false)
+        setDistrictOpen(false)
+        break
+      case 'category':
+        valueState.category = '전체'
+        setCategoryValue('전체')
+        setCategorySelect(false)
+        break
+      default:
+        break
+    }
+    return dispatch(createSearchValue(valueState))
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container searchstart={searchStart.toString()} path={urlPathname}>
         {searchStart ? (
           <SearchInform>
+            <CloseBtn onClick={() => searchStartFn('close')}>
+              <CloseIcon size={'16'} />
+              닫기
+            </CloseBtn>
             <StadiumForm>
               <p className={inputFocus || searchTextValue ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
               <input
@@ -282,20 +339,66 @@ const SearchForm = () => {
             </SearchBtnContainer>
           </SearchInform>
         ) : (
-          <SearchCorver onClick={() => searchStartFn('open')} path={urlPathname}>
-            <SearchIcon size="24px" />
-            <div>
-              <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
-              {urlPathname === '/' && (
-                <p>
-                  <span>어디든지</span>
-                  <span>원하는 시간</span>
-                  <span>가격</span>
-                </p>
-              )}
-            </div>
-            <SearchToggleIcon />
-          </SearchCorver>
+          <>
+            <SearchCorver onClick={() => searchStartFn('open')} path={urlPathname}>
+              <SearchIcon size="24" />
+              <div>
+                <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
+                {urlPathname === '/' && (
+                  <p>
+                    <span>어디든지</span>
+                    <span>원하는 시간</span>
+                    <span>가격</span>
+                  </p>
+                )}
+              </div>
+              <SearchToggleIcon />
+            </SearchCorver>
+            {urlPathname !== '/' && (
+              <SearchKeyWordBtn>
+                {selectVal.title && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('title')}>
+                      {selectVal.title}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {new Date(selectVal.date).getDate() !== dateCalcFn().getDate() && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('date')}>
+                      {selectVal.date.slice(5, 10).replace('-', '.')}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.category !== '전체' && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('category')}>
+                      {selectVal.category}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.startTime !== '00:00' && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('time')}>
+                      {selectVal.startTime}~{selectVal.endTime}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.district.map((item, idx) => (
+                  <li key={idx}>
+                    <button onClick={() => dispatchSearchKewordValue('district', item)}>
+                      {item}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                ))}
+              </SearchKeyWordBtn>
+            )}
+          </>
         )}
       </Container>
     </ThemeProvider>
@@ -316,6 +419,7 @@ const Container = styled.div<{ searchstart: string; path: string }>`
   min-height: 60px;
   display: flex;
   justify-content: center;
+  flex-direction: ${(props) => (props.searchstart === 'false' && props.path !== '/' ? 'column' : 'row')};
   align-items: center;
   margin: 0 auto;
   background: #fff;
@@ -345,8 +449,8 @@ const SearchCorver = styled.div<{ path: string }>`
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  box-shadow: ${(props) => props.path !== '/' && 'none'};
   ${boxline}
-  box-shadow : ${(props) => props.path !== '/' && 'none'};
 
   div {
     width: ${(props) => (props.path === '/' ? 'auto' : '100%')};
@@ -362,10 +466,20 @@ const SearchCorver = styled.div<{ path: string }>`
     p:last-child {
       display: flex;
       gap: 10px;
-      font-size: 12px;
+      font-size: ${FONT.pc};
+
       height: 22px;
       line-height: 22px;
       color: #777;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    height: ${(props) => (props.path !== '/' ? '40px' : '60px')};
+    div {
+      p:last-child {
+        font-size: 12px;
+      }
     }
   }
 `
@@ -419,6 +533,10 @@ const SearchInform = styled.div`
     p {
       font-size: ${FONT.m};
     }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `
 
@@ -759,44 +877,81 @@ const TimeForm = styled.div<{ timeopen: string }>`
 `
 
 const SearchBtnContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 0 18px !important;
   border: 0px !important;
-  border-top: 1px solid #d9d9d9 !important;
+  border-top: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   background: #fff;
   z-index: 1;
+  margin-top: 24px;
+
+  button:first-child {
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 214px);
+    transform: translate(-50%, -50%);
+    font-size: ${FONT.pc};
+  }
 
   button:last-child {
     position: relative;
-    width: 88px;
-    height: 38px;
-    padding: 8px 16px;
-    background-image: url('data:image/svg+xml;utf8,<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 15.5L12.1945 12.1886M14.0263 7.76316C14.0263 9.42425 13.3664 11.0173 12.1919 12.1919C11.0173 13.3664 9.42425 14.0263 7.76316 14.0263C6.10207 14.0263 4.50901 13.3664 3.33444 12.1919C2.15987 11.0173 1.5 9.42425 1.5 7.76316C1.5 6.10207 2.15987 4.50901 3.33444 3.33444C4.50901 2.15987 6.10207 1.5 7.76316 1.5C9.42425 1.5 11.0173 2.15987 12.1919 3.33444C13.3664 4.50901 14.0263 6.10207 14.0263 7.76316Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
-    background-color: ${COLORS.green};
-    background-repeat: no-repeat;
-    background-size: 14px;
-    background-position: 15px center;
-    text-align: right;
-    font-size: 16px;
+    width: 328px;
+    height: 48px;
+    text-align: center;
+    font-size: 20px;
     font-weight: 600;
     color: #fff;
-    border-radius: 16px;
+    border-radius: 8px;
+    background-color: ${COLORS.green};
   }
 
-  & > div {
-    position: relative;
-    max-width: 1440px;
-    height: 62px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    line-height: 62px;
+  @media ${({ theme }) => theme.device.tablet} {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #d9d9d9 !important;
+    margin-top: 0;
+
+    button:first-child {
+      position: relative;
+      left: 0;
+      top: 0;
+      transform: none;
+      font-size: 14px;
+    }
+
+    button:last-child {
+      width: 88px;
+      height: 38px;
+      padding: 8px 16px;
+      background-image: url('data:image/svg+xml;utf8,<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 15.5L12.1945 12.1886M14.0263 7.76316C14.0263 9.42425 13.3664 11.0173 12.1919 12.1919C11.0173 13.3664 9.42425 14.0263 7.76316 14.0263C6.10207 14.0263 4.50901 13.3664 3.33444 12.1919C2.15987 11.0173 1.5 9.42425 1.5 7.76316C1.5 6.10207 2.15987 4.50901 3.33444 3.33444C4.50901 2.15987 6.10207 1.5 7.76316 1.5C9.42425 1.5 11.0173 2.15987 12.1919 3.33444C13.3664 4.50901 14.0263 6.10207 14.0263 7.76316Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+      background-color: ${COLORS.green};
+      background-repeat: no-repeat;
+      background-size: 14px;
+      background-position: 15px center;
+      text-align: right;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 16px;
+    }
+
+    & > div {
+      position: relative;
+      max-width: 1440px;
+      height: 62px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 auto;
+      line-height: 62px;
+    }
   }
 `
 
@@ -828,4 +983,56 @@ const FlexContainer = styled.div`
       width: 100%;
     }
   }
+`
+
+const SearchKeyWordBtn = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: var(--screen-pc);
+  width: 100%;
+  margin: 12px auto 0;
+  align-items: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    height: 34px;
+    line-height: 30px;
+    padding: 2px 8px;
+    background-color: ${COLORS.green};
+    border-radius: 8px;
+    color: #fff;
+    font-size: ${FONT.pc};
+
+    svg {
+      margin: 0 5px 0 10px;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    button {
+      display: flex;
+      align-items: center;
+      height: 26px;
+      line-height: 22px;
+      padding: 2px 8px;
+      font-size: 12px;
+
+      svg {
+        margin: 0 5px 0 10px;
+        width: 8px;
+        height: 8px;
+        margin: 0 2px 0 5px;
+      }
+    }
+  }
+`
+
+const CloseBtn = styled.button`
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px 5px;
 `
