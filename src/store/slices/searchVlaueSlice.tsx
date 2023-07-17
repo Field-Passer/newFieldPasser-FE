@@ -14,7 +14,7 @@ const initialState: MyState = {
   date: new Date().toISOString(),
   startTime: '',
   endTime: '',
-  district: [''],
+  district: [],
   category: '',
 }
 

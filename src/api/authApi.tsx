@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import { privateApi, publicApi } from './Instance'
-=======
 import axios from 'axios'
 import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
 
 // 로그인
 export const userLogin = async ({ userEmail, userPw }: LoginType) => {
@@ -32,11 +28,8 @@ export const userLogin = async ({ userEmail, userPw }: LoginType) => {
 
 // 로그아웃
 export const userLogout = async () => {
-<<<<<<< HEAD
-=======
   const access_token = store.getState().accessToken.accessToken
   if (access_token == null) return console.log('로그아웃 요청에서 at=null')
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
   try {
     const response = await privateApi('/auth/logout', {
       method: 'POST',
@@ -47,21 +40,12 @@ export const userLogout = async () => {
       message: response.data.message,
     }
   } catch (error) {
-<<<<<<< HEAD
-    console.log(error)
-=======
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
     return {
       // message: error
     }
   }
 }
 
-<<<<<<< HEAD
-// at 검사
-
-// rt 재발급
-=======
 // accessToken 검사 (AT 검사)
 export async function checkTokenExpire() {
   const access_token = store.getState().accessToken.accessToken
@@ -148,4 +132,3 @@ export async function postRefereshToken() {
 // }
 
 // (회원가입시) 이메일 인증 절차
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081

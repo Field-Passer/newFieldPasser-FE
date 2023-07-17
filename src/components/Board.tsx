@@ -21,7 +21,6 @@ const Board = ({ data, messege }: Props) => {
   return (
     <ThemeProvider theme={theme}>
       <BoardContainer>
-<<<<<<< HEAD
         {data && data.length > 0 ? (
           <ul>
             {data.map((list) => (
@@ -49,31 +48,6 @@ const Board = ({ data, messege }: Props) => {
         ) : (
           <p>{messege}</p>
         )}
-=======
-        <ul>
-          {data.map((list, i) => (
-            <li key={i}>
-              <div className="imgae_wrap">
-                <img src={list.image} alt="이미지" />
-              </div>
-              <div className="info_wrap">
-                <p className="stadium">{list.stadium}</p>
-                <p className="title">{list.title}</p>
-                <p className="price">{list.price.toLocaleString()} 원</p>
-                <div className="date">
-                  <span>{list.date} </span>
-                  <div className="view_like">
-                    <span>조회수</span>
-                    <span>{list.view}</span>
-                    <span>하트</span>
-                    <span>{list.like}</span>
-                  </div>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
       </BoardContainer>
     </ThemeProvider>
   )
@@ -144,10 +118,6 @@ const BoardContainer = styled.div`
         font-size: ${FONT.m};
         font-weight: 400;
 
-<<<<<<< HEAD
-        & > span:nth-child(2) {
-          margin-right: 4px;
-=======
         .stadium {
           color: ${COLORS.green};
           font-size: ${FONT.m};
@@ -176,7 +146,6 @@ const BoardContainer = styled.div`
           color: ${COLORS.gray40};
           font-size: ${FONT.m};
           font-weight: 400;
->>>>>>> c4172c5f32dfc6119adbfa7947f5ed9c01916081
         }
       }
     }
