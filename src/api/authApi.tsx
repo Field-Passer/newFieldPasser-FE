@@ -3,7 +3,7 @@ import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
 
 // 로그인
-export const userLogin = async ({ userEmail, userPw }: userInfoType) => {
+export const userLogin = async ({ userEmail, userPw }: IuserInfoType) => {
   try {
     const response = await publicApi('/auth/login', {
       method: 'POST',
@@ -98,7 +98,7 @@ export async function postRefereshToken() {
 }
 
 // 회원가입
-export const join = async ({ userEmail, userPw, userName, userPhone }: userInfoType) => {
+export const join = async ({ userEmail, userPw, userName, userPhone }: IuserInfoType) => {
   try {
     const response = await publicApi('/signup', {
       method: 'POST',
@@ -123,13 +123,19 @@ export const join = async ({ userEmail, userPw, userName, userPhone }: userInfoT
 }
 
 // (회원가입시) 이메일 중복 검사
-// export async function checkDuplicateEmail({ userEmail }: userInfoType) {
-//   const response = await publicApi.post('/duplicate-email', {
-//     data: {
-//       memberId: userEmail,
-//     },
-//   })
-//   return response
-// }
+export const checkDuplicateEmail = async ({ userEmail }: IuserInfoType) => {
+  console.log(userEmail)
+  try {
+    const response = await publicApi('/duplicate-email', {
+      method: 'POST',
+      data: {
+        memberId: userEmail,
+      },
+    })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 // (비번찾기에 쓸?) 이메일 인증 절차
