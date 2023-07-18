@@ -1,7 +1,7 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/boardApi'

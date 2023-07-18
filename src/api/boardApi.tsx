@@ -1,11 +1,7 @@
-import axios from 'axios'
-import { privateApi, publicApi } from './Instance'
-import store from '@src/store/config'
+import { privateApi } from './Instance'
 
 //게시글 작성
 export const requestWrite = async (formData: FormData) => {
-  // // privateApi.defaults.headers.common['Content-Type'] = 'multipart/form-data'
-
   try {
     const response = await privateApi('/board/register', {
       method: 'POST',
