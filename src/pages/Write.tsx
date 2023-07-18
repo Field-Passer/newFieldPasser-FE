@@ -18,7 +18,6 @@ const Write = () => {
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
 
   const imgRef = useRef<HTMLInputElement>(null)
-  const [imgFile, setImgFile] = useState<File>()
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -29,7 +28,7 @@ const Write = () => {
       event.target.files = null
       return false
     }
-    thisFile && setImgFile(thisFile)
+
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
       // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
@@ -75,9 +74,7 @@ const Write = () => {
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
       if (item.name === 'file') {
-        // console.log('form의 event.target.value:' + item.value)
-        // console.log('input의 event.target.files[0]:' + imgFile)
-        imgFile && formData.append('file', imgFile)
+        item.files && formData.append('file', item.files[0])
       } else if (item.name === 'price') {
         formData.append('price', item.value)
       } else if (item.name === 'date') {
