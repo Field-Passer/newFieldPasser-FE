@@ -18,6 +18,7 @@ const Write = () => {
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
 
   const imgRef = useRef<HTMLInputElement>(null)
+  const [imgFile, setImgFile] = useState<File>()
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -28,6 +29,7 @@ const Write = () => {
       event.target.files = null
       return false
     }
+    thisFile && setImgFile(thisFile)
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
       // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
@@ -56,24 +58,9 @@ const Write = () => {
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  const setRandomImg = (category: string) => {
-    if (category === '축구') {
-      console.log('상태에 기본이미지 세팅')
-    } else if (category === '풋살') {
-      console.log('상태에 기본이미지 세팅')
-    } else if (category === '농구') {
-      console.log('상태에 기본이미지 세팅')
-    } else if (category === '테니스') {
-      console.log('상태에 기본이미지 세팅')
-    } else if (category === '배드민턴') {
-      console.log('상태에 기본이미지 세팅')
-    }
-  }
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
-    const category = target[4] as HTMLInputElement
     const selectedStart = target[6] as HTMLInputElement
     const selectedEnd = target[7] as HTMLInputElement
 
@@ -87,9 +74,10 @@ const Write = () => {
 
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
-      if (item.name === 'file' && item.value === '') {
-        setRandomImg(category.value)
-        // formData.append('file', item.value) // 상태에서 이미지 가져오기..?
+      if (item.name === 'file') {
+        // console.log('form의 event.target.value:' + item.value)
+        // console.log('input의 event.target.files[0]:' + imgFile)
+        imgFile && formData.append('file', imgFile)
       } else if (item.name === 'price') {
         formData.append('price', item.value)
       } else if (item.name === 'date') {
@@ -106,7 +94,10 @@ const Write = () => {
     formData.append('startTime', start)
     formData.append('endTime', end)
 
-    requestWrite(formData)
+    const res = await requestWrite(formData)
+    if (res === 200) {
+      window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+    }
   }
 
   return (
