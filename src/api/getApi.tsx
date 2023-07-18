@@ -6,6 +6,7 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
     values.startTime = ''
     values.endTime = ''
   }
+  console.log(values)
 
   return await publicApi
     .get(
