@@ -16,7 +16,7 @@ type PropsType = {
 
 const Header = ({ setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 450px)',
+    query: '(max-width: 833px)',
   })
   const navigate = useNavigate()
   const openSidebar = () => {
@@ -48,7 +48,7 @@ const Header = ({ setSideOpen }: PropsType) => {
             onClick={() => {
               openSidebar()
             }}
-            className="menu"
+            className="sidebar"
           />
           <img src="/logo.png" alt="logo" onClick={() => navigate('/')} />
         </MContainer>
@@ -67,7 +67,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <button
                 onClick={() => {
                   {
-                    authenticated ? navigate('/board_form') : clickWithoutLogin()
+                    authenticated ? navigate('/write') : clickWithoutLogin()
                   }
                 }}
               >
@@ -89,7 +89,7 @@ const MContainer = styled.header`
   background-color: white;
   border-bottom: 1px solid ${COLORS.gray20};
 
-  .menu {
+  .sidebar {
     width: 24px;
     height: 24px;
     position: absolute;
@@ -131,23 +131,15 @@ const Inner = styled.div`
     gap: 20px;
     height: 32px;
     align-items: center;
-
-    @media (max-width: 540px) {
-      font-size: 14px;
-      gap: 10px;
-    }
+    font-size: 15px;
+    gap: 10px;
 
     button {
       width: 100px;
       height: 32px;
-      font-size: ${FONT.pc};
+      font-size: 15px;
       background-color: ${COLORS.green};
       color: white;
-
-      @media (max-width: 540px) {
-        font-size: 14px;
-        width: 80px;
-      }
     }
 
     a {
