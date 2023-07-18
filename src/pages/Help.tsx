@@ -4,9 +4,10 @@ import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
 import { memberAccountList, dealManagementList, useEctlist } from '@src/constants/helpList'
 import Ask from '@src/components/Ask'
-import { Mobile, PC } from '@src/hooks/useScreenHook'
+import { Mobile } from '@src/hooks/useScreenHook'
 import MobileMenu from '@src/components/MobileMenu'
 import Title from '@src/components/Title'
+import { useMediaQuery } from 'react-responsive'
 
 const Help = () => {
   const menuLists = ['회원 / 계정', '거래 분쟁 / 운영 정책', '이용 방법 / 기타']
@@ -20,9 +21,13 @@ const Help = () => {
       return useEctlist
     }
   }
+  const isPC = useMediaQuery({
+    query: '(min-width: 450px)',
+  })
+
   return (
     <>
-      <PC>
+      {isPC && (
         <Inner padding="32px 16px">
           <Title screen="pc" name="자주 묻는 질문" />
           <MenuStyle>
@@ -49,7 +54,7 @@ const Help = () => {
             <button>등록하기</button>
           </OtherAskStyle>
         </Inner>
-      </PC>
+      )}
       <Mobile>
         <Inner width="100%">
           <Title screen="mobile" name="자주 묻는 질문" />
