@@ -4,7 +4,7 @@ import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
-import { requestWrite } from '@src/api/boardApi'
+import { requestWrite } from '@src/api/postApi'
 
 const Write = () => {
   //페이지 진입 시 토큰 확인
