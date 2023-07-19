@@ -23,23 +23,11 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }], //should add ".ts" if typescript project
     quotes: ['error', 'single', { avoidEscape: true }],
-    indent: ['error', 2],
-    'no-trailing-spaces': 0,
-    'keyword-spacing': 0,
-    'no-unused-vars': 1,
-    'no-multiple-empty-lines': 0,
-    'space-before-function-paren': 0,
-    'eol-last': 0,
-    'prettier/prettier': [
-      'error',
-      {
-        endOfLine: 'auto',
+    indent: 'off',
+    settings: {
+      react: {
+        version: 'detect',
       },
-    ],
-  },
-  settings: {
-    react: {
-      version: 'detect',
     },
-  },
+  }
 }

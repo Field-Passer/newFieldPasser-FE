@@ -104,8 +104,7 @@ const GlobalStyles = createGlobalStyle`
     color: #3a3a3a;
 
     /* Screen max-width */
-    --screen-m: 450px;
-    --screen-tab: 834px;
+    --screen-m: 833px;
     --screen-pc: 1024px;
 
   }

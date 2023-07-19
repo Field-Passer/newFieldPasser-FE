@@ -1,68 +1,97 @@
-import { SearchIcon, SearchToggleIcon, CalendarIcon } from '@src/constants/icons'
+import { SearchIcon, SearchToggleIcon, CalendarIcon, CloseIcon } from '@src/constants/icons'
 import { categoryOptions, districtOptions } from '@src/constants/options'
+import { useDispatch, useSelector } from 'react-redux'
 import theme from '@src/constants/theme'
 import { FONT, COLORS } from '@src/globalStyles'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ThemeProvider, styled } from 'styled-components'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { createSearchValue } from '@src/store/slices/searchVlaueSlice'
+import { RootState } from '../store/config'
+
+export const dateCalcFn = () => {
+  const today = new Date()
+  return new Date(today.setDate(today.getDate() - 1))
+}
 
 const SearchForm = () => {
-  // searchbox open check
+  // 기존 선택된 value 값
+  const selectVal = useSelector((state: RootState) => {
+    return {
+      title: state.searchVlaue.title,
+      date: state.searchVlaue.date,
+      district: state.searchVlaue.district,
+      category: state.searchVlaue.category,
+      startTime: state.searchVlaue.startTime,
+      endTime: state.searchVlaue.endTime,
+    }
+  })
+
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const urlPathname = location.pathname
+  const navigate = useNavigate()
+
+  // text Input element
+  const textEl = useRef<HTMLInputElement>(null)
+
+  // value state
+  const [categoryValue, setCategoryValue] = useState(selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체')
+  const [districtValue, setDistrictValue] = useState<string[]>(selectVal.district.length > 0 ? selectVal.district : [])
+  const [startTimeValue, setStartTimeValue] = useState<string>(selectVal.startTime ? selectVal.startTime : '00:00')
+  const [endTimeValue, setEndTimeValue] = useState<string>(selectVal.endTime ? selectVal.endTime : '23:59')
+  const [selectedDate, setSelectedDate] = useState<Date>(selectVal.date ? new Date(selectVal.date) : dateCalcFn())
+  const [searchTextValue, setSearchTextValue] = useState(selectVal.title ? selectVal.title : '')
+
+  // cheack State
   const [searchStart, setsearchStart] = useState(false)
-  // inputText focus check
-  const [InputFocus, setInputFocus] = useState(false)
-  // select click check
-  const [selectOpen, setSelectOpen] = useState(false)
-  // district form open check
-  const [districtOpen, setDistrictOpen] = useState(false)
-  // time value change check
-  const [timeOpen, setTimeOpen] = useState(false)
-  // time value change check
-  const [dateChange, setDateChange] = useState(false)
-
-  // category value state
-  const [selectValue, setSelectValue] = useState('전체')
-  // district value state
-  const [districtValue, setDistrictValue] = useState<string[]>([])
-
-  // start,end TimeValues state
-  const [startTimeValue, setStartTimeValue] = useState<string | undefined>('00:00')
-  const [endTimeValue, setEndTimeValue] = useState<string | undefined>('00:00')
-
-  // DateValue state
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+  const [inputFocus, setInputFocus] = useState(searchTextValue ? true : false)
+  const [categoryOpen, setCategoryOpen] = useState(false)
+  const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' && categoryValue !== '전체' ? true : false)
+  const [districtOpen, setDistrictOpen] = useState(districtValue.length > 0 ? true : false)
+  const [districtSelect, setDistrictSelect] = useState(false)
+  const [timeOpen, setTimeOpen] = useState(selectVal.startTime !== '00:00' ? true : false)
+  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== dateCalcFn().getDate() ? true : false)
 
   // searchbox click function
-  const searchStartFn = () => {
-    setsearchStart(true)
-    document.querySelector('body')?.classList.add('stop-scrolling')
+  const searchStartFn = (check: string) => {
+    if (check === 'open') {
+      setsearchStart(true)
+      document.querySelector('body')?.classList.add('stop-scrolling')
+    } else {
+      setsearchStart(false)
+      document.querySelector('body')?.classList.remove('stop-scrolling')
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // input focus function
-  const inputFocusFn = () => {
-    setInputFocus(true)
-  }
-  const inputBlurFn = () => {
-    setInputFocus(false)
+  const inputFocusFn = (type: string) => {
+    if (type === 'focus') {
+      setInputFocus(true)
+    } else {
+      setInputFocus(false)
+    }
   }
 
   // category select function
   const selectOpenFn = (value?: string) => {
-    selectOpen ? setSelectOpen(false) : setSelectOpen(true)
-    value && setSelectValue(value)
+    categoryOpen ? setCategoryOpen(false) : setCategoryOpen(true)
+    categoryValue ? setCategorySelect(true) : setCategorySelect(false)
+    value && setCategoryValue(value)
   }
 
   // district select function
   const districtOpenFn = () => {
-    setDistrictOpen(true)
+    districtOpen ? setDistrictOpen(false) : setDistrictOpen(true)
+    districtValue.length === 0 ? setDistrictSelect(false) : setDistrictSelect(true)
   }
   const districtValueFn = (element: React.MouseEvent<HTMLButtonElement>, value: string) => {
     const idx = districtValue.indexOf(value)
     const target = element.target as HTMLButtonElement
-
     // 선택 최대 갯수 처리
     if (districtValue.length === 5 && idx === -1) {
       return alert('최대 5개 선택 가능합니다.')
@@ -81,6 +110,7 @@ const SearchForm = () => {
 
   // time input change function
   const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    if (selectedDate.getDate() === dateCalcFn().getDate()) return alert('날짜 먼저 선택해 주세요.')
     if (!timeOpen) setTimeOpen(true)
 
     if (type === 'start') {
@@ -95,14 +125,127 @@ const SearchForm = () => {
     if (!dateChange) return setDateChange(true)
   }
 
+  // form reset function
+  const formResetFn = () => {
+    setStartTimeValue('00:00')
+    setEndTimeValue('23:59')
+    setDistrictValue([])
+    setCategoryValue('전체')
+    setSelectedDate(dateCalcFn())
+    setSearchTextValue('')
+    setTimeOpen(false)
+    setDateChange(false)
+    setDistrictOpen(false)
+
+    const input = textEl.current as HTMLInputElement
+    input.value = ''
+
+    const selected = document.querySelectorAll('.selected')
+    for (const x of selected) {
+      x.classList.remove('selected')
+    }
+    const focused = document.querySelectorAll('.focused')
+    for (const x of focused) {
+      x.classList.remove('focused')
+    }
+  }
+
+  // search text input function
+  let timeoutId: number | null = null
+  const searchTextFn = (element: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = element.target
+
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+
+    timeoutId = setTimeout(() => {
+      setSearchTextValue(value)
+    }, 500)
+  }
+
+  // search value dispatch function
+  const dispatchSearchValue = () => {
+    const valueState = {
+      title: searchTextValue,
+      date: selectedDate.toISOString(),
+      startTime: startTimeValue,
+      endTime: endTimeValue,
+      district: districtValue,
+      category: categoryValue,
+    }
+
+    if (valueState.startTime > valueState.endTime) return alert('시간을 확인해주세요')
+    return dispatch(createSearchValue(valueState)), navigate('/board_list'), searchStartFn('close')
+  }
+
+  // search keyWord btn function
+  const dispatchSearchKewordValue = (type: string, value?: string) => {
+    const valueState = {
+      title: selectVal.title,
+      date: selectVal.date,
+      startTime: selectVal.startTime,
+      endTime: selectVal.endTime,
+      district: selectVal.district,
+      category: selectVal.category,
+    }
+
+    switch (type) {
+      case 'title':
+        valueState.title = ''
+        setSearchTextValue('')
+        setInputFocus(false)
+        break
+      case 'date':
+        valueState.date = dateCalcFn().toISOString()
+        setSelectedDate(dateCalcFn())
+        setDateChange(false)
+        break
+      case 'time':
+        valueState.startTime = '00:00'
+        valueState.endTime = '23:59'
+        setStartTimeValue('00:00')
+        setEndTimeValue('59:59')
+        setTimeOpen(false)
+        break
+      case 'district':
+        let district = [...valueState.district]
+        district.splice(district.indexOf(value as string), 1)
+        valueState.district = district
+        setDistrictValue(district)
+        setDistrictSelect(false)
+        setDistrictOpen(false)
+        break
+      case 'category':
+        valueState.category = '전체'
+        setCategoryValue('전체')
+        setCategorySelect(false)
+        break
+      default:
+        break
+    }
+    return dispatch(createSearchValue(valueState))
+  }
+
   return (
     <ThemeProvider theme={theme}>
-      <Container searchstart={searchStart.toString()}>
+      <Container searchstart={searchStart.toString()} path={urlPathname}>
         {searchStart ? (
           <SearchInform>
+            <CloseBtn onClick={() => searchStartFn('close')}>
+              <CloseIcon size={'16'} />
+              닫기
+            </CloseBtn>
             <StadiumForm>
-              <p className={InputFocus ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
-              <input type="text" placeholder="보라매공원" onFocus={inputFocusFn} onBlur={inputBlurFn} />
+              <p className={inputFocus || searchTextValue ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
+              <input
+                type="text"
+                placeholder={selectVal.title ? selectVal.title : '보라매 공원'}
+                onFocus={() => inputFocusFn('focus')}
+                onBlur={() => inputFocusFn('blur')}
+                onChange={(e) => searchTextFn(e)}
+                ref={textEl}
+              />
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
@@ -111,11 +254,11 @@ const SearchForm = () => {
                 <CalendarIcon color={dateChange ? COLORS.green : '#AAA'} />
                 <DatePicker
                   locale={ko}
-                  dateFormat="MM.dd" // 날짜 형태
+                  dateFormat="MM.dd"
                   shouldCloseOnSelect={false}
                   minDate={new Date()}
                   selected={selectedDate}
-                  onChange={(date) => {
+                  onChange={(date: Date) => {
                     setSelectedDate(date)
                     changedateFn()
                   }}
@@ -151,7 +294,7 @@ const SearchForm = () => {
               </TimeForm>
             </FlexContainer>
             <DistrictForm>
-              <p onClick={districtOpenFn} className={districtOpen ? 'focused' : ''}>
+              <p onClick={districtOpenFn} className={districtOpen || districtSelect ? 'focused' : ''}>
                 지역을 선택해주세요
               </p>
               {districtOpen && (
@@ -160,6 +303,7 @@ const SearchForm = () => {
                     {districtOptions.map((v, i) => (
                       <li key={i}>
                         <button
+                          className={districtValue.indexOf(v) !== -1 ? 'selected' : ''}
                           onClick={(e) => {
                             districtValueFn(e, v)
                           }}
@@ -173,10 +317,10 @@ const SearchForm = () => {
               )}
             </DistrictForm>
             <CategoryForm>
-              <p className={selectOpen ? 'focused' : ''}>종목을 선택해주세요</p>
+              <p className={categorySelect ? 'focused' : ''}>종목을 선택해주세요</p>
               <ul onClick={() => selectOpenFn()}>
-                <p>{selectValue}</p>
-                {selectOpen && (
+                <p>{categoryValue}</p>
+                {categoryOpen && (
                   <>
                     {categoryOptions.map((v, i) => (
                       <li key={i}>
@@ -189,24 +333,72 @@ const SearchForm = () => {
             </CategoryForm>
             <SearchBtnContainer>
               <div>
-                <button>전체 삭제</button>
-                <button>검색</button>
+                <button onClick={() => formResetFn()}>전체 삭제</button>
+                <button onClick={dispatchSearchValue}>검색</button>
               </div>
             </SearchBtnContainer>
           </SearchInform>
         ) : (
-          <SearchCorver onClick={() => searchStartFn()}>
-            <SearchIcon size="24px" />
-            <div>
-              <p>어떤 구장을 찾으세요?</p>
-              <p>
-                <span>어디든지</span>
-                <span>원하는 시간</span>
-                <span>가격</span>
-              </p>
-            </div>
-            <SearchToggleIcon />
-          </SearchCorver>
+          <>
+            <SearchCorver onClick={() => searchStartFn('open')} path={urlPathname}>
+              <SearchIcon size="24" />
+              <div>
+                <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
+                {urlPathname === '/' && (
+                  <p>
+                    <span>어디든지</span>
+                    <span>원하는 시간</span>
+                    <span>가격</span>
+                  </p>
+                )}
+              </div>
+              <SearchToggleIcon />
+            </SearchCorver>
+            {urlPathname !== '/' && (
+              <SearchKeyWordBtn>
+                {selectVal.title && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('title')}>
+                      {selectVal.title}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {new Date(selectVal.date).getDate() !== dateCalcFn().getDate() && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('date')}>
+                      {selectVal.date.slice(5, 10).replace('-', '.')}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.category !== '전체' && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('category')}>
+                      {selectVal.category}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.startTime !== '00:00' && (
+                  <li>
+                    <button onClick={() => dispatchSearchKewordValue('time')}>
+                      {selectVal.startTime}~{selectVal.endTime}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                )}
+                {selectVal.district.map((item, idx) => (
+                  <li key={idx}>
+                    <button onClick={() => dispatchSearchKewordValue('district', item)}>
+                      {item}
+                      <CloseIcon size="12" color="#fff" />
+                    </button>
+                  </li>
+                ))}
+              </SearchKeyWordBtn>
+            )}
+          </>
         )}
       </Container>
     </ThemeProvider>
@@ -216,21 +408,25 @@ const SearchForm = () => {
 export default SearchForm
 
 const boxline = {
-  border: '1px solid #e9e9e9',
+  border: '1px solid #d9d9d9',
   'border-radius': '16px',
-  'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+  'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.10)',
 }
 
-const Container = styled.div<{ searchstart: string }>`
-  padding: 0 20px;
-  max-width: var(--screen-pc);
+const Container = styled.div<{ searchstart: string; path: string }>`
+  padding: 20px 20px;
+  width: 100%;
   min-height: 60px;
   display: flex;
   justify-content: center;
+  flex-direction: ${(props) => (props.searchstart === 'false' && props.path !== '/' ? 'column' : 'row')};
   align-items: center;
-  margin: 20px auto 0;
+  margin: 0 auto;
   background: #fff;
   height: ${(props) => (props.searchstart === 'false' ? '' : '100vh')};
+  box-shadow: ${(props) => (props.path !== '/' ? '0px 4px 4px rgba(0, 0, 0, 0.10)' : 'none')};
+  box-sizing: border-box;
+
   * {
     box-sizing: border-box;
   }
@@ -244,17 +440,22 @@ const Container = styled.div<{ searchstart: string }>`
   }
 `
 
-const SearchCorver = styled.div`
+const SearchCorver = styled.div<{ path: string }>`
+  max-width: var(--screen-pc);
   width: 100%;
-  height: 100%;
+  height: 60px;
   padding: 4px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  box-shadow: ${(props) => props.path !== '/' && 'none'};
   ${boxline}
 
   div {
+    width: ${(props) => (props.path === '/' ? 'auto' : '100%')};
+    padding-left: ${(props) => (props.path === '/' ? '0' : '20px')};
+
     p:first-child {
       font-size: ${FONT.pc};
       font-weight: 900;
@@ -265,10 +466,20 @@ const SearchCorver = styled.div`
     p:last-child {
       display: flex;
       gap: 10px;
-      font-size: 12px;
+      font-size: ${FONT.pc};
+
       height: 22px;
       line-height: 22px;
       color: #777;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    height: ${(props) => (props.path !== '/' ? '40px' : '60px')};
+    div {
+      p:last-child {
+        font-size: 12px;
+      }
     }
   }
 `
@@ -276,8 +487,8 @@ const SearchCorver = styled.div`
 const SearchInform = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: var(--screen-pc);
   width: 100%;
+  max-width: var(--screen-pc);
   padding: 20px 0 142px;
   gap: 16px;
   position: fixed;
@@ -286,15 +497,6 @@ const SearchInform = styled.div`
   background: #fff;
   overflow: auto;
   height: 100%;
-
-  @media ${({ theme }) => theme.device.mobile} {
-    top: 48px;
-  }
-
-  @media ${({ theme }) => theme.device.laptop} {
-    padding: 20px;
-    padding-bottom: 130px;
-  }
 
   & > div {
     padding: 16px 18px;
@@ -309,6 +511,11 @@ const SearchInform = styled.div`
     font-size: ${FONT.pc};
     font-weight: 900;
     color: ${COLORS.gray40};
+  }
+
+  @media ${({ theme }) => theme.device.laptop} {
+    padding: 20px;
+    padding-bottom: 130px;
   }
 
   @media ${({ theme }) => theme.device.mobile} {
@@ -328,19 +535,18 @@ const SearchInform = styled.div`
     }
   }
 
-  @media ${({ theme }) => theme.device.laptop} {
-    padding: 20px;
-    padding-bottom: 130px;
+  &::-webkit-scrollbar {
+    display: none;
   }
 `
 
 const StadiumForm = styled.div`
   ${boxline}
-  min-height: 120px;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: relative;
+  min-height: 120px;
 
   svg {
     position: absolute;
@@ -364,11 +570,11 @@ const StadiumForm = styled.div`
 `
 
 const DateForm = styled.div<{ datechange: string }>`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  position: relative;
 
   svg {
     position: absolute;
@@ -380,29 +586,35 @@ const DateForm = styled.div<{ datechange: string }>`
     display: flex;
     align-items: center;
     gap: 5px;
+  }
 
-    .react-datepicker__triangle::before,
-    .react-datepicker__triangle::after {
-      display: none;
-    }
+  // 라이브러리 css 커스텀
+  .react-datepicker__triangle::before,
+  .react-datepicker__triangle::after {
+    display: none;
+  }
 
-    .react-datepicker-popper {
-      width: 100% !important;
-      position: relative !important;
-      inset: 0 !important;
-      transform: none !important;
-    }
+  .react-datepicker-popper {
+    width: 100% !important;
+    position: relative !important;
+    inset: 0 !important;
+    transform: none !important;
+  }
 
-    .react-datepicker-ignore-onclickoutside,
-    input[type='text'] {
-      padding: 8px 12px;
-      border: 1px solid ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
-      border-radius: 10px;
-      font-size: 13px;
-      color: ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray40)};
-      width: 61px;
-      background: ${(props) => (props.datechange === 'true' ? COLORS.green : '#fff')};
-    }
+  .react-datepicker-ignore-onclickoutside,
+  input[type='text'] {
+    padding: 8px 12px;
+    border: 1px solid ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
+    border-radius: 10px;
+    font-size: 13px;
+    color: ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray40)};
+    width: 61px;
+    background: ${(props) => (props.datechange === 'true' ? COLORS.green : '#fff')};
+    cursor: pointer;
+  }
+
+  input:focus {
+    cursor: pointer;
   }
 
   .react-datepicker__tab-loop {
@@ -457,10 +669,10 @@ const DateForm = styled.div<{ datechange: string }>`
   }
 
   .react-datepicker__day--selected {
-    border-radius: 50%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0);
     position: relative;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0);
     color: #fff;
 
     &::before {
@@ -508,7 +720,7 @@ const DistrictForm = styled.div`
 
     li {
       button {
-        padding: 8px 16px;
+        padding: 6px 12px;
         background: #e9e9e9;
         box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
         border-radius: 11px;
@@ -595,9 +807,9 @@ const CategoryForm = styled.div`
 `
 
 const TimeForm = styled.div<{ timeopen: string }>`
+  position: relative;
   display: flex;
   justify-content: space-between;
-  position: relative;
   align-items: center;
 
   .react-datepicker__input-container :focus {
@@ -605,10 +817,10 @@ const TimeForm = styled.div<{ timeopen: string }>`
   }
 
   div {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
 
     span {
       padding: 0 3px;
@@ -623,13 +835,13 @@ const TimeForm = styled.div<{ timeopen: string }>`
     label {
       display: inline-block;
       height: 33px;
-      line-height: 33px;
       width: 63px;
+      line-height: 33px;
       background: ${(props) => (props.timeopen === 'true' ? COLORS.green : 'rgba(0,0,0,0)')};
-      text-align: center;
       border-radius: 10px;
-      color: ${(props) => (props.timeopen === 'true' ? '#fff' : COLORS.gray40)};
       border: 1px solid ${(props) => (props.timeopen === 'true' ? '#fff' : '#d9d9d9')};
+      color: ${(props) => (props.timeopen === 'true' ? '#fff' : COLORS.gray40)};
+      text-align: center;
       font-size: 12px;
       letter-spacing: 1.5px;
     }
@@ -665,44 +877,81 @@ const TimeForm = styled.div<{ timeopen: string }>`
 `
 
 const SearchBtnContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 0 18px !important;
   border: 0px !important;
-  border-top: 1px solid #d9d9d9 !important;
+  border-top: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   background: #fff;
   z-index: 1;
+  margin-top: 24px;
 
-  button:last-child {
-    width: 88px;
-    height: 38px;
-    padding: 8px 16px;
-    text-align: right;
-    background-image: url('data:image/svg+xml;utf8,<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 15.5L12.1945 12.1886M14.0263 7.76316C14.0263 9.42425 13.3664 11.0173 12.1919 12.1919C11.0173 13.3664 9.42425 14.0263 7.76316 14.0263C6.10207 14.0263 4.50901 13.3664 3.33444 12.1919C2.15987 11.0173 1.5 9.42425 1.5 7.76316C1.5 6.10207 2.15987 4.50901 3.33444 3.33444C4.50901 2.15987 6.10207 1.5 7.76316 1.5C9.42425 1.5 11.0173 2.15987 12.1919 3.33444C13.3664 4.50901 14.0263 6.10207 14.0263 7.76316Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
-    background-color: ${COLORS.green};
-    background-repeat: no-repeat;
-    background-size: 14px;
-    background-position: 15px center;
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    border-radius: 16px;
-    position: relative;
+  button:first-child {
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 214px);
+    transform: translate(-50%, -50%);
+    font-size: ${FONT.pc};
   }
 
-  & > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1440px;
-    margin: 0 auto;
+  button:last-child {
     position: relative;
-    height: 62px;
-    line-height: 62px;
+    width: 328px;
+    height: 48px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 8px;
+    background-color: ${COLORS.green};
+  }
+
+  @media ${({ theme }) => theme.device.tablet} {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #d9d9d9 !important;
+    margin-top: 0;
+
+    button:first-child {
+      position: relative;
+      left: 0;
+      top: 0;
+      transform: none;
+      font-size: 14px;
+    }
+
+    button:last-child {
+      width: 88px;
+      height: 38px;
+      padding: 8px 16px;
+      background-image: url('data:image/svg+xml;utf8,<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 15.5L12.1945 12.1886M14.0263 7.76316C14.0263 9.42425 13.3664 11.0173 12.1919 12.1919C11.0173 13.3664 9.42425 14.0263 7.76316 14.0263C6.10207 14.0263 4.50901 13.3664 3.33444 12.1919C2.15987 11.0173 1.5 9.42425 1.5 7.76316C1.5 6.10207 2.15987 4.50901 3.33444 3.33444C4.50901 2.15987 6.10207 1.5 7.76316 1.5C9.42425 1.5 11.0173 2.15987 12.1919 3.33444C13.3664 4.50901 14.0263 6.10207 14.0263 7.76316Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+      background-color: ${COLORS.green};
+      background-repeat: no-repeat;
+      background-size: 14px;
+      background-position: 15px center;
+      text-align: right;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 16px;
+    }
+
+    & > div {
+      position: relative;
+      max-width: 1440px;
+      height: 62px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 auto;
+      line-height: 62px;
+    }
   }
 `
 
@@ -734,4 +983,56 @@ const FlexContainer = styled.div`
       width: 100%;
     }
   }
+`
+
+const SearchKeyWordBtn = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: var(--screen-pc);
+  width: 100%;
+  margin: 12px auto 0;
+  align-items: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    height: 34px;
+    line-height: 30px;
+    padding: 2px 8px;
+    background-color: ${COLORS.green};
+    border-radius: 8px;
+    color: #fff;
+    font-size: ${FONT.pc};
+
+    svg {
+      margin: 0 5px 0 10px;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    button {
+      display: flex;
+      align-items: center;
+      height: 26px;
+      line-height: 22px;
+      padding: 2px 8px;
+      font-size: 12px;
+
+      svg {
+        margin: 0 5px 0 10px;
+        width: 8px;
+        height: 8px;
+        margin: 0 2px 0 5px;
+      }
+    }
+  }
+`
+
+const CloseBtn = styled.button`
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px 5px;
 `

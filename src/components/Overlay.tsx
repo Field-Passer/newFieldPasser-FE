@@ -8,7 +8,7 @@ type PropsType = {
 
 const Overlay = ({ sideOpen, setSideOpen }: PropsType) => {
   const isMobile = useMediaQuery({
-    query: '(max-width: 450px)',
+    query: '(max-width: 833px)',
   })
 
   return (
