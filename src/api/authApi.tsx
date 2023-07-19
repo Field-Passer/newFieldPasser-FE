@@ -98,7 +98,7 @@ export async function postRefereshToken() {
 }
 
 // 회원가입
-export const join = async ({ userEmail, userPw, userName, userPhone }: IuserInfoType) => {
+export const join = async ({ userEmail, userPw, userName, userNickName, userPhone }: IuserInfoType) => {
   try {
     const response = await publicApi('/signup', {
       method: 'POST',
@@ -106,13 +106,12 @@ export const join = async ({ userEmail, userPw, userName, userPhone }: IuserInfo
         memberId: userEmail,
         password: userPw,
         memberName: userName,
+        memberNickName: userNickName,
         memberPhone: userPhone,
       },
     })
     return {
       status: response.status,
-      result: response.data.result,
-      message: response.data.message,
     }
   } catch (error) {
     console.log(error)
