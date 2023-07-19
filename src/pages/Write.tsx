@@ -1,7 +1,10 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState } from 'react'
+import { useRef, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/postApi'
@@ -16,6 +19,7 @@ const Write = () => {
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
 
   const imgRef = useRef<HTMLInputElement>(null)
 
@@ -57,6 +61,14 @@ const Write = () => {
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
+  const CustomDateInput = forwardRef(({ value, onClick }, ref) => (
+    <div className="date-input" onClick={onClick} ref={ref}>
+      <span className={isDateChange ? 'selected month' : 'month'}>{value.slice(0, 2)}</span>
+      <span>월</span>
+      <span className={isDateChange ? 'selected day' : 'day'}>{value.slice(2, 4)}</span>
+      <span>일</span>
+    </div>
+  ))
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
@@ -137,7 +149,7 @@ const Write = () => {
           <section>
             <div>구장명</div>
             <div>
-              <input
+              <TitleInput
                 type="text"
                 placeholder="양도할 구장명을 입력해주세요"
                 name="title"
@@ -151,7 +163,7 @@ const Write = () => {
           <section>
             <div>가격</div>
             <div>
-              <input type="number" placeholder="50,000" min={0} required name="price" />
+              <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
               <span className="won">원</span>
             </div>
           </section>
@@ -180,7 +192,7 @@ const Write = () => {
           </section>
           <section>
             <div>예약일시</div>
-            <Reservation>
+            <MobileReservation>
               <div className="date">
                 <input
                   type="date"
@@ -218,12 +230,12 @@ const Write = () => {
                 />
                 <span>까지</span>
               </div>
-            </Reservation>
+            </MobileReservation>
           </section>
           <section>
             <div>본문내용</div>
             <div>
-              <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
             </div>
           </section>
           <button type="submit">등록하기</button>
@@ -272,7 +284,7 @@ const Write = () => {
               <div className="row-box">
                 <div className="box-title">구장명</div>
                 <div>
-                  <input
+                  <TitleInput
                     type="text"
                     placeholder="양도할 구장명을 입력해주세요"
                     name="title"
@@ -286,7 +298,7 @@ const Write = () => {
               <div className="row-box">
                 <div className="box-title">가격</div>
                 <div>
-                  <input type="number" placeholder="50,000" min={0} required name="price" />
+                  <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
                   <span className="won">원</span>
                 </div>
               </div>
@@ -319,19 +331,21 @@ const Write = () => {
           </PcDetail>
           <section className="full-section">
             <h2>예약일시</h2>
-            <Reservation>
+            <PcReservation>
               <div className="date">
                 <div>날짜</div>
-                <input
-                  type="date"
+                <DatePicker
+                  locale={ko}
                   name="date"
-                  defaultValue={currentDate}
-                  min={currentDate}
-                  required
-                  onChange={() => {
+                  dateFormat="MMdd"
+                  shouldCloseOnSelect
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date)
                     setIsDateChange(true)
                   }}
-                  className={isDateChange ? 'selected' : ''}
+                  customInput={<CustomDateInput />}
+                  required
                 />
               </div>
               <div className="time">
@@ -346,6 +360,7 @@ const Write = () => {
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
+                <div>부터</div>
                 <span>~</span>
                 <div>종료</div>
                 <input
@@ -360,12 +375,12 @@ const Write = () => {
                 />
                 <span>까지</span>
               </div>
-            </Reservation>
+            </PcReservation>
           </section>
           <section className="full-section">
             <h2>본문내용</h2>
             <div>
-              <textarea placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
             </div>
           </section>
           <button type="submit">등록하기</button>
@@ -377,15 +392,8 @@ const Write = () => {
 const Container = styled.main`
   position: relative;
 
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
   select {
     color: ${COLORS.font};
-
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -409,27 +417,6 @@ const Container = styled.main`
       cursor: pointer;
     }
   }
-
-  input[type='date'] {
-    &::-webkit-calendar-picker-indicator,
-    &::-webkit-inner-spin-button {
-      display: none;
-      appearance: none;
-    }
-
-    &::-webkit-calendar-picker-indicator {
-      position: absolute;
-      opacity: 1;
-      display: block;
-      width: 10px;
-      height: 10px;
-      background: url('calendar-light.png') no-repeat 90% 50%;
-      cursor: pointer;
-      right: -10px;
-      transform: translateX(-10px);
-      padding-left: 3000px;
-    }
-  }
 `
 
 const PcForm = styled.form`
@@ -441,15 +428,17 @@ const PcForm = styled.form`
   padding: 64px 32px;
   width: 770px;
   position: relative;
-  border: 1px solid blue;
 
   h2 {
     font-weight: 700;
   }
 
-  input,
-  textarea {
+  input {
     color: ${COLORS.font};
+
+    &::placeholder {
+      color: ${COLORS.gray40};
+    }
   }
 
   input[type='text'],
@@ -461,15 +450,7 @@ const PcForm = styled.form`
     border-bottom: 1px solid ${COLORS.gray30};
     padding: 8px;
     box-sizing: border-box;
-  }
-
-  textarea {
-    width: 100%;
-    height: 180px;
-    border: 1px solid ${COLORS.gray30};
-    border-radius: 8px;
-    padding: 16px;
-    box-sizing: border-box;
+    font-size: 16px;
   }
 
   button {
@@ -494,12 +475,6 @@ const PcForm = styled.form`
 
     h2 {
       margin-bottom: 16px;
-    }
-    .date {
-      display: flex;
-      gap: 16px;
-      height: 40px;
-      line-height: 40px;
     }
   }
 `
@@ -550,8 +525,7 @@ const MobileForm = styled.form`
   font-size: ${FONT.m};
   padding-top: 32px;
 
-  input,
-  textarea {
+  input {
     color: ${COLORS.font};
   }
 
@@ -580,8 +554,7 @@ const MobileForm = styled.form`
       color: ${COLORS.gray40};
     }
 
-    input,
-    textarea {
+    input {
       width: 328px;
       height: 48px;
       border: 1px solid ${COLORS.gray20};
@@ -597,13 +570,6 @@ const MobileForm = styled.form`
       border-radius: 8px;
       padding: 0 10px;
       box-sizing: border-box;
-    }
-
-    textarea {
-      height: 140px;
-      resize: none;
-      overflow-y: auto;
-      padding: 10px;
     }
 
     .won {
@@ -665,14 +631,14 @@ const FileUpload = styled.label`
   }
 `
 
-const Reservation = styled.div`
+const MobileReservation = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   color: ${COLORS.gray40};
 
   input {
-    color: ${COLORS.gray40}; //change-> 어두운색 변경
+    color: ${COLORS.gray40};
   }
 
   .date {
@@ -697,6 +663,22 @@ const Reservation = styled.div`
     input {
       width: 128px;
       height: 32px;
+      cursor: pointer;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-calendar-picker-indicator {
+        display: none;
+        appearance: none;
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock.png') no-repeat 98% 50%;
+        opacity: 1;
+        display: block;
+        width: 10px;
+        height: 10px;
+        cursor: pointer;
+      }
     }
 
     .selected {
@@ -708,9 +690,93 @@ const Reservation = styled.div`
       }
     }
   }
+`
+const PcReservation = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .date {
+    display: flex;
+    gap: 16px;
+    height: 40px;
+    line-height: 40px;
+
+    .date-input {
+      display: flex;
+      gap: 16px;
+      cursor: pointer;
+      color: ${COLORS.gray40};
+
+      .month,
+      .day {
+        display: block;
+        width: 100px;
+        text-align: center;
+        border-bottom: 1px solid ${COLORS.gray20};
+      }
+    }
+  }
+
+  .time {
+    display: flex;
+    gap: 16px;
+    line-height: 40px;
+
+    input {
+      width: 100px;
+      color: ${COLORS.gray40};
+      text-align: center;
+      border: none;
+      border-bottom: 1px solid ${COLORS.gray20};
+      cursor: pointer;
+      /* 
+      &::-webkit-inner-spin-button,
+      &::-webkit-calendar-picker-indicator {
+        display: none;
+        appearance: none;
+      } */
+    }
+
+    .selected {
+      color: ${COLORS.font};
+
+      &::-webkit-calendar-picker-indicator {
+        background: url('/clock-fff.png') no-repeat 98% 50%;
+      }
+    }
+  }
+`
+
+const TitleInput = styled.input`
+  width: 100%;
+`
+const PriceInput = styled.input`
+  width: 100%;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`
+
+const ContentInput = styled.textarea`
+  color: ${COLORS.font};
+  width: 328px;
+  height: 140px;
+  border: 1px solid ${COLORS.gray20};
+  border-radius: 8px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  resize: none;
+  overflow-y: auto;
+  padding: 10px;
 
   @media (min-width: 834px) {
-    flex-direction: row;
+    width: 100%;
+    height: 180px;
+    padding: 16px;
   }
 `
 
