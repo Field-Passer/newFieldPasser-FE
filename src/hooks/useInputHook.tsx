@@ -13,7 +13,6 @@ const useInput = (validator?: InputValidator | any, defaultValue?: string): [str
 
       const error = validator(e.target.value)
       if (error) {
-        console.log('오류..', e.target.value)
         setError(error)
         return
       }
