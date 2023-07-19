@@ -61,7 +61,7 @@ const Write = () => {
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
-  const CustomDateInput = forwardRef(({ value, onClick }, ref) => (
+  const CustomDateInput = forwardRef<HTMLDivElement>(({ value, onClick }, ref) => (
     <div className="date-input" onClick={onClick} ref={ref}>
       <span className={isDateChange ? 'selected month' : 'month'}>{value.slice(0, 2)}</span>
       <span>월</span>
@@ -85,6 +85,7 @@ const Write = () => {
 
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
+
       if (item.name === 'file') {
         item.files && formData.append('file', item.files[0])
       } else if (item.name === 'price') {
@@ -93,15 +94,22 @@ const Write = () => {
         start += item.value
         end += item.value
       } else if (item.name === 'start') {
+        start += selectedDate && selectedDate.toISOString().slice(0, 10)
         start += 'T' + item.value + ':00'
       } else if (item.name === 'end') {
+        end += selectedDate && selectedDate.toISOString().slice(0, 10)
         end += 'T' + item.value + ':00'
-      } else {
+      } else if (item.name) {
         formData.append(item.name, item.value)
       }
     }
     formData.append('startTime', start)
     formData.append('endTime', end)
+
+    let entries = formData.entries()
+    for (const pair of entries) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
 
     const res = await requestWrite(formData)
     if (res === 200) {
