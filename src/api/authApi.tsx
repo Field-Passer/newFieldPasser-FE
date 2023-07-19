@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
 
@@ -66,9 +66,9 @@ export async function checkTokenExpire() {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       //console.log(error)
-      return {
-        status: error.response?.status,
-      }
+      // return {
+      //   status: error.response?.status,
+      // }
     }
   }
 }
@@ -124,7 +124,6 @@ export const join = async ({ userEmail, userPw, userName, userPhone }: IuserInfo
 
 // (회원가입시) 이메일 중복 검사
 export const checkDuplicateEmail = async ({ userEmail }: IuserInfoType) => {
-  console.log(userEmail)
   try {
     const response = await publicApi('/duplicate-email', {
       method: 'POST',
@@ -132,10 +131,16 @@ export const checkDuplicateEmail = async ({ userEmail }: IuserInfoType) => {
         memberId: userEmail,
       },
     })
-    return response
+    return {
+      status: response.status,
+    }
   } catch (error) {
-    console.log(error)
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
   }
 }
 
-// (비번찾기에 쓸?) 이메일 인증 절차
+// 이메일 인증 절차
