@@ -3,9 +3,9 @@ import { ChangeEvent, ChangeEventHandler, useCallback, useState } from 'react'
 
 type InputValidator = () => string
 
-const useInput = (validator?: InputValidator | any, defaultValue?: string): [string, ChangeEventHandler, string] => {
+const useInput = (validator?: InputValidator | any, defaultValue?: string): [string, ChangeEventHandler, boolean] => {
   const [value, setValue] = useState<string>(defaultValue || '')
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState<boolean>(false)
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -17,7 +17,7 @@ const useInput = (validator?: InputValidator | any, defaultValue?: string): [str
         setError(error)
         return
       }
-      setError('')
+      setError(false)
     },
     [validator]
   )
