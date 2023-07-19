@@ -1,9 +1,5 @@
-/* eslint-disable indent */
 import styled from 'styled-components'
-import {
-  // Link,
-  useNavigate,
-} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 import React, { useEffect, useState } from 'react'
 import { checkDuplicateEmail, join } from '@src/api/authApi'
@@ -13,7 +9,6 @@ const Join = () => {
   const emailValidator = (userEmail: string) => {
     setCheckEmail(false)
     const rUserEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
-    // const rUserEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
     if (!userEmail || !rUserEmail.test(userEmail)) return true
   }
 
@@ -22,42 +17,18 @@ const Join = () => {
     if (!userPw || !rUserPw.test(userPw)) return true
   }
 
-  // const phoneValidator = (userPhone: string) => {
-  //   // const rUserPhone = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/
-  //   // const rUserPhone = /[^0-9]/g
-  //   const rUserPhone = /[0-9]/g
-  //   // const rUserPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/
-  //   // const rUserPhone = /^(\d{2,3})(\d{3,4})(\d{4})$/
-  //   // setUserPhone(userPhone.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3'))
-  //   if (userPhone.length < 11 || userPhone.length > 13) return '전화번호를 정확히 입력해주세요.'
-  //   if (!userPhone || !rUserPhone.test(userPhone)) return '전화번호를 정확히 입력해주세요.'
-  // }
-
   const navigate = useNavigate()
   const [userEmail, onChangeUserEmail, userEmailError] = useInput(emailValidator, '')
   const [userPw, onChangeUserPw, userPwError] = useInput(pwValidator, '')
   const [userConfirmPw, onChangeUserConfirmPw, userConfirmPwError] = useInput(pwValidator, '')
   const [checkEmail, setCheckEmail] = useState(false)
   const [phoneError, setPhoneError] = useState(false)
-
   const [userPhone, setUserPhone] = useState('')
-
   const [inputs, setInputs] = useState({
     userName: '',
     userNickName: '',
   })
   const { userName, userNickName } = inputs
-
-  // const addHypen = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   let val = (e.target as HTMLInputElement).value
-  //   val = val.replace(/[^0-9]/g, '')
-  //   if (val.length <= 11) {
-  //     val = val.replace(/^(\d{2,3})(\d{3,4})(\d{4,})$/, '$1-$2-$3')
-  //   }
-  //   setUserPhone(val)
-  //   console.log('val:', val)
-  // }
-
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setInputs({
@@ -69,17 +40,6 @@ const Join = () => {
   const onChangeUserPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserPhone(e.target.value)
   }
-
-  useEffect(() => {
-    setUserPhone(
-      userPhone
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/g, '$1-$2-$3')
-        .replace(/(-{1,2})$/g, '')
-    )
-    if (userPhone.length >= 1 && userPhone.length <= 8) setPhoneError(true)
-    if (userPhone.length >= 11) setPhoneError(false)
-  }, [userPhone])
 
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -117,9 +77,20 @@ const Join = () => {
       userNickName,
       userPhone,
     })
-    console.log(status, result, message) // 잘 오는구만
+    console.log(status, result, message)
     navigate('/login')
   }
+
+  useEffect(() => {
+    setUserPhone(
+      userPhone
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/g, '$1-$2-$3')
+        .replace(/(-{1,2})$/g, '')
+    )
+    if (userPhone.length >= 1 && userPhone.length <= 8) setPhoneError(true)
+    if (userPhone.length >= 11) setPhoneError(false)
+  }, [userPhone])
 
   return (
     <Container>
