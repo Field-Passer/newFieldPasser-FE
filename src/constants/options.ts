@@ -26,11 +26,4 @@ export const districtOptions: string[] = [
   '중랑구',
 ]
 
-export const categoryOptions: string[] = [
-  '전체',
-  '축구',
-  '풋살',
-  '농구',
-  '테니스',
-  '배드민턴',
-]
+export const categoryOptions: string[] = ['전체', '축구', '풋살', '농구', '테니스', '배드민턴']

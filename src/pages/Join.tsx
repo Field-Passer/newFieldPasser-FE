@@ -6,36 +6,32 @@ import { checkDuplicateEmail, join } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
 
 const Join = () => {
+  // 인풋 유효성 검사
   const emailValidator = (userEmail: string) => {
     setCheckEmail(false)
     const rUserEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
-    if (!userEmail || !rUserEmail.test(userEmail)) return true
+    if (userEmail === '' || !rUserEmail.test(userEmail)) return true
   }
-
   const pwValidator = (userPw: string) => {
     const rUserPw = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/
-    if (!userPw || !rUserPw.test(userPw)) return true
+    if (userPw === '' || !rUserPw.test(userPw)) return true
+  }
+  const nameValidator = (userName: string) => {
+    if (userName === '' || userName.length < 0 || userName.length > 5) return true
+  }
+  const nickNameValidator = (userNickName: string) => {
+    if (userNickName === null || userNickName.length > 12) return true
   }
 
   const navigate = useNavigate()
   const [userEmail, onChangeUserEmail, userEmailError] = useInput(emailValidator, '')
   const [userPw, onChangeUserPw, userPwError] = useInput(pwValidator, '')
   const [userConfirmPw, onChangeUserConfirmPw, userConfirmPwError] = useInput(pwValidator, '')
+  const [userName, onChangeUserName, userNameError] = useInput(nameValidator, '')
+  const [userNickName, onChangeUserNickName, userNickNameError] = useInput(nickNameValidator, '')
   const [checkEmail, setCheckEmail] = useState(false)
   const [phoneError, setPhoneError] = useState(false)
   const [userPhone, setUserPhone] = useState('')
-  const [inputs, setInputs] = useState({
-    userName: '',
-    userNickName: '',
-  })
-  const { userName, userNickName } = inputs
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setInputs({
-      ...inputs,
-      [name]: value,
-    })
-  }
 
   const onChangeUserPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserPhone(e.target.value)
@@ -43,42 +39,29 @@ const Join = () => {
 
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-
+    if (!userEmail) return alert('이메일을 입력해주세요.')
     if (userEmailError) return alert('올바른 이메일 형식이 아닙니다.')
-
     const { status }: any = await checkDuplicateEmail({ userEmail })
-    console.log('status:', status)
     if (status === 200) {
       setCheckEmail(true)
     } else return alert('사용할 수 없는 이메일 입니다.')
   }
-  console.log(
-    '이메일 중복?:',
-    checkEmail,
-    '이메일 유효성? userEmailError:',
-    userEmailError,
-    '패스워드1 유효성?:',
-    userPwError,
-    '패스워드2 동일?:',
-    userConfirmPwError,
-    '전화번호?:',
-    phoneError
-  )
+
   const joinHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(userEmail, userPw, userConfirmPw, userName, userNickName, userPhone)
-    // return
     if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
-    if (!userEmailError || !userPwError || !userConfirmPwError || !phoneError) return alert('양식을 다시 확인해주세요.')
-    const { status, result, message } = await join({
+    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || phoneError) return alert('양식을 다시 확인해주세요.')
+    const { status } = await join({
       userEmail,
       userPw,
       userName,
       userNickName,
       userPhone,
     })
-    console.log(status, result, message)
-    navigate('/login')
+    if (status === 200) {
+      alert('회원가입에 성공했습니다!')
+      navigate('/login')
+    }
   }
 
   useEffect(() => {
@@ -102,32 +85,59 @@ const Join = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일</label>
-            <input type="email" name="userEmail" onChange={onChangeUserEmail} placeholder="abc@gmail.com" value={userEmail} />
+            <input type="email" name="userEmail" onChange={onChangeUserEmail} placeholder="field-passer@naver.com" value={userEmail} required />
             <button type="button" onClick={checkEmailHandler}>
               이메일 중복확인
             </button>
             <p className="error_message">{userEmailError && '이메일 형식에 맞지 않습니다.'}</p>
-            <p>{checkEmail && '사용가능한 이메일 입니다.'}</p>
+            <p className="help_message">{checkEmail && '사용가능한 이메일 입니다.'}</p>
           </div>
 
-          <label>비밀번호</label>
-          <input type="password" name="userPw" onChange={onChangeUserPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={userPw} />
-          <p className="error_message">{userPwError && '8 ~ 10자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
+          <div className="input_wrap_inner">
+            <label>비밀번호</label>
+            <input type="password" name="userPw" onChange={onChangeUserPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={userPw} required />
+            <p className="error_message">{userPwError && '8 ~ 10자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
+          </div>
 
-          <label>비밀번호 확인</label>
-          <input type="password" name="userPw" onChange={onChangeUserConfirmPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={userConfirmPw} />
-          <p className="error_message">{userConfirmPwError}</p>
-          <p className="error_message">{userPw !== userConfirmPw && '비밀번호가 같지 않습니다.'}</p>
+          <div className="input_wrap_inner">
+            <label>비밀번호 확인</label>
+            <input
+              type="password"
+              name="userPw"
+              onChange={onChangeUserConfirmPw}
+              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+              value={userConfirmPw}
+              required
+            />
+            <p className="error_message">{userConfirmPwError}</p>
+            <p className="error_message">{userPw !== userConfirmPw && '비밀번호가 같지 않습니다.'}</p>
+          </div>
 
-          <label>이름</label>
-          <input type="text" name="userName" onChange={onChangeHandler} placeholder="김필드" />
+          <div className="input_wrap_inner">
+            <label>이름</label>
+            <input type="text" name="userName" onChange={onChangeUserName} placeholder="김필드" required />
+            <p className="error_message">{userNameError && '이름은 다섯글자를 넘을 수 없습니다.'}</p>
+          </div>
 
-          <label>닉네임</label>
-          <input type="text" name="userNickName" onChange={onChangeHandler} placeholder="김필드패서" />
+          <div className="input_wrap_inner">
+            <label>닉네임</label>
+            <input type="text" name="userNickName" onChange={onChangeUserNickName} placeholder="김필드패서" required />
+            <p className="error_message">{userNickNameError && '닉네임은 열두글자를 넘을 수 없습니다.'}</p>
+          </div>
 
-          <label>전화번호</label>
-          <input type="text" name="userPhone" onChange={onChangeUserPhone} placeholder="- 없이 숫자만 입력해주세요." value={userPhone} maxLength={13} />
-          <p className="error_message">{phoneError && '전화번호를 정확히 입력해주세요.'}</p>
+          <div className="input_wrap_inner">
+            <label>전화번호</label>
+            <input
+              type="text"
+              name="userPhone"
+              onChange={onChangeUserPhone}
+              placeholder="- 없이 숫자만 입력해주세요."
+              value={userPhone}
+              maxLength={13}
+              required
+            />
+            <p className="error_message">{phoneError && '전화번호를 정확히 입력해주세요.'}</p>
+          </div>
         </div>
 
         <button className="btn_join">가입하기</button>
@@ -162,6 +172,8 @@ const Container = styled.div`
   .input_wrap {
     &_inner {
       position: relative;
+      margin: 8px 0;
+      height: 88px;
       button {
         position: absolute;
         top: 24px;
@@ -179,7 +191,7 @@ const Container = styled.div`
   }
 
   input {
-    margin: 8px 0 16px;
+    margin: 8px 0 6px;
     padding: 16px 8px;
     width: 100%;
     height: 47px;
@@ -190,6 +202,16 @@ const Container = styled.div`
     &::placeholder {
       color: ${COLORS.gray40};
     }
+  }
+
+  .error_message {
+    font-size: 12px;
+    color: ${COLORS.error};
+  }
+
+  .help_message {
+    font-size: 12px;
+    color: ${COLORS.green};
   }
 
   .btn_join {
