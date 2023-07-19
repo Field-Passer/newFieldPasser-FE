@@ -22,7 +22,7 @@ export const privateApi = axios.create({
 
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config) {
+  async function (config): Promise<any> {
     // const access_token = store.getState().accessToken.accessToken
     const refresh_token = getCookieToken()
 
@@ -37,6 +37,7 @@ privateApi.interceptors.request.use(
     if (status === 200) {
       // console.log('at검사 응답 200일때')
       config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
+      return config
     } else {
       // console.log('at검사 응답 400 or 401 일때')
       if (refresh_token) {
@@ -51,19 +52,22 @@ privateApi.interceptors.request.use(
           setRefreshToken(tokens.refreshToken)
           config.headers['Authorization'] = `Bearer ${store.getState().accessToken.accessToken}`
           // console.log('rt 재발급 완료')
+          return config
         } else {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
           // console.log('만료된 토큰으로 재발급 실패, 로그아웃')
+          return
         }
       } else {
         // console.log('rt 없어서 브라우저에서 강제 로그아웃')
         removeCookieToken()
         dispatch(DELETE_TOKEN())
         alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
+        return
       }
     }
-    return config
+    // return config
   },
   function (error) {
     // console.log(error)

@@ -1,9 +1,9 @@
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
 
 // 로그인
-export const userLogin = async ({ userEmail, userPw }: LoginType) => {
+export const userLogin = async ({ userEmail, userPw }: IuserInfoType) => {
   try {
     const response = await publicApi('/auth/login', {
       method: 'POST',
@@ -66,9 +66,9 @@ export async function checkTokenExpire() {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       //console.log(error)
-      return {
-        status: error.response?.status,
-      }
+      // return {
+      //   status: error.response?.status,
+      // }
     }
   }
 }
@@ -96,39 +96,50 @@ export async function postRefereshToken() {
     }
   }
 }
-// postRefereshToken()
 
 // 회원가입
-// export const join = async ({ userEmail, userPw }: LoginType) => {
-//   try {
-//     const response = await publicApi('/signup', {
-//       method: 'POST',
-//       data: {
-//         memberId: userEmail,
-//         password: userPw,
-//       },
-//     })
-//     return {
-//       status: response.status,
-//       result: response.data.result,
-//       message: response.data.message,
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     return {
-//       // message: error
-//     }
-//   }
-// }
+export const join = async ({ userEmail, userPw, userName, userNickName, userPhone }: IuserInfoType) => {
+  try {
+    const response = await publicApi('/signup', {
+      method: 'POST',
+      data: {
+        memberId: userEmail,
+        password: userPw,
+        memberName: userName,
+        memberNickName: userNickName,
+        memberPhone: userPhone,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      // message: error
+    }
+  }
+}
 
 // (회원가입시) 이메일 중복 검사
-// export async function duplicationCheckEmail({ userEmail }: LoginType) {
-//   const response = await publicApi.post('auth/reissue', {
-//     data: {
-//       memberId: userEmail,
-//     },
-//   })
-//   return response
-// }
+export const checkDuplicateEmail = async ({ userEmail }: IuserInfoType) => {
+  try {
+    const response = await publicApi('/duplicate-email', {
+      method: 'POST',
+      data: {
+        memberId: userEmail,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
 
-// (회원가입시) 이메일 인증 절차
+// 이메일 인증 절차
