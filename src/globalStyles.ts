@@ -121,12 +121,14 @@ export const COLORS = {
   gray30: '#CCCCCC',
   gray20: '#D9D9D9',
   gray10: '#FAFAFA',
+  error: '#EF7C7C',
 }
 
 export const FONT = {
   pc: '16px',
   'pc-lg': '20px',
   m: '14px',
+  'm-sm': '12px',
   'm-lg': '16px',
 }
 
