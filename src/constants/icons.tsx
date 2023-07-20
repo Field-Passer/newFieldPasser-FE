@@ -137,3 +137,11 @@ export const PlusIcon = (props: propsTypes) => {
     </svg>
   )
 }
+
+export const CloseIcon = (props: propsTypes) => {
+  return (
+    <svg width={props.size} height={props.size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 1L1 15M1 1L15 15" stroke={props.color ? props.color : '#3A3A3A'} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}

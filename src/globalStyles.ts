@@ -104,8 +104,7 @@ const GlobalStyles = createGlobalStyle`
     color: #3a3a3a;
 
     /* Screen max-width */
-    --screen-m: 450px;
-    --screen-tab: 834px;
+    --screen-m: 833px;
     --screen-pc: 1024px;
 
   }
@@ -122,12 +121,14 @@ export const COLORS = {
   gray30: '#CCCCCC',
   gray20: '#D9D9D9',
   gray10: '#FAFAFA',
+  error: '#EF7C7C',
 }
 
 export const FONT = {
   pc: '16px',
   'pc-lg': '20px',
   m: '14px',
+  'm-sm': '12px',
   'm-lg': '16px',
 }
 

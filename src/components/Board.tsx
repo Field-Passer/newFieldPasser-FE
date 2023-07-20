@@ -57,19 +57,21 @@ export default Board
 
 const BoardContainer = styled.div`
   padding: 20px;
-  padding-right: 0;
   display: flex;
   justify-content: center;
 
+  @media ${({ theme }) => theme.device.laptop} {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
   ul {
-    @media ${({ theme }) => theme.device.laptop} {
-      max-width: 100%;
-    }
     width: 100%;
     max-width: calc(var(--screen-pc) + 16px);
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
+    padding-left: 16px;
 
     .imgae_wrap {
       width: 100%;

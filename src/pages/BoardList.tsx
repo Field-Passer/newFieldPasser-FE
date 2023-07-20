@@ -19,6 +19,8 @@ const BoardList = () => {
     }
   })
 
+  //https://field-passer.store/search/:page?title=&categoryName=&startTime=&endTime=&districtIds=
+
   const title = useSelector((state: RootState) => {
     return state.searchVlaue.title
   })
