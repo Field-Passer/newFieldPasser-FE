@@ -40,6 +40,7 @@ export const userLogout = async () => {
       message: response.data.message,
     }
   } catch (error) {
+    console.log(error)
     return {
       // message: error
     }
@@ -65,7 +66,7 @@ export async function checkTokenExpire() {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      //console.log(error)
+      console.log(error)
       return {
         status: error.response?.status,
       }
