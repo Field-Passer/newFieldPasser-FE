@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState, forwardRef } from 'react'
+import { useRef, useState, forwardRef, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/postApi'
@@ -20,6 +20,7 @@ const Write = () => {
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+  const [priceValue, setPriceValue] = useState<string>('')
 
   const imgRef = useRef<HTMLInputElement>(null)
 
@@ -50,14 +51,12 @@ const Write = () => {
     setImgSrc('')
   }
 
-  // 가격 자릿수 체크, 콤마
-  // const checkMaxLength = (value) => {
-  //   if (value.length > 7) {
-  //     value = value.slice(0, 7)
-  //   }
-  // 상태넣어주기
-  // value.toLocaleString('ko-KR)
-  // }
+  // 통화단위 콤마 적용
+  const checkMaxLength = (event: ChangeEvent<HTMLInputElement>) => {
+    let price = event.target.value
+    price = Number(price.replace(/[^0-9]/g, '')).toLocaleString('ko-KR')
+    setPriceValue(price)
+  }
 
   const currentDate = new Date().toISOString().substring(0, 10)
 
@@ -89,7 +88,7 @@ const Write = () => {
       if (item.name === 'file') {
         item.files && formData.append('file', item.files[0])
       } else if (item.name === 'price') {
-        formData.append('price', item.value)
+        formData.append('price', item.value.replace(/,/g, ''))
       } else if (item.name === 'date') {
         start += item.value
         end += item.value
@@ -171,7 +170,16 @@ const Write = () => {
           <section>
             <div>가격</div>
             <div>
-              <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
+              <PriceInput
+                type="text"
+                placeholder="50,000"
+                minLength={1}
+                maxLength={7}
+                required
+                name="price"
+                value={priceValue}
+                onChange={(event) => checkMaxLength(event)}
+              />
               <span className="won">원</span>
             </div>
           </section>
@@ -306,7 +314,16 @@ const Write = () => {
               <div className="row-box">
                 <div className="box-title">가격</div>
                 <div>
-                  <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
+                  <PriceInput
+                    type="text"
+                    placeholder="50,000"
+                    minLength={1}
+                    maxLength={7}
+                    required
+                    name="price"
+                    value={priceValue}
+                    onChange={(event) => checkMaxLength(event)}
+                  />
                   <span className="won">원</span>
                 </div>
               </div>
@@ -450,7 +467,6 @@ const PcForm = styled.form`
   }
 
   input[type='text'],
-  input[type='number'],
   select {
     width: 300px;
     height: 40px;
