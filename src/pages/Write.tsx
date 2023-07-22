@@ -369,7 +369,9 @@ const Write = () => {
                     setSelectedDate(date)
                     setIsDateChange(true)
                   }}
+                  className={isDateChange ? 'selected' : ''}
                   customInput={<CustomDateInput />}
+                  minDate={new Date()}
                   required
                 />
               </div>
@@ -408,7 +410,9 @@ const Write = () => {
               <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
             </div>
           </section>
-          <button type="submit">등록하기</button>
+          <button className="submit-button" type="submit">
+            등록하기
+          </button>
         </PcForm>
       )}
     </Container>
@@ -477,7 +481,7 @@ const PcForm = styled.form`
     font-size: 16px;
   }
 
-  button {
+  .submit-button {
     width: 328px;
     height: 48px;
     background-color: ${COLORS.green};
@@ -722,6 +726,7 @@ const PcReservation = styled.div`
 
   .date {
     display: flex;
+    position: relative;
     gap: 16px;
     height: 40px;
     line-height: 40px;
@@ -740,6 +745,86 @@ const PcReservation = styled.div`
         border-bottom: 1px solid ${COLORS.gray20};
       }
     }
+
+    .selected {
+      color: ${COLORS.font};
+    }
+
+    .react-datepicker__triangle::before,
+    .react-datepicker__triangle::after {
+      display: none;
+    }
+
+    .react-datepicker-popper {
+      width: 100% !important;
+      left: -50px !important;
+      top: -10px !important;
+    }
+
+    .react-datepicker {
+      width: 100%;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 10px;
+    }
+
+    .react-datepicker__header {
+      background: none;
+      border-bottom: 1px solid ${COLORS.gray20};
+    }
+
+    .react-datepicker__month-container {
+      width: 100%;
+      padding-top: 10px;
+    }
+
+    .react-datepicker__day-name {
+      color: ${COLORS.gray40};
+    }
+
+    .react-datepicker__day {
+      color: ${COLORS.font};
+
+      &:hover {
+        background: none;
+      }
+    }
+
+    .react-datepicker__day--disabled,
+    .react-datepicker__day--outside-month {
+      color: ${COLORS.gray40};
+    }
+
+    .react-datepicker__day-name,
+    .react-datepicker__day,
+    .react-datepicker__time-name {
+      width: calc((100% / 7) - (0.166rem * 2));
+      line-height: 3;
+    }
+
+    .react-datepicker__day--selected {
+      position: relative;
+      height: 100%;
+      border-radius: 50%;
+      background-color: ${COLORS.green};
+      color: #fff;
+
+      &:hover {
+        color: black;
+      }
+    }
+
+    .react-datepicker__navigation-icon {
+      margin-top: 12px;
+    }
+
+    .react-datepicker__navigation-icon--previous::before,
+    .react-datepicker__navigation-icon--next::before {
+      border-color: ${COLORS.green};
+    }
+
+    .react-datepicker__day--keyboard-selected {
+      background: none;
+    }
   }
 
   .time {
@@ -754,8 +839,8 @@ const PcReservation = styled.div`
       border: none;
       border-bottom: 1px solid ${COLORS.gray20};
       cursor: pointer;
-      /* 
-      &::-webkit-inner-spin-button,
+
+      /* &::-webkit-inner-spin-button,
       &::-webkit-calendar-picker-indicator {
         display: none;
         appearance: none;
