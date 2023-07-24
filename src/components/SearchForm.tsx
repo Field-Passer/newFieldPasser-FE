@@ -35,6 +35,9 @@ const SearchForm = () => {
   const urlPathname = location.pathname
   const navigate = useNavigate()
 
+  // 이슈 검색 컴포넌트 닫고 가지 않으면 열린 상태의 state들로 구성이 되기 때문에 스크롤을 할 수 없다.
+  // 다른 페이지에서는 이 컴포넌트가 없기 때문에 제어가 불가능하다.
+
   // text Input element
   const textEl = useRef<HTMLInputElement>(null)
 
@@ -388,7 +391,7 @@ const SearchForm = () => {
                     </button>
                   </li>
                 )}
-                {selectVal.district.map((item, idx) => (
+                {selectVal.district.map((item: string, idx) => (
                   <li key={idx}>
                     <button onClick={() => dispatchSearchKewordValue('district', item)}>
                       {item}
