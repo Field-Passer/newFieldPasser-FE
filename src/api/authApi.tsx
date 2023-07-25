@@ -3,9 +3,9 @@ import { privateApi, publicApi } from './Instance'
 import store from '@src/store/config'
 
 // 로그인
-export const userLogin = async ({ userEmail, userPw }: IuserInfoType) => {
+export const userLogin = async ({ userEmail, userPw }: IUserInfoType) => {
   try {
-    const response = await publicApi('/auth/login', {
+    const response = await publicApi<IResponseType>('/auth/login', {
       method: 'POST',
       data: {
         memberId: userEmail,
@@ -14,14 +14,13 @@ export const userLogin = async ({ userEmail, userPw }: IuserInfoType) => {
     })
     return {
       status: response.status,
-      result: response.data.result,
-      message: response.data.message,
       tokens: response.data.data,
     }
   } catch (error) {
-    console.log(error)
-    return {
-      //message: error,
+    if (axios.isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.status,
+      }
     }
   }
 }
@@ -40,8 +39,10 @@ export const userLogout = async () => {
       message: response.data.message,
     }
   } catch (error) {
-    return {
-      // message: error
+    if (axios.isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.status,
+      }
     }
   }
 }
@@ -64,11 +65,10 @@ export async function checkTokenExpire() {
       status: response.status,
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      //console.log(error)
-      // return {
-      //   status: error.response?.status,
-      // }
+    if (axios.isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.status,
+      }
     }
   }
 }
@@ -89,7 +89,7 @@ export async function postRefereshToken() {
       tokens: response.data.data,
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
+    if (axios.isAxiosError<IResponseErrorType>(error)) {
       return {
         status: error.response?.status,
       }
@@ -98,9 +98,9 @@ export async function postRefereshToken() {
 }
 
 // 회원가입
-export const join = async ({ userEmail, userPw, userName, userNickName, userPhone }: IuserInfoType) => {
+export const join = async ({ userEmail, userPw, userName, userNickName, userPhone }: IUserInfoType) => {
   try {
-    const response = await publicApi('/signup', {
+    const response = await publicApi<IResponseType>('/signup', {
       method: 'POST',
       data: {
         memberId: userEmail,
@@ -111,18 +111,19 @@ export const join = async ({ userEmail, userPw, userName, userNickName, userPhon
       },
     })
     return {
-      status: response.status,
+      status: response.status!,
     }
   } catch (error) {
-    console.log(error)
-    return {
-      // message: error
+    if (axios.isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.status,
+      }
     }
   }
 }
 
 // (회원가입시) 이메일 중복 검사
-export const checkDuplicateEmail = async ({ userEmail }: IuserInfoType) => {
+export const checkDuplicateEmail = async ({ userEmail }: IUserInfoType) => {
   try {
     const response = await publicApi('/duplicate-email', {
       method: 'POST',
