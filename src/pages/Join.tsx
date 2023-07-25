@@ -89,7 +89,7 @@ const Join = () => {
             <button type="button" onClick={checkEmailHandler}>
               이메일 중복확인
             </button>
-            <p className="error_message">{userEmailError && '이메일 형식에 맞지 않습니다.'}</p>
+            <p className="error_message">{userEmailError && '올바른 이메일 형식이 아닙니다.'}</p>
             <p className="help_message">{checkEmail && '사용가능한 이메일 입니다.'}</p>
           </div>
 

@@ -28,14 +28,14 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, tokens }: IResponseType = await userLogin({
+    const { status, tokens } = (await userLogin({
       userEmail,
       userPw,
-    })
+    })) as IResponseType
     if (status === 200) {
       removeCookieToken()
-      dispatch(SET_TOKEN(tokens?.accessToken))
-      setRefreshToken(tokens?.refreshToken)
+      dispatch(SET_TOKEN(tokens.accessToken))
+      setRefreshToken(tokens.refreshToken)
       console.log('로그인함', new Date())
       return navigate('/')
     }
@@ -68,7 +68,7 @@ const Login = () => {
         </button>
 
         <div className="find_wrap">
-          <Link to="/findpw">비밀번호 찾기</Link>
+          <Link to="/find_password">비밀번호 찾기</Link>
           <Link to="/join">회원가입하기</Link>
         </div>
 
