@@ -1,6 +1,7 @@
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
+import { useEffect, useState } from 'react'
 import { ThemeProvider, styled } from 'styled-components'
 interface Props {
   data: POST_TYPE[]
