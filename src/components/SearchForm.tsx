@@ -12,13 +12,18 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { createSearchValue } from '@src/store/slices/searchVlaueSlice'
 import { RootState } from '../store/config'
 
-export const dateCalcFn = () => {
-  const today = new Date()
-  return new Date(today.setDate(today.getDate() - 1))
-}
-
 const SearchForm = () => {
-  // 기존 선택된 value 값
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const urlPathname = location.pathname
+  const navigate = useNavigate()
+  const date = new Date()
+
+  // text Input element
+  const textInputEl = useRef<HTMLInputElement>(null)
+  const textInputTitle = useRef<HTMLParagraphElement>(null)
+
+  // current slice value
   const selectVal = useSelector((state: RootState) => {
     return {
       title: state.searchVlaue.title,
@@ -30,117 +35,119 @@ const SearchForm = () => {
     }
   })
 
-  const dispatch = useDispatch()
-  const location = useLocation()
-  const urlPathname = location.pathname
-  const navigate = useNavigate()
-
-  // 이슈 검색 컴포넌트 닫고 가지 않으면 열린 상태의 state들로 구성이 되기 때문에 스크롤을 할 수 없다.
-  // 다른 페이지에서는 이 컴포넌트가 없기 때문에 제어가 불가능하다.
-
-  // text Input element
-  const textEl = useRef<HTMLInputElement>(null)
-
-  // value state
-  const [categoryValue, setCategoryValue] = useState(selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체')
-  const [districtValue, setDistrictValue] = useState<string[]>(selectVal.district.length > 0 ? selectVal.district : [])
-  const [startTimeValue, setStartTimeValue] = useState<string>(selectVal.startTime ? selectVal.startTime : '00:00')
-  const [endTimeValue, setEndTimeValue] = useState<string>(selectVal.endTime ? selectVal.endTime : '23:59')
-  const [selectedDate, setSelectedDate] = useState<Date>(selectVal.date ? new Date(selectVal.date) : dateCalcFn())
-  const [searchTextValue, setSearchTextValue] = useState(selectVal.title ? selectVal.title : '')
+  // current state value
+  const [valueState, setValueState] = useState<ValueStateType>({
+    categoryValue: selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체',
+    districtValue: selectVal.district ? selectVal.district : [],
+    startTimeValue: selectVal.startTime ? selectVal.startTime : '00:00',
+    endTimeValue: selectVal.endTime ? selectVal.endTime : '23:59',
+    selectedDate: selectVal.date ? new Date(selectVal.date) : date,
+    searchTextValue: selectVal.title ? selectVal.title : ''
+  });
 
   // cheack State
-  const [searchStart, setsearchStart] = useState(false)
-  const [inputFocus, setInputFocus] = useState(searchTextValue ? true : false)
-  const [categoryOpen, setCategoryOpen] = useState(false)
-  const [categorySelect, setCategorySelect] = useState(selectVal.category !== '전체' && categoryValue !== '전체' ? true : false)
-  const [districtOpen, setDistrictOpen] = useState(districtValue.length > 0 ? true : false)
-  const [districtSelect, setDistrictSelect] = useState(false)
-  const [timeOpen, setTimeOpen] = useState(selectVal.startTime !== '00:00' ? true : false)
-  const [dateChange, setDateChange] = useState(selectedDate.getDate() !== dateCalcFn().getDate() ? true : false)
+  const [checkState, setCheckState] = useState<CheckValueStateType>({
+    searchBoxOpen: false,
+    categoryOpen: false,
+    districtOpen: valueState.districtValue ? true : false,
+    districtSelect: false,
+    timeChange: selectVal.startTime !== '00:00' ? true : false,
+    dateChange: false
+  });
 
-  // searchbox click function
-  const searchStartFn = (check: string) => {
-    if (check === 'open') {
-      setsearchStart(true)
-      document.querySelector('body')?.classList.add('stop-scrolling')
+  // current state value change fn
+  type Value = string | string[] | Date
+  const valueStateChangeFn = (key: string, value: Value) => {
+    return setValueState((state) => {
+      let newState = { ...state }
+      newState[key] = value
+      return newState
+    })
+  }
+
+  // check value change fn
+  const checkValueStateChangeFn = (key: string, value: boolean) => {
+    return setCheckState((state) => {
+      let newState = { ...state }
+      newState[key] = value
+      return newState
+    })
+  }
+
+  // dispatch value
+  const dispatchValue: SearchValueTypes = {
+    title: valueState.searchTextValue,
+    date: valueState.selectedDate.toISOString(),
+    startTime: valueState.startTimeValue,
+    endTime: valueState.endTimeValue,
+    district: valueState.districtValue,
+    category: valueState.categoryValue,
+  }
+
+  // searchbox click function * 
+  const searchBoxOpenFn = () => {
+    if (checkState.searchBoxOpen) {
+      checkValueStateChangeFn('searchBoxOpen', false)
+      window.document.body.classList.remove('stop-scrolling')
     } else {
-      setsearchStart(false)
-      document.querySelector('body')?.classList.remove('stop-scrolling')
+      checkValueStateChangeFn('searchBoxOpen', true)
+      window.document.body.classList.add('stop-scrolling')
     }
+
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // input focus function
-  const inputFocusFn = (type: string) => {
-    if (type === 'focus') {
-      setInputFocus(true)
-    } else {
-      setInputFocus(false)
-    }
-  }
-
-  // category select function
-  const selectOpenFn = (value?: string) => {
-    categoryOpen ? setCategoryOpen(false) : setCategoryOpen(true)
-    categoryValue ? setCategorySelect(true) : setCategorySelect(false)
-    value && setCategoryValue(value)
-  }
-
   // district select function
-  const districtOpenFn = () => {
-    districtOpen ? setDistrictOpen(false) : setDistrictOpen(true)
-    districtValue.length === 0 ? setDistrictSelect(false) : setDistrictSelect(true)
-  }
   const districtValueFn = (element: React.MouseEvent<HTMLButtonElement>, value: string) => {
-    const idx = districtValue.indexOf(value)
+    const idx = valueState.districtValue.indexOf(value)
     const target = element.target as HTMLButtonElement
     // 선택 최대 갯수 처리
-    if (districtValue.length === 5 && idx === -1) {
+    if (valueState.districtValue.length === 5 && idx === -1) {
       return alert('최대 5개 선택 가능합니다.')
     }
 
     // 선택시 state 배열 변경
     if (idx === -1) {
       target.classList.add('selected')
-      return setDistrictValue([...districtValue, value])
+      checkValueStateChangeFn('districtSelect', true)
+      return valueStateChangeFn('districtValue', [...valueState.districtValue, value])
     } else {
       target.classList.remove('selected')
-      districtValue.splice(idx, 1)
-      return setDistrictValue([...districtValue])
+      let districtArray = [...valueState.districtValue]
+      districtArray.splice(idx, 1)
+
+      if (districtArray.length === 0) checkValueStateChangeFn('districtSelect', false)
+      return valueStateChangeFn('districtValue', [...districtArray])
     }
   }
 
   // time input change function
   const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    if (selectedDate.getDate() === dateCalcFn().getDate()) return alert('날짜 먼저 선택해 주세요.')
-    if (!timeOpen) setTimeOpen(true)
+    if (valueState.selectedDate === date) return alert('날짜 먼저 선택해 주세요.')
+    if (!checkState.timeChange) checkValueStateChangeFn('timeChange', true)
 
     if (type === 'start') {
-      return setStartTimeValue(element.target.value)
+      return valueStateChangeFn('startTimeValue', element.target.value)
     } else {
-      return setEndTimeValue(element.target.value)
+      return valueStateChangeFn('endTimeValue', element.target.value)
     }
-  }
-
-  // changedate function
-  const changedateFn = () => {
-    if (!dateChange) return setDateChange(true)
   }
 
   // form reset function
   const formResetFn = () => {
-    setStartTimeValue('00:00')
-    setEndTimeValue('23:59')
-    setDistrictValue([])
-    setCategoryValue('전체')
-    setSelectedDate(dateCalcFn())
-    setSearchTextValue('')
-    setTimeOpen(false)
-    setDateChange(false)
-    setDistrictOpen(false)
+    setValueState({
+      categoryValue: '전체',
+      districtValue: [],
+      startTimeValue: '00:00',
+      endTimeValue: '23:59',
+      selectedDate: date,
+      searchTextValue: ''
+    })
+    checkValueStateChangeFn('timeChange', false)
+    checkValueStateChangeFn('dateChange', false)
+    checkValueStateChangeFn('districtOpen', false)
 
-    const input = textEl.current as HTMLInputElement
+    const input = textInputEl.current as HTMLInputElement
     input.value = ''
 
     const selected = document.querySelectorAll('.selected')
@@ -163,115 +170,82 @@ const SearchForm = () => {
     }
 
     timeoutId = setTimeout(() => {
-      setSearchTextValue(value)
+      valueStateChangeFn('searchTextValue', value)
     }, 500)
   }
 
   // search value dispatch function
   const dispatchSearchValue = () => {
-    const valueState = {
-      title: searchTextValue,
-      date: selectedDate.toISOString(),
-      startTime: startTimeValue,
-      endTime: endTimeValue,
-      district: districtValue,
-      category: categoryValue,
-    }
-
-    if (valueState.startTime > valueState.endTime) return alert('시간을 확인해주세요')
-    return dispatch(createSearchValue(valueState)), navigate('/board_list'), searchStartFn('close')
+    if (dispatchValue.startTime > dispatchValue.endTime) return alert('시간을 확인해주세요')
+    return dispatch(createSearchValue(dispatchValue)), navigate('/board_list'), searchBoxOpenFn()
   }
 
   // search keyWord btn function
-  const dispatchSearchKewordValue = (type: string, value?: string) => {
-    const valueState = {
-      title: selectVal.title,
-      date: selectVal.date,
-      startTime: selectVal.startTime,
-      endTime: selectVal.endTime,
-      district: selectVal.district,
-      category: selectVal.category,
-    }
+  const dispatchSearchKewordValue = (type: string, key: any, value: any) => {
+    valueStateChangeFn(key, value)
+    if (type === 'date') dispatchValue[type] = value.toISOString()
+    else dispatchValue[type] = value
+    console.log(dispatchValue)
 
-    switch (type) {
-      case 'title':
-        valueState.title = ''
-        setSearchTextValue('')
-        setInputFocus(false)
-        break
-      case 'date':
-        valueState.date = dateCalcFn().toISOString()
-        setSelectedDate(dateCalcFn())
-        setDateChange(false)
-        break
-      case 'time':
-        valueState.startTime = '00:00'
-        valueState.endTime = '23:59'
-        setStartTimeValue('00:00')
-        setEndTimeValue('59:59')
-        setTimeOpen(false)
-        break
-      case 'district':
-        let district = [...valueState.district]
-        district.splice(district.indexOf(value as string), 1)
-        valueState.district = district
-        setDistrictValue(district)
-        setDistrictSelect(false)
-        setDistrictOpen(false)
-        break
-      case 'category':
-        valueState.category = '전체'
-        setCategoryValue('전체')
-        setCategorySelect(false)
-        break
-      default:
-        break
-    }
-    return dispatch(createSearchValue(valueState))
+    return dispatch(createSearchValue(dispatchValue))
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <Container searchstart={searchStart.toString()} path={urlPathname}>
-        {searchStart ? (
+      <Container searchboxopen={checkState.searchBoxOpen.toString()} path={urlPathname}>
+        {checkState.searchBoxOpen ? (
           <SearchInform>
-            <CloseBtn onClick={() => searchStartFn('close')}>
+            <CloseBtn onClick={() => searchBoxOpenFn()}>
               <CloseIcon size={'16'} />
               닫기
             </CloseBtn>
             <StadiumForm>
-              <p className={inputFocus || searchTextValue ? 'focused' : ''}>찾는 구장을 검색해주세요</p>
+              <p className={valueState.searchTextValue ? 'focused' : ''} ref={textInputTitle}>찾는 구장을 검색해주세요</p>
               <input
                 type="text"
                 placeholder={selectVal.title ? selectVal.title : '보라매 공원'}
-                onFocus={() => inputFocusFn('focus')}
-                onBlur={() => inputFocusFn('blur')}
+                onFocus={() => textInputTitle.current?.classList.add('focused')}
+                onBlur={() => { if (!valueState.searchTextValue) textInputTitle.current?.classList.remove('focused') }}
                 onChange={(e) => searchTextFn(e)}
-                ref={textEl}
+                ref={textInputEl}
               />
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
-              <DateForm datechange={dateChange.toString()}>
-                <p className={dateChange ? 'focused' : ''}>날짜</p>
-                <CalendarIcon color={dateChange ? COLORS.green : '#AAA'} />
-                <DatePicker
-                  locale={ko}
-                  dateFormat="MM.dd"
-                  shouldCloseOnSelect={false}
-                  minDate={new Date()}
-                  selected={selectedDate}
-                  onChange={(date: Date) => {
-                    setSelectedDate(date)
-                    changedateFn()
-                  }}
-                />
+              <DateForm datechange={checkState.dateChange.toString()}>
+                <p className={checkState.dateChange ? 'focused' : ''}>날짜</p>
+                <CalendarIcon color={checkState.dateChange ? COLORS.green : '#AAA'} />
+                <div>
+                  <DatePicker
+                    locale={ko}
+                    dateFormat="MM.dd"
+                    shouldCloseOnSelect={false}
+                    minDate={date}
+                    selected={valueState.selectedDate}
+                    onChange={(date: Date) => {
+                      if (!checkState.dateChange) return checkValueStateChangeFn('dateChange', true)
+                      valueStateChangeFn('selectedDate', date)
+                    }}
+                  />
+                  <span>-</span>
+                  <DatePicker
+                    locale={ko}
+                    dateFormat="MM.dd"
+                    shouldCloseOnSelect={false}
+                    minDate={date}
+                    selected={valueState.selectedDate}
+                    onChange={(date: Date) => {
+                      if (!checkState.dateChange) return checkValueStateChangeFn('dateChange', true)
+                      valueStateChangeFn('selectedDate', date)
+                    }}
+                  />
+                </div>
               </DateForm>
-              <TimeForm timeopen={timeOpen.toString()}>
-                <p className={timeOpen ? 'focused' : ''}>시간</p>
+              <TimeForm timeopen={checkState.timeChange.toString()}>
+                <p className={checkState.timeChange ? 'focused' : ''}>시간</p>
                 <div>
                   <div>
-                    <label htmlFor="startTime">{startTimeValue}</label>
+                    <label htmlFor="startTime">{valueState.startTimeValue}</label>
                     <input
                       type="time"
                       name="startTime"
@@ -283,7 +257,7 @@ const SearchForm = () => {
                     <span className="medium">~</span>
                   </div>
                   <div>
-                    <label htmlFor="endTime">{endTimeValue}</label>
+                    <label htmlFor="endTime">{valueState.endTimeValue}</label>
                     <input
                       type="time"
                       name="endTime"
@@ -297,16 +271,16 @@ const SearchForm = () => {
               </TimeForm>
             </FlexContainer>
             <DistrictForm>
-              <p onClick={districtOpenFn} className={districtOpen || districtSelect ? 'focused' : ''}>
+              <p onClick={() => checkState.districtOpen ? checkValueStateChangeFn('districtOpen', false) : checkValueStateChangeFn('districtOpen', true)} className={checkState.districtOpen ? 'focused' : ''}>
                 지역을 선택해주세요
               </p>
-              {districtOpen && (
+              {checkState.districtOpen && (
                 <div>
                   <ul>
                     {districtOptions.map((v, i) => (
                       <li key={i}>
                         <button
-                          className={districtValue.indexOf(v) !== -1 ? 'selected' : ''}
+                          className={valueState.districtValue.indexOf(v) !== -1 ? 'selected' : ''}
                           onClick={(e) => {
                             districtValueFn(e, v)
                           }}
@@ -320,14 +294,16 @@ const SearchForm = () => {
               )}
             </DistrictForm>
             <CategoryForm>
-              <p className={categorySelect ? 'focused' : ''}>종목을 선택해주세요</p>
-              <ul onClick={() => selectOpenFn()}>
-                <p>{categoryValue}</p>
-                {categoryOpen && (
+              <p className={valueState.categoryValue !== '전체' ? 'focused' : ''}>종목을 선택해주세요</p>
+              <ul onClick={() => {
+                checkState.categoryOpen ? checkValueStateChangeFn('categoryOpen', false) : checkValueStateChangeFn('categoryOpen', true)
+              }}>
+                <p>{valueState.categoryValue}</p>
+                {checkState.categoryOpen && (
                   <>
                     {categoryOptions.map((v, i) => (
                       <li key={i}>
-                        <button onClick={() => selectOpenFn(v)}>{v}</button>
+                        <button onClick={() => valueStateChangeFn('categoryValue', v)}>{v}</button>
                       </li>
                     ))}
                   </>
@@ -343,7 +319,7 @@ const SearchForm = () => {
           </SearchInform>
         ) : (
           <>
-            <SearchCorver onClick={() => searchStartFn('open')} path={urlPathname}>
+            <SearchCorver onClick={() => searchBoxOpenFn()} path={urlPathname}>
               <SearchIcon size="24" />
               <div>
                 <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
@@ -361,15 +337,15 @@ const SearchForm = () => {
               <SearchKeyWordBtn>
                 {selectVal.title && (
                   <li>
-                    <button onClick={() => dispatchSearchKewordValue('title')}>
+                    <button onClick={() => dispatchSearchKewordValue('title', 'searchTextValue', '')}>
                       {selectVal.title}
                       <CloseIcon size="12" color="#fff" />
                     </button>
                   </li>
                 )}
-                {new Date(selectVal.date).getDate() !== dateCalcFn().getDate() && (
+                {selectVal.date.slice(0, 10) !== date.toISOString().slice(0, 10) && (
                   <li>
-                    <button onClick={() => dispatchSearchKewordValue('date')}>
+                    <button onClick={() => dispatchSearchKewordValue('date', 'selectedDate', date)}>
                       {selectVal.date.slice(5, 10).replace('-', '.')}
                       <CloseIcon size="12" color="#fff" />
                     </button>
@@ -377,7 +353,7 @@ const SearchForm = () => {
                 )}
                 {selectVal.category !== '전체' && (
                   <li>
-                    <button onClick={() => dispatchSearchKewordValue('category')}>
+                    <button onClick={() => dispatchSearchKewordValue('category', 'categoryValue', '전체')}>
                       {selectVal.category}
                       <CloseIcon size="12" color="#fff" />
                     </button>
@@ -385,15 +361,22 @@ const SearchForm = () => {
                 )}
                 {selectVal.startTime !== '00:00' && (
                   <li>
-                    <button onClick={() => dispatchSearchKewordValue('time')}>
+                    <button onClick={() => {
+                      dispatchSearchKewordValue('time', 'startTimeValue', '00:00')
+                      dispatchSearchKewordValue('time', 'endTimeValue', '23:59')
+                    }}>
                       {selectVal.startTime}~{selectVal.endTime}
                       <CloseIcon size="12" color="#fff" />
                     </button>
                   </li>
                 )}
-                {selectVal.district.map((item: string, idx) => (
+                {selectVal.district.map((item: string, idx: number) => (
                   <li key={idx}>
-                    <button onClick={() => dispatchSearchKewordValue('district', item)}>
+                    <button onClick={() => {
+                      let districtArray = [...valueState.districtValue]
+                      districtArray.splice(idx, 1)
+                      dispatchSearchKewordValue('district', 'districtValue', [...districtArray])
+                    }}>
                       {item}
                       <CloseIcon size="12" color="#fff" />
                     </button>
@@ -416,17 +399,17 @@ const boxline = {
   'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.10)',
 }
 
-const Container = styled.div<{ searchstart: string; path: string }>`
+const Container = styled.div<{ searchboxopen: string; path: string }>`
   padding: 20px 20px;
   width: 100%;
   min-height: 60px;
   display: flex;
   justify-content: center;
-  flex-direction: ${(props) => (props.searchstart === 'false' && props.path !== '/' ? 'column' : 'row')};
+  flex-direction: ${(props) => (props.searchboxopen === 'false' && props.path !== '/' ? 'column' : 'row')};
   align-items: center;
   margin: 0 auto;
   background: #fff;
-  height: ${(props) => (props.searchstart === 'false' ? '' : '100vh')};
+  height: ${(props) => (props.searchboxopen === 'false' ? '' : '100vh')};
   box-shadow: ${(props) => (props.path !== '/' ? '0px 4px 4px rgba(0, 0, 0, 0.10)' : 'none')};
   box-sizing: border-box;
 
@@ -564,11 +547,7 @@ const StadiumForm = styled.div`
     border-radius: 8px;
     padding-left: 32px;
     font-size: 12px;
-    color: ${COLORS.gray40};
-  }
-
-  input:focus {
-    color: ${COLORS.font};
+    color: ${COLORS.font}
   }
 `
 
@@ -582,16 +561,41 @@ const DateForm = styled.div<{ datechange: string }>`
   svg {
     position: absolute;
     top: 23px;
-    right: 85px;
+    right: 165px;
+  }
+
+  p { 
+    height:31px;
+    line-height:31px;
   }
 
   & > div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    width:100%;
+    position:relative;
+
+    & > .react-datepicker-wrapper:first-child {
+      position:absolute;
+      top:-31px;
+      right:79px;
+    }
+
+    & > span {
+      position:absolute;
+      height:31px;
+      line-height:31px;
+      top:-31px;
+      right:65px;
+      color:#aaa;
+    }
+
+    & > .react-datepicker-wrapper {
+      position:absolute;
+      top:-31px;
+      right:0;
+    }
   }
 
-  // 라이브러리 css 커스텀
+   // 라이브러리 css 커스텀
   .react-datepicker__triangle::before,
   .react-datepicker__triangle::after {
     display: none;

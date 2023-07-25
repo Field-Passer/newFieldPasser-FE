@@ -52,4 +52,25 @@ interface SearchValueTypes {
   endTime: string
   district: string[]
   category: string
+  [prop: string]: any
+}
+
+interface ValueStateType {
+  categoryValue: string
+  districtValue: string[]
+  startTimeValue: string
+  endTimeValue: string
+  selectedDate: Date
+  searchTextValue: string
+  [prop: string]: any
+}
+
+interface CheckValueStateType {
+  searchBoxOpen: boolean
+  categoryOpen: boolean
+  districtOpen: boolean
+  districtSelect: boolean
+  timeChange: boolean
+  dateChange: boolean
+  [prop: string]: any
 }

@@ -12,7 +12,6 @@ const BoardList = () => {
   const endRef = useRef(false) // 모든 글 로드 확인
   const target = useRef<HTMLDivElement>(null)
 
-  console.log(postList)
   const searchValue = useSelector((state: RootState) => {
     return {
       title: state.searchVlaue.title,
@@ -37,21 +36,18 @@ const BoardList = () => {
     return state.searchVlaue.category
   })
 
-  const getPostList = useCallback(
-    async (page: number) => {
-      try {
-        const postData = await getSearchPostList(searchValue, page)
-        if (page === 1) setPostList(postData.content)
-        else setPostList([...postList, ...postData.content])
+  const getPostList = async (page: number) => {
+    try {
+      const postData = await getSearchPostList(searchValue, page)
+      if (page === 1) setPostList(postData.content)
+      else setPostList([...postList, ...postData.content])
 
-        preventRef.current = true
-        if (postData.last) endRef.current = true
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    [page]
-  )
+      preventRef.current = true
+      if (postData.last) endRef.current = true
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   useEffect(() => {
     setPage(1)
@@ -60,27 +56,27 @@ const BoardList = () => {
     preventRef.current = true
   }, [title, date, distruct, category])
 
-  useEffect(() => {
-    if (page !== 1) getPostList(page)
-    preventRef.current = true
-  }, [page])
+  // useEffect(() => {
+  //   if (page !== 1) getPostList(page)
+  //   preventRef.current = true
+  // }, [page])
 
-  useEffect(() => {
-    //옵저버 생성
-    const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 })
-    if (target.current) observer.observe(target.current)
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
+  // useEffect(() => {
+  //   //옵저버 생성
+  //   const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 })
+  //   if (target.current) observer.observe(target.current)
+  //   return () => {
+  //     observer.disconnect()
+  //   }
+  // }, [])
 
-  const obsHandler = (entries: IntersectionObserverEntry[]) => {
-    const target = entries[0]
-    if (!endRef.current && target.isIntersecting && preventRef.current) {
-      preventRef.current = false
-      setPage((prev) => prev + 1)
-    }
-  }
+  // const obsHandler = (entries: IntersectionObserverEntry[]) => {
+  //   const target = entries[0]
+  //   if (!endRef.current && target.isIntersecting && preventRef.current) {
+  //     preventRef.current = false
+  //     setPage((prev) => prev + 1)
+  //   }
+  // }
 
   return (
     <>

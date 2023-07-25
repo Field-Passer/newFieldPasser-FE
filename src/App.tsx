@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { ThemeProvider } from 'styled-components'
@@ -9,10 +9,10 @@ import { useState, useEffect } from 'react'
 
 const App = () => {
   const [sideOpen, setSideOpen] = useState<boolean>(false)
+  const location = useLocation()
   useEffect(() => {
-    const body = document.querySelector('body')
-    if (body?.classList.contains('stop-scrolling')) body?.classList.remove('stop-scrolling')
-  }, [])
+    if (window.document.body.classList.contains('stop-scrolling')) window.document.body.classList.remove('stop-scrolling')
+  }, [location]);
 
   return (
     <ThemeProvider theme={theme}>
