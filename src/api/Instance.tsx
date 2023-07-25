@@ -27,7 +27,8 @@ privateApi.interceptors.request.use(
     const refresh_token = getCookieToken()
 
     const { status }: any = await checkTokenExpire()
-    // console.log('checkTokenExpire :', status)
+    // if(status !== 200)
+    console.log('checkTokenExpire :', status)
 
     // const atExpire = store.getState().accessToken.expireTime
     // const curExpire = new Date().getTime()
@@ -56,6 +57,7 @@ privateApi.interceptors.request.use(
         } else {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
+          alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
           // console.log('만료된 토큰으로 재발급 실패, 로그아웃')
           return
         }

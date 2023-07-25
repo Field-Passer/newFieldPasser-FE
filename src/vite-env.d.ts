@@ -1,13 +1,22 @@
 /// <reference types="vite/client" />
-interface IuserInfoType {
+interface IUserInfoType {
   userEmail: string
   userPw?: string
   userName?: string
   userNickName?: string
   userPhone?: string
 }
+interface IResponseType {
+  status: number
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
+  data?: any
+}
 interface IResponseErrorType {
-  state: number
+  status?: number
+  state?: number
 }
 interface ISaveImgFile {
   imgFile: File | null
