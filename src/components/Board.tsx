@@ -84,6 +84,8 @@ const BoardContainer = styled.div`
         height: 100%;
         position: absolute;
         border-radius: 20px;
+        object-fit: contain;
+        background-color: #d9d9d935;
       }
 
       &:after {

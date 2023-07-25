@@ -111,6 +111,7 @@ const Write = () => {
     }
     formData.append('startTime', start)
     formData.append('endTime', end)
+    formData.append('transactionStatus', '판매중')
 
     let entries = formData.entries()
     for (const pair of entries) {
@@ -913,6 +914,7 @@ const ContentInput = styled.textarea`
     width: 100%;
     height: 180px;
     padding: 16px;
+    font-size: ${FONT.pc};
   }
 `
 

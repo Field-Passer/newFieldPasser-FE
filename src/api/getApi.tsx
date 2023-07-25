@@ -1,5 +1,5 @@
 import { dateCalcFn } from '@src/components/SearchForm'
-import { publicApi } from './Instance'
+import { privateApi, publicApi } from './Instance'
 
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
   if (new Date(values.startTime).getDate() === dateCalcFn().getDate()) {
@@ -19,3 +19,15 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
       console.log(err)
     })
 }
+
+// export const getPostByCategory = async (categoryId = 1, districtId = 1, page = 1) => {
+//   try {
+//     const res = await privateApi.get(`/board/list/category-district/${categoryId}/${page}`, {
+//       data: [districtId], // get+body조합 안됨
+//     })
+//     console.log(res)
+//     return res
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
