@@ -1,4 +1,5 @@
 // import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
+import React from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
@@ -27,14 +28,14 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, tokens } = await userLogin({
+    const { status, tokens }: IResponseType = await userLogin({
       userEmail,
       userPw,
     })
     if (status === 200) {
       removeCookieToken()
-      dispatch(SET_TOKEN(tokens.accessToken))
-      setRefreshToken(tokens.refreshToken)
+      dispatch(SET_TOKEN(tokens?.accessToken))
+      setRefreshToken(tokens?.refreshToken)
       console.log('로그인함', new Date())
       return navigate('/')
     }

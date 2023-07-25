@@ -41,7 +41,7 @@ const Join = () => {
     e.preventDefault()
     if (!userEmail) return alert('이메일을 입력해주세요.')
     if (userEmailError) return alert('올바른 이메일 형식이 아닙니다.')
-    const { status }: any = await checkDuplicateEmail({ userEmail })
+    const { status } = (await checkDuplicateEmail({ userEmail })) as IResponseType
     if (status === 200) {
       setCheckEmail(true)
     } else return alert('사용할 수 없는 이메일 입니다.')
@@ -51,13 +51,13 @@ const Join = () => {
     e.preventDefault()
     if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
     if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || phoneError) return alert('양식을 다시 확인해주세요.')
-    const { status } = await join({
+    const { status } = (await join({
       userEmail,
       userPw,
       userName,
       userNickName,
       userPhone,
-    })
+    })) as IResponseType
     if (status === 200) {
       alert('회원가입에 성공했습니다!')
       navigate('/login')
