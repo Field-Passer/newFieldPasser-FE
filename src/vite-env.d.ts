@@ -62,3 +62,9 @@ interface SearchValueTypes {
   district: string[]
   category: string
 }
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
+}

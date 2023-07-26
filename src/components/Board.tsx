@@ -1,6 +1,7 @@
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
+import { useEffect, useState } from 'react'
 import { ThemeProvider, styled } from 'styled-components'
 interface Props {
   data: POST_TYPE[]
@@ -84,6 +85,8 @@ const BoardContainer = styled.div`
         height: 100%;
         position: absolute;
         border-radius: 20px;
+        object-fit: contain;
+        background-color: #d9d9d935;
       }
 
       &:after {
