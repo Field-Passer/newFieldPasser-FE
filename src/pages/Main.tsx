@@ -139,12 +139,17 @@ const Main = () => {
     <Container>
       {!isMobile && (
         <section className="banner-section" style={{ backgroundImage: `url(${background})` }}>
+          <div className="background"></div>
           <div className="text">
-            <div className="first">
-              <span>아까운</span> <span>양도수수료</span>
+            <div className="big">
+              <span>아까운</span>
+              <span className="highlight">양도수수료</span>
             </div>
-            <div className="second">이제 버리지 말고 양도 하세요!</div>
-            <div className="third">간단한 가입절차와 상세한 게시글 필터 기능으로 간편하게 체육시설을 양도/양수해보세요!</div>
+            <div>이제 버리지 말고 양도 하세요!</div>
+            <div className="small">
+              <span>간단한 가입절차와 상세한 게시글 필터 기능으로</span>
+              <span>간편하게 체육시설을 양도/양수해보세요!</span>
+            </div>
           </div>
         </section>
       )}
@@ -207,12 +212,47 @@ const Container = styled.main`
   max-width: 1024px;
 
   .banner-section {
+    position: relative;
     width: 100%;
     height: 312px;
     max-width: 1024px;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    color: white;
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 40px;
+
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #000000e9, #52525213);
+    }
+
+    .text {
+      position: absolute;
+      padding: 96px 0 0 15px;
+    }
+
+    .big {
+      display: flex;
+      gap: 10px;
+
+      .highlight {
+        color: black;
+        text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+      }
+    }
+    .small {
+      display: flex;
+      flex-direction: column;
+      line-height: 20px;
+      font-size: 15px;
+      font-weight: 400;
+      margin-top: 20px;
+    }
   }
 
   .search-section {
