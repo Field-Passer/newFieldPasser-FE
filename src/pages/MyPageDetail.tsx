@@ -35,7 +35,7 @@ const MyPageDetail = () => {
   }, [])
 
   const isPC = useMediaQuery({
-    query: '(min-width: 450px)',
+    query: '(min-width: 834px)',
   })
   return (
     <>
