@@ -14,20 +14,20 @@ const Main = () => {
   })
   const [postList, setPostList] = useState<POST_TYPE[]>([])
   const [district, setDistrict] = useState<string>('')
-  const [category, setCategory] = useState<string>('')
+  const [category, setCategory] = useState<string>('풋살장')
   const [background, setBackground] = useState<string>('')
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [selectedDistrict, setSelectedDistrict] = useState('지역')
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
-  const [searchValue, setSearchValue] = useState({
+  const searchValue = {
     title: '',
     startTime: '',
     endTime: '',
     district: [district],
     category: category,
     date: '',
-  })
+  }
   const [isActive, setIsActive] = useState({
     futsal: true,
     soccer: false,
@@ -197,6 +197,7 @@ const Main = () => {
                       className="option"
                       onClick={() => {
                         setSelectedDistrict(item)
+                        setDistrict(item)
                       }}
                     >
                       {item}
