@@ -109,6 +109,8 @@ const Write = () => {
         formData.append(item.name, item.value)
       }
     }
+    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
+
     formData.append('startTime', start)
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
@@ -147,7 +149,7 @@ const Write = () => {
                 }}
               />
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-              <span>여기에 사진을 올려주세요</span>
+              <span>예약 인증 사진을 올려주세요</span>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
             </FileUpload>
             {imgSrc && (
@@ -263,7 +265,7 @@ const Write = () => {
           <section>
             <div>본문내용</div>
             <div>
-              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
             </div>
           </section>
           <button type="submit" className="submit-button">
@@ -295,7 +297,7 @@ const Write = () => {
                   }}
                 />
                 <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-                <span>여기에 사진을 올려주세요</span>
+                <span>예약 인증 사진을 올려주세요</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
               </FileUpload>
               {imgSrc && (
@@ -421,7 +423,7 @@ const Write = () => {
           <section className="full-section">
             <h2>본문내용</h2>
             <div>
-              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
             </div>
           </section>
           <button className="submit-button" type="submit">
@@ -434,6 +436,7 @@ const Write = () => {
 }
 const Container = styled.main`
   position: relative;
+  margin: auto;
 
   select {
     color: ${COLORS.font};
@@ -540,6 +543,7 @@ const PcForm = styled.form`
   padding: 64px 32px;
   width: 770px;
   position: relative;
+  margin: auto;
 
   h2 {
     font-weight: 700;
