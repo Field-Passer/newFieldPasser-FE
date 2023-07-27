@@ -27,3 +27,5 @@ export const districtOptions: string[] = [
 ]
 
 export const categoryOptions: string[] = ['전체', '축구장', '풋살장', '농구장', '테니스장', '배드민턴장']
+
+export const sortOptions = ['가장 최신 순', '인기순', '낮은 가격 순', '높은 가격 순']

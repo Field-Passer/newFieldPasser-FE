@@ -150,6 +150,7 @@ const Write = () => {
               />
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
               <span>예약 인증 사진을 올려주세요</span>
+              <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
             </FileUpload>
             {imgSrc && (
@@ -298,6 +299,7 @@ const Write = () => {
                 />
                 <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
                 <span>예약 인증 사진을 올려주세요</span>
+                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
               </FileUpload>
               {imgSrc && (

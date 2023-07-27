@@ -1,8 +1,8 @@
-import { districtOptions } from '@src/constants/options'
+import { districtOptions, sortOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { ReactElement, useEffect, useState } from 'react'
-import { BadmintonIcon, BasketballIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
+import { useEffect, useState } from 'react'
+import { BadmintonIcon, BasketballIcon, DownwardArrowIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
@@ -16,14 +16,18 @@ const Main = () => {
   const [district, setDistrict] = useState<string>('')
   const [category, setCategory] = useState<string>('')
   const [background, setBackground] = useState<string>('')
-  const searchValue = {
+  const [isDistrictOpen, setIsDistrictOpen] = useState(false)
+  const [isSortOpen, setIsSortOpen] = useState(false)
+  const [selectedDistrict, setSelectedDistrict] = useState('지역')
+  const [selectedSortOption, setSelectedSortOption] = useState('정렬')
+  const [searchValue, setSearchValue] = useState({
     title: '',
     startTime: '',
     endTime: '',
     district: [district],
     category: category,
     date: '',
-  }
+  })
   const [isActive, setIsActive] = useState({
     futsal: true,
     soccer: false,
@@ -38,6 +42,9 @@ const Main = () => {
 
   useEffect(() => {
     // api재요청 / 무한스크롤이면?
+    // selected : 지역, 정렬 일 때 값 넣기 제외
+    // 정렬옵션은 같은 api로 못 보냄, 카테고리별 전체 게시글 불러와서 따로 정렬코드 넣어주기
+
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
@@ -77,8 +84,6 @@ const Main = () => {
       icon: <TennisIcon color={isActive.tennis ? COLORS.green : '#00000099'} />,
     },
   ]
-
-  const sortOptions = ['가장 최신 순', '인기순', '낮은 가격 순', '높은 가격 순']
 
   const handleClickCategory = (category: string) => {
     switch (category) {
@@ -174,30 +179,80 @@ const Main = () => {
           })}
         </Category>
         <Options>
-          <select name="district" required defaultValue="지역">
-            <option value="지역" disabled className="default">
-              지역
-            </option>
-            {districtOptions.map((item) => {
-              return (
-                <option value={item} key={item}>
-                  {item}
-                </option>
-              )
-            })}
-          </select>
-          <select name="sort" required defaultValue="정렬">
-            <option value="정렬" disabled className="default">
-              정렬
-            </option>
-            {sortOptions.map((item) => {
-              return (
-                <option value={item} key={item}>
-                  {item}
-                </option>
-              )
-            })}
-          </select>
+          <div className="select-cover">
+            {isDistrictOpen ? (
+              <div
+                className="select-open district"
+                onClick={() => {
+                  setIsDistrictOpen(false)
+                }}
+              >
+                <div className="default option" onClick={() => setSelectedDistrict('지역')}>
+                  지역
+                </div>
+                {districtOptions.map((item) => {
+                  return (
+                    <div
+                      key={item}
+                      className="option"
+                      onClick={() => {
+                        setSelectedDistrict(item)
+                      }}
+                    >
+                      {item}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <button
+                className={selectedDistrict !== '지역' ? 'select-close selected' : 'select-close'}
+                onClick={() => {
+                  setIsDistrictOpen(true)
+                }}
+              >
+                {selectedDistrict}
+                <DownwardArrowIcon />
+              </button>
+            )}
+          </div>
+          <div className="select-cover">
+            {isSortOpen ? (
+              <div
+                className="select-open sort"
+                onClick={() => {
+                  setIsSortOpen(false)
+                }}
+              >
+                <div className="default option" onClick={() => setSelectedSortOption('정렬')}>
+                  정렬
+                </div>
+                {sortOptions.map((item) => {
+                  return (
+                    <div
+                      key={item}
+                      className="option"
+                      onClick={() => {
+                        setSelectedSortOption(item)
+                      }}
+                    >
+                      {item}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <button
+                className={selectedSortOption !== '정렬' ? 'select-close selected' : 'select-close'}
+                onClick={() => {
+                  setIsSortOpen(true)
+                }}
+              >
+                {selectedSortOption}
+                <DownwardArrowIcon />
+              </button>
+            )}
+          </div>
         </Options>
         <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다.'} />
       </ListSection>
@@ -320,17 +375,71 @@ const Category = styled.div`
 `
 
 const Options = styled.div`
+  position: relative;
   display: flex;
   gap: 14px;
   padding: 0 16px;
+  height: 32px;
 
-  select {
+  .select-cover {
+    position: relative;
     width: 100px;
-    height: 32px;
-    border: 1px solid ${COLORS.green};
-    border-radius: 8px;
-    color: ${COLORS.green};
-    padding: 4px 8px;
+
+    .default {
+      color: ${COLORS.green};
+    }
+
+    .option {
+      width: 100px;
+      height: 32px;
+      line-height: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      box-sizing: border-box;
+    }
+
+    .select-close {
+      width: 100px;
+      height: 32px;
+      font-size: 14px;
+      border: 1px solid ${COLORS.green};
+      border-radius: 8px;
+      color: ${COLORS.green};
+      text-align: start;
+      padding: 4px 8px;
+
+      svg {
+        position: absolute;
+        right: 10%;
+      }
+    }
+
+    .selected {
+      background-color: ${COLORS.green};
+      color: white;
+    }
+
+    .select-open {
+      position: absolute;
+      cursor: pointer;
+      border: 1px solid ${COLORS.green};
+      border-radius: 8px;
+      width: 100px;
+      overflow: scroll;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      z-index: 10;
+      background-color: white;
+
+      &::-webkit-scrollbar {
+        display: none; /* 크롬, 사파리, 오페라, 엣지 */
+      }
+      scrollbar-width: none; /* 파이어폭스 */
+
+      &.district {
+        height: 228px;
+      }
+    }
   }
 `
 
