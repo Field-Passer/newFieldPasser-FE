@@ -1,10 +1,12 @@
 /// <reference types="vite/client" />
 interface IUserInfoType {
-  userEmail: string
+  userEmail?: string
   userPw?: string
   userName?: string
   userNickName?: string
   userPhone?: string
+  userVerifyNum?: string
+  newPw?: string
 }
 interface IResponseType {
   status: number
