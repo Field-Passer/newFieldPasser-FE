@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true
 // 토큰이 필요 없는 api 요청을 보내는 axios 인스턴스
 export const publicApi = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000,
 })
 
 // 토큰이 필요한 api 요청을 보내는 axios 인스턴스

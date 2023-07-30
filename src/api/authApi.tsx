@@ -143,4 +143,70 @@ export const checkDuplicateEmail = async ({ userEmail }: IUserInfoType) => {
   }
 }
 
-// 이메일 인증 절차
+// 비밀번호 찾기 - 인증번호 메일 요청(PIN번호 메일 전송)
+export const verifyUserEmail = async ({ userEmail }: IUserInfoType) => {
+  try {
+    const response = await publicApi('/check-email', {
+      method: 'POST',
+      params: {
+        memberId: userEmail,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 비밀번호 찾기 - 인증번호 확인(PIN번호 확인)
+export const verifyUserNum = async ({ userEmail, userVerifyNum }: IUserInfoType) => {
+  try {
+    const response = await publicApi('/check-pin', {
+      method: 'GET',
+      params: {
+        memberId: userEmail,
+        pin: userVerifyNum,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    console.log
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 비밀번호 찾기 - 임시 비밀번호 발급(임시 비밀번호 생성, 저장, 메일 전송)
+export const temporaryPassword = async ({ userEmail }: IUserInfoType) => {
+  console.log('temporary 실행')
+  try {
+    const response = await publicApi('/member-temporary', {
+      method: 'POST',
+      params: {
+        email: userEmail,
+      },
+    })
+    console.log(response)
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    console.log(error)
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
