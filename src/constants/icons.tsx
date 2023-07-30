@@ -145,3 +145,18 @@ export const CloseIcon = (props: propsTypes) => {
     </svg>
   )
 }
+
+export const DownwardArrowIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <g clipPath="url(#clip0_578_6254)">
+        <path d="M3.33398 6.00002L8.00065 10.6667L12.6673 6.00002" stroke="#5FCA7B" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+      <defs>
+        <clipPath id="clip0_578_6254">
+          <rect width="16" height="16" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
