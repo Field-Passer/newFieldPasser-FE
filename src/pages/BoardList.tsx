@@ -1,16 +1,19 @@
 import Board from '@src/components/Board'
 import SearchForm from '@src/components/SearchForm'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { RootState } from '../store/config'
 import { useSelector } from 'react-redux'
 import { getSearchPostList } from '@src/api/getApi'
+import { useInView } from 'react-intersection-observer'
 
 const BoardList = () => {
   const [postList, setPostList] = useState<POST_TYPE[]>([])
+  console.log(postList)
+  const [ref, inView] = useInView()
   const [page, setPage] = useState(1)
-  const preventRef = useRef(true) // 옵저버 중복 실행 방지
-  const endRef = useRef(false) // 모든 글 로드 확인
-  const target = useRef<HTMLDivElement>(null)
+  const [lastPage, setLastPage] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const searchValue = useSelector((state: RootState) => {
     return {
@@ -28,53 +31,41 @@ const BoardList = () => {
     return [state.searchVlaue.title, state.searchVlaue.startDate, state.searchVlaue.endDate, state.searchVlaue.district, state.searchVlaue.category]
   })
 
-  const getPostList = async (page: number) => {
+  const getPostList = useCallback(async () => {
+    setIsLoading(true)
     try {
       const postData = await getSearchPostList(searchValue, page)
       if (page === 1) setPostList(postData.content)
-      else setPostList([...postList, ...postData.content])
+      else setPostList(prevState => [...prevState, ...postData.content])
 
-      preventRef.current = true
-      if (postData.last) endRef.current = true
-    } catch (e) {
-      console.error(e)
+      if (postData.last) setLastPage(true)
+      else if (!postData.last) setLastPage(false)
+
+    } catch (error) {
+      console.error(error)
     }
-  }
+    setIsLoading(false)
+  }, [page, title, startDate, endDate, district, category])
+
+  useEffect(() => {
+    getPostList()
+  }, [getPostList]);
 
   useEffect(() => {
     setPage(1)
-    getPostList(page)
-    endRef.current = false
-    preventRef.current = true
   }, [title, startDate, endDate, district, category])
 
-  // useEffect(() => {
-  //   if (page !== 1) getPostList(page)
-  //   preventRef.current = true
-  // }, [page])
-
-  // useEffect(() => {
-  //   //옵저버 생성
-  //   const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 })
-  //   if (target.current) observer.observe(target.current)
-  //   return () => {
-  //     observer.disconnect()
-  //   }
-  // }, [])
-
-  // const obsHandler = (entries: IntersectionObserverEntry[]) => {
-  //   const target = entries[0]
-  //   if (!endRef.current && target.isIntersecting && preventRef.current) {
-  //     preventRef.current = false
-  //     setPage((prev) => prev + 1)
-  //   }
-  // }
+  useEffect(() => {
+    if (inView && !isLoading && !lastPage) {
+      setPage((prev) => prev + 1)
+    }
+  }, [inView, isLoading]);
 
   return (
     <>
       <SearchForm />
       <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다 !'} />
-      <div ref={target}></div>
+      <div ref={ref}></div>
     </>
   )
 }

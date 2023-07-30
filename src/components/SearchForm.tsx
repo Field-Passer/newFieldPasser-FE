@@ -145,7 +145,7 @@ const SearchForm = () => {
       searchTextValue: '',
     })
     checkValueStateChangeFn('timeChange', false)
-    checkValueStateChangeFn('dateChange', false)
+    checkValueStateChangeFn('startDateChange', false)
     checkValueStateChangeFn('districtOpen', false)
 
     const input = textInputEl.current as HTMLInputElement
@@ -166,18 +166,22 @@ const SearchForm = () => {
 
   // search value dispatch function
   const dispatchSearchValue = () => {
+    if (dispatchValue.startDate > dispatchValue.endDate) return alert('날짜를 확인해주세요')
     if (dispatchValue.startTime > dispatchValue.endTime) return alert('시간을 확인해주세요')
     return dispatch(createSearchValue(dispatchValue)), navigate('/board_list'), searchBoxOpenFn()
   }
 
   // search keyWord btn function
   const dispatchSearchKewordValue = (type: string, key: any, value: any) => {
-    if (type === 'date') value = value.toISOString()
-
     valueStateChangeFn(key, value)
     dispatchValue[type] = value
 
     return dispatch(createSearchValue(dispatchValue))
+  }
+
+  // set date + 1 day Fn 
+  const setDate = (date: Date) => {
+    return new Date(date.setDate(date.getDate() + 1))
   }
 
   return (
@@ -217,7 +221,7 @@ const SearchForm = () => {
                     minDate={new Date()}
                     selected={valueState.startDate}
                     onChange={(date: Date) => {
-                      if (!checkState.startDateChange) return checkValueStateChangeFn('startDateChange', true)
+                      checkValueStateChangeFn('startDateChange', true)
                       valueStateChangeFn('startDate', date)
                     }}
                   />
@@ -226,10 +230,10 @@ const SearchForm = () => {
                     locale={ko}
                     dateFormat="MM.dd"
                     shouldCloseOnSelect={false}
-                    minDate={new Date()}
+                    minDate={setDate(new Date())}
                     selected={valueState.endDate}
                     onChange={(date: Date) => {
-                      if (!checkState.endDateChange) return checkValueStateChangeFn('endDateChange', true)
+                      checkValueStateChangeFn('endDateChange', true)
                       valueStateChangeFn('endDate', date)
                     }}
                   />
@@ -347,6 +351,7 @@ const SearchForm = () => {
                       onClick={() => {
                         dispatchSearchKewordValue('date', 'startDate', new Date())
                         dispatchSearchKewordValue('date', 'endDate', new Date())
+                        checkValueStateChangeFn('startDateChange', false)
                       }}
                     >
                       {selectVal.startDate.slice(5, 10).replace('-', '.') + '~' + selectVal.endDate.slice(5, 10).replace('-', '.')}
@@ -368,6 +373,7 @@ const SearchForm = () => {
                       onClick={() => {
                         dispatchSearchKewordValue('time', 'startTimeValue', '00:00')
                         dispatchSearchKewordValue('time', 'endTimeValue', '23:59')
+                        checkValueStateChangeFn('timeChange', false)
                       }}
                     >
                       {selectVal.startTime}~{selectVal.endTime}
