@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState, forwardRef } from 'react'
+import { useRef, useState, forwardRef, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/postApi'
@@ -20,6 +20,7 @@ const Write = () => {
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+  const [priceValue, setPriceValue] = useState<string>('')
 
   const imgRef = useRef<HTMLInputElement>(null)
 
@@ -50,23 +51,28 @@ const Write = () => {
     setImgSrc('')
   }
 
-  // 가격 자릿수 체크, 콤마
-  // const checkMaxLength = (value) => {
-  //   if (value.length > 7) {
-  //     value = value.slice(0, 7)
-  //   }
-  // 상태넣어주기
-  // value.toLocaleString('ko-KR)
-  // }
-
-  const currentDate = new Date().toISOString().substring(0, 10)
+  // 통화단위 콤마 적용
+  const checkMaxLength = (event: ChangeEvent<HTMLInputElement>) => {
+    let price = event.target.value
+    price = Number(price.replace(/[^0-9]/g, '')).toLocaleString('ko-KR')
+    setPriceValue(price)
+  }
 
   const CustomDateInput = forwardRef<HTMLDivElement>(({ value, onClick }, ref) => (
-    <div className="date-input" onClick={onClick} ref={ref}>
-      <span className={isDateChange ? 'selected month' : 'month'}>{value.slice(0, 2)}</span>
-      <span>월</span>
-      <span className={isDateChange ? 'selected day' : 'day'}>{value.slice(2, 4)}</span>
-      <span>일</span>
+    <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
+      {isMobile ? (
+        <>
+          <div className="icon"></div>
+          <span>{value}</span>
+        </>
+      ) : (
+        <>
+          <span className={isDateChange ? 'selected month' : 'month'}>{value.slice(0, 2)}</span>
+          <span>월</span>
+          <span className={isDateChange ? 'selected day' : 'day'}>{value.slice(2, 4)}</span>
+          <span>일</span>
+        </>
+      )}
     </div>
   ))
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +95,7 @@ const Write = () => {
       if (item.name === 'file') {
         item.files && formData.append('file', item.files[0])
       } else if (item.name === 'price') {
-        formData.append('price', item.value)
+        formData.append('price', item.value.replace(/,/g, ''))
       } else if (item.name === 'date') {
         start += item.value
         end += item.value
@@ -103,8 +109,11 @@ const Write = () => {
         formData.append(item.name, item.value)
       }
     }
+    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
+
     formData.append('startTime', start)
     formData.append('endTime', end)
+    formData.append('transactionStatus', '판매중')
 
     let entries = formData.entries()
     for (const pair of entries) {
@@ -140,7 +149,8 @@ const Write = () => {
                 }}
               />
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-              <span>여기에 사진을 올려주세요</span>
+              <span>예약 인증 사진을 올려주세요</span>
+              <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
             </FileUpload>
             {imgSrc && (
@@ -171,7 +181,16 @@ const Write = () => {
           <section>
             <div>가격</div>
             <div>
-              <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
+              <PriceInput
+                type="text"
+                placeholder="50,000"
+                minLength={1}
+                maxLength={7}
+                required
+                name="price"
+                value={priceValue}
+                onChange={(event) => checkMaxLength(event)}
+              />
               <span className="won">원</span>
             </div>
           </section>
@@ -202,16 +221,20 @@ const Write = () => {
             <div>예약일시</div>
             <MobileReservation>
               <div className="date">
-                <input
-                  type="date"
+                <DatePicker
+                  locale={ko}
                   name="date"
-                  defaultValue={currentDate}
-                  min={currentDate}
-                  required
-                  onChange={() => {
+                  dateFormat="yyyy년 MM월 dd일"
+                  shouldCloseOnSelect
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date)
                     setIsDateChange(true)
                   }}
                   className={isDateChange ? 'selected' : ''}
+                  customInput={<CustomDateInput />}
+                  minDate={new Date()}
+                  required
                 />
               </div>
               <div className="time">
@@ -243,10 +266,12 @@ const Write = () => {
           <section>
             <div>본문내용</div>
             <div>
-              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
             </div>
           </section>
-          <button type="submit">등록하기</button>
+          <button type="submit" className="submit-button">
+            등록하기
+          </button>
         </MobileForm>
       ) : (
         <PcForm
@@ -273,7 +298,8 @@ const Write = () => {
                   }}
                 />
                 <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-                <span>여기에 사진을 올려주세요</span>
+                <span>예약 인증 사진을 올려주세요</span>
+                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
               </FileUpload>
               {imgSrc && (
@@ -306,7 +332,16 @@ const Write = () => {
               <div className="row-box">
                 <div className="box-title">가격</div>
                 <div>
-                  <PriceInput type="number" placeholder="50,000" min={0} required name="price" />
+                  <PriceInput
+                    type="text"
+                    placeholder="50,000"
+                    minLength={1}
+                    maxLength={7}
+                    required
+                    name="price"
+                    value={priceValue}
+                    onChange={(event) => checkMaxLength(event)}
+                  />
                   <span className="won">원</span>
                 </div>
               </div>
@@ -352,7 +387,9 @@ const Write = () => {
                     setSelectedDate(date)
                     setIsDateChange(true)
                   }}
+                  className={isDateChange ? 'selected' : ''}
                   customInput={<CustomDateInput />}
+                  minDate={new Date()}
                   required
                 />
               </div>
@@ -388,10 +425,12 @@ const Write = () => {
           <section className="full-section">
             <h2>본문내용</h2>
             <div>
-              <ContentInput placeholder="내용을 입력해주세요" required minLength={5} name="content" />
+              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
             </div>
           </section>
-          <button type="submit">등록하기</button>
+          <button className="submit-button" type="submit">
+            등록하기
+          </button>
         </PcForm>
       )}
     </Container>
@@ -399,6 +438,7 @@ const Write = () => {
 }
 const Container = styled.main`
   position: relative;
+  margin: auto;
 
   select {
     color: ${COLORS.font};
@@ -409,21 +449,90 @@ const Container = styled.main`
     cursor: pointer;
   }
 
-  input[type='time'] {
-    &::-webkit-inner-spin-button,
-    &::-webkit-calendar-picker-indicator {
-      display: none;
-      appearance: none;
+  input,
+  textarea {
+    &:focus {
+      outline: none;
     }
+  }
 
-    &::-webkit-calendar-picker-indicator {
-      background: url('/clock.png') no-repeat 98% 50%;
-      opacity: 1;
-      display: block;
-      width: 10px;
-      height: 10px;
-      cursor: pointer;
+  .react-datepicker__triangle::before,
+  .react-datepicker__triangle::after {
+    display: none;
+  }
+
+  .react-datepicker-popper {
+    width: 100% !important;
+    inset: -10px 0 0 -12px !important;
+
+    @media (min-width: 834px) {
+      inset: -10px 0 0 -50px !important;
     }
+  }
+
+  .react-datepicker {
+    width: 100%;
+    border: 1px solid ${COLORS.gray20};
+    border-radius: 10px;
+  }
+
+  .react-datepicker__header {
+    background: none;
+    border-bottom: 1px solid ${COLORS.gray20};
+  }
+
+  .react-datepicker__month-container {
+    width: 100%;
+    padding-top: 10px;
+  }
+
+  .react-datepicker__day-name {
+    color: ${COLORS.gray40};
+  }
+
+  .react-datepicker__day {
+    color: ${COLORS.font};
+
+    &:hover {
+      background: none;
+    }
+  }
+
+  .react-datepicker__day--disabled,
+  .react-datepicker__day--outside-month {
+    color: ${COLORS.gray40};
+  }
+
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: calc((100% / 7) - (0.166rem * 2));
+    line-height: 3;
+  }
+
+  .react-datepicker__day--selected {
+    position: relative;
+    height: 100%;
+    border-radius: 50%;
+    background-color: ${COLORS.green};
+    color: #fff;
+
+    &:hover {
+      color: black;
+    }
+  }
+
+  .react-datepicker__navigation-icon {
+    margin-top: 12px;
+  }
+
+  .react-datepicker__navigation-icon--previous::before,
+  .react-datepicker__navigation-icon--next::before {
+    border-color: ${COLORS.green};
+  }
+
+  .react-datepicker__day--keyboard-selected {
+    background: none;
   }
 `
 
@@ -436,6 +545,7 @@ const PcForm = styled.form`
   padding: 64px 32px;
   width: 770px;
   position: relative;
+  margin: auto;
 
   h2 {
     font-weight: 700;
@@ -450,7 +560,6 @@ const PcForm = styled.form`
   }
 
   input[type='text'],
-  input[type='number'],
   select {
     width: 300px;
     height: 40px;
@@ -461,7 +570,7 @@ const PcForm = styled.form`
     font-size: 16px;
   }
 
-  button {
+  .submit-button {
     width: 328px;
     height: 48px;
     background-color: ${COLORS.green};
@@ -537,7 +646,7 @@ const MobileForm = styled.form`
     color: ${COLORS.font};
   }
 
-  button {
+  .submit-button {
     width: 328px;
     height: 44px;
     background-color: ${COLORS.green};
@@ -562,9 +671,10 @@ const MobileForm = styled.form`
       color: ${COLORS.gray40};
     }
 
-    input {
+    input,
+    .date {
       width: 328px;
-      height: 48px;
+      height: 40px;
       border: 1px solid ${COLORS.gray20};
       border-radius: 8px;
       padding: 0 10px;
@@ -650,14 +760,31 @@ const MobileReservation = styled.div`
   }
 
   .date {
-    input {
-      height: 32px;
-      padding-left: 35px;
+    position: relative;
+    line-height: 30px;
+
+    .date-input {
+      position: relative;
+      width: 100%;
+      line-height: 40px;
+      padding: 0 70px 0 30px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+
+      .icon {
+        position: absolute;
+        left: -20px;
+        width: 14px;
+        height: 14px;
+        padding: 13px;
+        background: url('calendar-light.png') no-repeat 90% 50%;
+      }
     }
     .selected {
       color: ${COLORS.font};
 
-      &::-webkit-calendar-picker-indicator {
+      .icon {
         background: url('calendar-dark.png') no-repeat 90% 50%;
       }
     }
@@ -670,14 +797,7 @@ const MobileReservation = styled.div`
 
     input {
       width: 128px;
-      height: 32px;
       cursor: pointer;
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-calendar-picker-indicator {
-        display: none;
-        appearance: none;
-      }
 
       &::-webkit-calendar-picker-indicator {
         background: url('/clock.png') no-repeat 98% 50%;
@@ -706,6 +826,7 @@ const PcReservation = styled.div`
 
   .date {
     display: flex;
+    position: relative;
     gap: 16px;
     height: 40px;
     line-height: 40px;
@@ -724,6 +845,10 @@ const PcReservation = styled.div`
         border-bottom: 1px solid ${COLORS.gray20};
       }
     }
+
+    .selected {
+      color: ${COLORS.font};
+    }
   }
 
   .time {
@@ -733,17 +858,27 @@ const PcReservation = styled.div`
 
     input {
       width: 100px;
+      position: relative;
+      font-size: ${FONT.pc};
       color: ${COLORS.gray40};
       text-align: center;
       border: none;
       border-bottom: 1px solid ${COLORS.gray20};
       cursor: pointer;
-      /* 
+
       &::-webkit-inner-spin-button,
       &::-webkit-calendar-picker-indicator {
         display: none;
         appearance: none;
-      } */
+      }
+
+      &::-webkit-calendar-picker-indicator {
+        padding-left: 80px;
+        opacity: 0;
+        position: absolute;
+        display: flex;
+        cursor: pointer;
+      }
     }
 
     .selected {
@@ -785,6 +920,7 @@ const ContentInput = styled.textarea`
     width: 100%;
     height: 180px;
     padding: 16px;
+    font-size: ${FONT.pc};
   }
 `
 

@@ -8,7 +8,6 @@ import { useInView } from 'react-intersection-observer'
 
 const BoardList = () => {
   const [postList, setPostList] = useState<POST_TYPE[]>([])
-  console.log(postList)
   const [ref, inView] = useInView()
   const [page, setPage] = useState(1)
   const [lastPage, setLastPage] = useState(false);

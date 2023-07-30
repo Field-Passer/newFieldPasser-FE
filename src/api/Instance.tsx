@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true
 // 토큰이 필요 없는 api 요청을 보내는 axios 인스턴스
 export const publicApi = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000,
 })
 
 // 토큰이 필요한 api 요청을 보내는 axios 인스턴스
@@ -27,7 +28,8 @@ privateApi.interceptors.request.use(
     const refresh_token = getCookieToken()
 
     const { status }: any = await checkTokenExpire()
-    // console.log('checkTokenExpire :', status)
+    // if(status !== 200)
+    console.log('checkTokenExpire :', status)
 
     // const atExpire = store.getState().accessToken.expireTime
     // const curExpire = new Date().getTime()
@@ -56,6 +58,7 @@ privateApi.interceptors.request.use(
         } else {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
+          alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
           // console.log('만료된 토큰으로 재발급 실패, 로그아웃')
           return
         }
