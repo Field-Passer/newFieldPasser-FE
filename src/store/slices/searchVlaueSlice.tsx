@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface MyState {
   title: string
-  date: string
+  startDate: string
+  endDate: string
   startTime: string
   endTime: string
   district: string[]
@@ -11,7 +12,8 @@ interface MyState {
 
 const initialState: MyState = {
   title: '',
-  date: new Date().toISOString(),
+  startDate: new Date().toISOString(),
+  endDate: new Date().toISOString(),
   startTime: '',
   endTime: '',
   district: [],
@@ -24,7 +26,8 @@ const searchValueSlice = createSlice({
   reducers: {
     createSearchValue: (state, action: PayloadAction<SearchValueTypes>) => {
       state.title = action.payload.title
-      state.date = action.payload.date
+      state.startDate = action.payload.startDate
+      state.endDate = action.payload.endDate
       state.startTime = action.payload.startTime
       state.endTime = action.payload.endTime
       state.district = action.payload.district

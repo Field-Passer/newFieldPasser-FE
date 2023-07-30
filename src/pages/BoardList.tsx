@@ -15,25 +15,17 @@ const BoardList = () => {
   const searchValue = useSelector((state: RootState) => {
     return {
       title: state.searchVlaue.title,
-      startTime: state.searchVlaue.date.substr(0, 10) + 'T' + state.searchVlaue.startTime + ':00',
-      endTime: state.searchVlaue.date.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
+      startTime: state.searchVlaue.startDate.substr(0, 10) + 'T' + state.searchVlaue.startTime + ':00',
+      endTime: state.searchVlaue.endDate.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
       district: state.searchVlaue.district,
       category: state.searchVlaue.category === '전체' ? '' : state.searchVlaue.category,
-      date: state.searchVlaue.date,
+      startDate: state.searchVlaue.startTime,
+      endDate: state.searchVlaue.endDate,
     }
   })
 
-  const title = useSelector((state: RootState) => {
-    return state.searchVlaue.title
-  })
-  const date = useSelector((state: RootState) => {
-    return state.searchVlaue.date
-  })
-  const distruct = useSelector((state: RootState) => {
-    return state.searchVlaue.district
-  })
-  const category = useSelector((state: RootState) => {
-    return state.searchVlaue.category
+  const [title, startDate, endDate, district, category] = useSelector((state: RootState) => {
+    return [state.searchVlaue.title, state.searchVlaue.startDate, state.searchVlaue.endDate, state.searchVlaue.district, state.searchVlaue.category]
   })
 
   const getPostList = async (page: number) => {
@@ -54,7 +46,7 @@ const BoardList = () => {
     getPostList(page)
     endRef.current = false
     preventRef.current = true
-  }, [title, date, distruct, category])
+  }, [title, startDate, endDate, district, category])
 
   // useEffect(() => {
   //   if (page !== 1) getPostList(page)

@@ -47,7 +47,8 @@ interface POST_TYPE {
 
 interface SearchValueTypes {
   title: string
-  date: string
+  startDate: string
+  endDate: string
   startTime: string
   endTime: string
   district: string[]
@@ -60,7 +61,8 @@ interface ValueStateType {
   districtValue: string[]
   startTimeValue: string
   endTimeValue: string
-  selectedDate: Date
+  startDate: Date
+  endDate: Date
   searchTextValue: string
   [prop: string]: any
 }
@@ -71,6 +73,7 @@ interface CheckValueStateType {
   districtOpen: boolean
   districtSelect: boolean
   timeChange: boolean
-  dateChange: boolean
+  startDateChange: boolean
+  endDateChange: boolean
   [prop: string]: any
 }
