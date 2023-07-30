@@ -30,7 +30,9 @@ const Main = () => {
     title: '',
     startTime: '',
     endTime: '',
-    district: [selectedDistrict],
+    startDate: '',
+    endDate: '',
+    district: [selectedDistrict === '지역' ? '' : selectedDistrict],
     category: category,
     date: '',
   }
@@ -40,10 +42,6 @@ const Main = () => {
   }, [])
 
   useEffect(() => {
-    console.log(selectedDistrict)
-  }, [selectedDistrict])
-
-  useEffect(() => {
     // api재요청 / 무한스크롤이면?
     // selected : 지역, 정렬 일 때 값 넣기 제외
     // 정렬옵션은 같은 api로 못 보냄, 카테고리별 전체 게시글 불러와서 따로 정렬코드 넣어주기
@@ -51,8 +49,7 @@ const Main = () => {
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
-        console.log(postData)
-        setPostList(postData)
+        setPostList(postData.content)
       } catch (err) {
         console.log(err)
       }
