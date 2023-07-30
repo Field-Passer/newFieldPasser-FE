@@ -13,21 +13,12 @@ const Main = () => {
     query: '(max-width: 833px)',
   })
   const [postList, setPostList] = useState<POST_TYPE[]>([])
-  const [district, setDistrict] = useState<string>('')
   const [category, setCategory] = useState<string>('풋살장')
   const [background, setBackground] = useState<string>('')
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [selectedDistrict, setSelectedDistrict] = useState('지역')
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
-  const searchValue = {
-    title: '',
-    startTime: '',
-    endTime: '',
-    district: [district],
-    category: category,
-    date: '',
-  }
   const [isActive, setIsActive] = useState({
     futsal: true,
     soccer: false,
@@ -35,10 +26,22 @@ const Main = () => {
     badminton: false,
     tennis: false,
   })
+  const searchValue = {
+    title: '',
+    startTime: '',
+    endTime: '',
+    district: [selectedDistrict],
+    category: category,
+    date: '',
+  }
 
   useEffect(() => {
     setBackground(`/banner${Math.floor(Math.random() * 5)}.png`)
   }, [])
+
+  useEffect(() => {
+    console.log(selectedDistrict)
+  }, [selectedDistrict])
 
   useEffect(() => {
     // api재요청 / 무한스크롤이면?
@@ -55,7 +58,7 @@ const Main = () => {
       }
     }
     getPostList()
-  }, [district, category])
+  }, [category, selectedDistrict])
 
   const categories: ICategories[] = [
     {
@@ -197,7 +200,6 @@ const Main = () => {
                       className="option"
                       onClick={() => {
                         setSelectedDistrict(item)
-                        setDistrict(item)
                       }}
                     >
                       {item}
@@ -235,6 +237,7 @@ const Main = () => {
                       className="option"
                       onClick={() => {
                         setSelectedSortOption(item)
+                        console.log(item)
                       }}
                     >
                       {item}

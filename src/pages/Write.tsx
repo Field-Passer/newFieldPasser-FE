@@ -8,6 +8,7 @@ import { useRef, useState, forwardRef, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestWrite } from '@src/api/postApi'
+import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
   //페이지 진입 시 토큰 확인
@@ -21,6 +22,7 @@ const Write = () => {
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [priceValue, setPriceValue] = useState<string>('')
+  // const [isTimeChange, setIsTimeChange] = useState(false)
 
   const imgRef = useRef<HTMLInputElement>(null)
 
@@ -433,6 +435,7 @@ const Write = () => {
           </button>
         </PcForm>
       )}
+      <TimeSelector />
     </Container>
   )
 }
@@ -915,6 +918,10 @@ const ContentInput = styled.textarea`
   resize: none;
   overflow-y: auto;
   padding: 10px;
+
+  &::placeholder {
+    color: ${COLORS.gray40};
+  }
 
   @media (min-width: 834px) {
     width: 100%;
