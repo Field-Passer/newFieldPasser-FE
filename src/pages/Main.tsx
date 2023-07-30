@@ -1,44 +1,69 @@
 import { districtOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { BadmintonIcon, BasketballIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
 import SearchForm from '@src/components/SearchForm'
-
-interface ICategories {
-  category: string
-  name: string
-  icon: ReactElement
-}
+import { useMediaQuery } from 'react-responsive'
+import Board from '@src/components/Board'
+import { getSearchPostList } from '@src/api/getApi'
 
 const Main = () => {
   const [isActive, setIsActive] = useState<boolean>(false)
+  const [postList, setPostList] = useState<POST_TYPE[]>([])
+  const [district, setDistrict] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
+  const searchValue = {
+    title: '',
+    startTime: '',
+    endTime: '',
+    district: [district],
+    category: category,
+    date: '',
+  }
+
+  const isMobile = useMediaQuery({
+    query: '(max-width: 833px)',
+  })
+
+  useEffect(() => {
+    const getPostList = async () => {
+      try {
+        const postData = await getSearchPostList(searchValue)
+        console.log(postData)
+        setPostList(postData)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getPostList()
+  }, [district, category])
 
   const categories: ICategories[] = [
     {
       category: 'futsal',
-      name: '풋살',
+      name: '풋살장',
       icon: <FutsalIcon color={isActive ? COLORS.green : '#00000099'} />,
     },
     {
       category: 'soccer',
-      name: '축구',
+      name: '축구장',
       icon: <SoccerIcon color={isActive ? COLORS.green : '#00000099'} />,
     },
     {
       category: 'basketball',
-      name: '농구',
+      name: '농구장',
       icon: <BasketballIcon color={isActive ? COLORS.green : '#00000099'} />,
     },
     {
-      category: 'tennis',
-      name: '테니스',
-      icon: <TennisIcon color={isActive ? COLORS.green : '#00000099'} />,
+      category: 'badminton',
+      name: '배드민턴장',
+      icon: <BadmintonIcon color={isActive ? COLORS.green : '#00000099'} />,
     },
     {
-      category: 'badminton',
-      name: '배드민턴',
-      icon: <BadmintonIcon color={isActive ? COLORS.green : '#00000099'} />,
+      category: 'tennis',
+      name: '테니스장',
+      icon: <TennisIcon color={isActive ? COLORS.green : '#00000099'} />,
     },
   ]
 
@@ -46,9 +71,11 @@ const Main = () => {
 
   return (
     <Container>
-      <SearchForm />
+      <section className="search-section">
+        <SearchForm />
+      </section>
       <ListSection>
-        <Category>
+        <Category className={isMobile ? 'mobile' : 'pc'}>
           {categories.map((item) => {
             return (
               <div key={item.category} className="icon">
@@ -84,6 +111,7 @@ const Main = () => {
             })}
           </select>
         </Options>
+        <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다.'} />
       </ListSection>
     </Container>
   )
@@ -92,21 +120,38 @@ const Main = () => {
 const Container = styled.main`
   display: block;
   font-size: ${FONT.m};
-  width: 360px;
   margin: auto;
+  max-width: 834px;
+
+  .search-section {
+    margin: auto;
+    max-width: 560px;
+  }
 `
 
 const ListSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 16px;
+  padding: 0 16px;
 `
 const Category = styled.div`
   height: 70px;
   display: flex;
-  gap: 16px;
   border-bottom: 1px solid ${COLORS.gray20};
+  margin: auto;
+  gap: 16px;
+
+  @media (min-width: 600px) {
+    gap: 28px;
+    height: 102px;
+    font-size: ${FONT.pc};
+    border: none;
+  }
+
+  @media (min-width: 834px) {
+    gap: 40px;
+  }
 
   .icon {
     display: flex;
@@ -122,6 +167,15 @@ const Category = styled.div`
     img {
       width: 24px;
       height: 24px;
+    }
+
+    @media (min-width: 600px) {
+      width: 80px;
+
+      img {
+        width: 32px;
+        height: 32px;
+      }
     }
   }
 `

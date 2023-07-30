@@ -1,13 +1,24 @@
 /// <reference types="vite/client" />
-interface IuserInfoType {
-  userEmail: string
+interface IUserInfoType {
+  userEmail?: string
   userPw?: string
   userName?: string
   userNickName?: string
   userPhone?: string
+  userVerifyNum?: string
+  newPw?: string
+}
+interface IResponseType {
+  status: number
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
+  data?: any
 }
 interface IResponseErrorType {
-  state: number
+  status?: number
+  state?: number
 }
 interface ISaveImgFile {
   imgFile: File | null
@@ -76,4 +87,10 @@ interface CheckValueStateType {
   startDateChange: boolean
   endDateChange: boolean
   [prop: string]: any
+}
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
 }

@@ -1,4 +1,5 @@
 // import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
+import React from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
@@ -27,10 +28,10 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, tokens } = await userLogin({
+    const { status, tokens } = (await userLogin({
       userEmail,
       userPw,
-    })
+    })) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(SET_TOKEN(tokens.accessToken))
@@ -67,7 +68,7 @@ const Login = () => {
         </button>
 
         <div className="find_wrap">
-          <Link to="/findpw">비밀번호 찾기</Link>
+          <Link to="/find_password">비밀번호 찾기</Link>
           <Link to="/join">회원가입하기</Link>
         </div>
 
