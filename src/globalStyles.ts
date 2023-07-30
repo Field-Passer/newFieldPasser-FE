@@ -111,8 +111,10 @@ const GlobalStyles = createGlobalStyle`
 
   .stop-scrolling {
     height: 100%;
-    overflow: hidden;
+    overflow: hidden
   }
+
+
 `
 export const COLORS = {
   green: '#5FCA7B',
