@@ -11,7 +11,7 @@ const Edit = (props: Props) => {
   const [isWriter, setIsWriter] = useState(false)
   //private 라우터에 포함
   // 게시글 작성자와 현재 로그인한 아이디 일치할 때만 write로 이동 (pathname으로만 이동 시 혼선 방지)
-  // 일치하지 않을 경우 alert만 띄우고 종료
+
   useEffect(() => {
     // 수정버튼 클릭 시 navigate props로 게시글 정보 받아와 내려주기
     const checkId = async () => {

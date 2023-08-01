@@ -130,13 +130,14 @@ const Write = () => {
       if (res === 200) {
         window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
       }
-    } else if (location.pathname === '/edit') {
-      const boardId = 3
+    } else if (location.pathname.includes('/edit')) {
+      const boardId = 62 //테스트
       const res = await requestEdit(formData, boardId)
-      if (res === 200) {
-        alert('게시글 수정이 완료되었습니다.')
-        navigate(`/`) // 해당 게시글로 이동하기
-      }
+      console.log(res)
+      // if (res === 200) {
+      //   alert('게시글 수정이 완료되었습니다.')
+      //   navigate(`/`) // 해당 게시글로 이동하기
+      // }
     }
   }
 
@@ -445,7 +446,7 @@ const Write = () => {
           </button>
         </PcForm>
       )}
-      <TimeSelector />
+      {/* <TimeSelector /> */}
     </Container>
   )
 }
@@ -705,7 +706,7 @@ const MobileForm = styled.form`
 
     .won {
       position: absolute;
-      top: 39px;
+      top: 35px;
       right: 30px;
       color: ${COLORS.gray40};
     }
