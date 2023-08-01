@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Write from './Write'
 import { checkTokenExpire } from '@src/api/authApi'
 import { getUserInfo } from '@src/api/getApi'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 
-type Props = {}
-
-const Edit = (props: Props) => {
+const Edit = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [userId, setUserId] = useState('')
   const [isWriter, setIsWriter] = useState(false)
-  //private 라우터에 포함
-  // 게시글 작성자와 현재 로그인한 아이디 일치할 때만 write로 이동 (pathname으로만 이동 시 혼선 방지)
+
+  const goToBack = () => {
+    alert('본인이 작성한 게시물만 수정 가능합니다.')
+    navigate(-1) //이전페이지로 이동
+  }
 
   useEffect(() => {
-    // 수정버튼 클릭 시 navigate props로 게시글 정보 받아와 내려주기
     const checkId = async () => {
       try {
         const tokenRes = await checkTokenExpire() // 임시 토큰확인코드 (private 라우터 완성되면 지울 것)
         const idRes = await getUserInfo()
         if (tokenRes?.status === 200 && idRes.memberId) {
-          return idRes.memberId
+          setUserId(idRes.memberId)
         }
       } catch (err) {
         console.log(err)
@@ -28,12 +30,13 @@ const Edit = (props: Props) => {
     checkId()
   }, [])
 
-  const goToBack = () => {
-    alert('본인이 작성한 게시물만 수정 가능합니다.')
-    navigate(-1) //이전페이지로 이동
-  }
+  useEffect(() => {
+    if (userId) {
+      userId === location.state.data.memberId ? setIsWriter(true) : goToBack()
+    }
+  }, [userId])
 
-  return <>{isWriter ? <Write /> : goToBack()}</>
+  return <>{isWriter && <Write />}</>
 }
 
 export default Edit

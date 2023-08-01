@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState, forwardRef, ChangeEvent } from 'react'
+import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
@@ -26,8 +26,15 @@ const Write = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [priceValue, setPriceValue] = useState<string>('')
   // const [isTimeChange, setIsTimeChange] = useState(false)
-
   const imgRef = useRef<HTMLInputElement>(null)
+  const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
+
+  useEffect(() => {
+    if (location.pathname.includes('edit')) {
+      console.log(location.state.data)
+      setDataForEdit(location.state.data)
+    }
+  }, [])
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -131,13 +138,14 @@ const Write = () => {
         window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
       }
     } else if (location.pathname.includes('/edit')) {
-      const boardId = 62 //테스트
-      const res = await requestEdit(formData, boardId)
-      console.log(res)
-      // if (res === 200) {
-      //   alert('게시글 수정이 완료되었습니다.')
-      //   navigate(`/`) // 해당 게시글로 이동하기
-      // }
+      try {
+        const res = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
+        console.log(res)
+        alert('게시글 수정이 완료되었습니다.')
+        navigate(`/board_details/${dataForEdit?.boardId}`) // 해당 게시글로 이동하기
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
@@ -459,8 +467,12 @@ const Container = styled.main`
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: url('select-arrow.png') no-repeat 97% 50%;
+    background: url('/select-arrow.png') no-repeat 97% 50%;
     cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   input,
