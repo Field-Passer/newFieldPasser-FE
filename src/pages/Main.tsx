@@ -49,6 +49,7 @@ const Main = () => {
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
+        console.log(postData.content)
         setPostList(postData.content)
       } catch (err) {
         console.log(err)

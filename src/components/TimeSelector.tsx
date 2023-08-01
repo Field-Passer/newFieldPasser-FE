@@ -35,7 +35,7 @@ const TimeSelector = (props: Props) => {
 const TimeContainer = styled.div`
   width: 190px;
   height: 250px;
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   background-color: white;
   border: 1px solid ${COLORS.gray20};

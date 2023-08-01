@@ -2,6 +2,7 @@ const PATH = {
   HOME: '/',
   BOARD_DETAILS: '/board_details/:boardId',
   WRITE: '/write',
+  EDIT: '/edit/:postId',
   BOARD_LIST: '/board_list',
   HELP: '/help',
   HELP_FORM: '/help_from',

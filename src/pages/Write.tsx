@@ -5,16 +5,19 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState, forwardRef, ChangeEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
-import { requestWrite } from '@src/api/postApi'
+import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
-  //페이지 진입 시 토큰 확인
+  //작성 페이지 진입 시 토큰 유효한지 확인
+  //수정 페이지 진입 시 pathname에서 boardId 받아오기
+  //수정 페이지 진입 시 props로 내용 받아와 채워주기
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const location = useLocation()
   const navigate = useNavigate()
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
@@ -122,9 +125,18 @@ const Write = () => {
       console.log(pair[0] + ', ' + pair[1])
     }
 
-    const res = await requestWrite(formData)
-    if (res === 200) {
-      window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+    if (location.pathname === '/write') {
+      const res = await requestWrite(formData)
+      if (res === 200) {
+        window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+      }
+    } else if (location.pathname === '/edit') {
+      const boardId = 3
+      const res = await requestEdit(formData, boardId)
+      if (res === 200) {
+        alert('게시글 수정이 완료되었습니다.')
+        navigate(`/`) // 해당 게시글로 이동하기
+      }
     }
   }
 
@@ -282,9 +294,7 @@ const Write = () => {
             handleSubmit(event)
           }}
         >
-          <div className="page-title">
-            <h1>게시물 등록</h1>
-          </div>
+          <div className="page-title">{location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}</div>
           <PcDetail>
             <section className="half-section">
               <h2>사진 추가</h2>
