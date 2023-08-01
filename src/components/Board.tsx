@@ -9,7 +9,7 @@ interface Props {
 }
 export const dateFormat = (dateVal: string) => {
   const nowDate = new Date(dateVal)
-  const month = nowDate.getMonth() + 1
+  const month = nowDate.getMonth()
   const date = nowDate.getDate()
   const hours = nowDate.getHours() < 10 ? `0${nowDate.getHours()}` : nowDate.getHours()
   const minutes = nowDate.getMinutes() < 10 ? `0${nowDate.getMinutes()}` : nowDate.getMinutes()
