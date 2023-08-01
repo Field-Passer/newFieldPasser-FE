@@ -1,38 +1,39 @@
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
-import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
 interface Props {
   data: POST_TYPE[]
   messege: string
 }
-
-const dateFormat = (dateVal: string) => {
+export const dateFormat = (dateVal: string) => {
   const nowDate = new Date(dateVal)
   const month = nowDate.getMonth() + 1
   const date = nowDate.getDate()
   const hours = nowDate.getHours() < 10 ? `0${nowDate.getHours()}` : nowDate.getHours()
   const minutes = nowDate.getMinutes() < 10 ? `0${nowDate.getMinutes()}` : nowDate.getMinutes()
 
-  return `${month}월 ${date}일 ${hours}:${minutes}`
+  return `${month + 1}월 ${date}일 ${hours}:${minutes}`
 }
 
 const Board = ({ data, messege }: Props) => {
+  const navigate = useNavigate()
+
   return (
     <ThemeProvider theme={theme}>
       <BoardContainer>
         {data && data.length > 0 ? (
           <ul>
             {data.map((list) => (
-              <PostListBox key={list.boardId} blind={list.transactionStatus}>
+              <PostListBox key={list.boardId} blind={list.transactionStatus} onClick={() => navigate(`/board_details/${list.boardId}`)}>
                 <div className="imgae_wrap">
                   <img src={list.imageUrl} alt="이미지" />
                 </div>
                 <div className="info_wrap">
                   <p className="title">{list.title}</p>
                   <p className="price">{list.price.toLocaleString()} 원</p>
-                  <p className="date">{dateFormat(list.registerDate)}</p>
+                  <p className="date">{dateFormat(list.startTime)}</p>
                   <p className="view_like">
                     <span>조회수</span>
                     <span>{list.viewCount}</span>
@@ -189,6 +190,7 @@ const PostListBox = styled.li<{ blind: string | null }>`
   gap: 16px;
   margin-bottom: 36px;
   position: relative;
+  cursor: pointer;
 
   &::after {
     content: '';
