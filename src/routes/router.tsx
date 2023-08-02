@@ -13,6 +13,7 @@ import Login from '@pages/Login'
 import MyPage from '@pages/MyPage'
 import MyPageDetail from '@src/pages/MyPageDetail'
 import FindPassword from '@src/pages/FindPassword'
+import Edit from '@src/pages/Edit'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { index: true, path: PATH.HOME, element: <Home /> },
       { path: PATH.BOARD_DETAILS, element: <BoardDetails /> },
       { path: PATH.WRITE, element: <Write /> },
+      { path: PATH.EDIT, element: <Edit /> },
       { path: PATH.BOARD_LIST, element: <BoardList /> },
       { path: PATH.HELP, element: <Help /> },
       { path: PATH.HELP_FORM, element: <HelpForm /> },

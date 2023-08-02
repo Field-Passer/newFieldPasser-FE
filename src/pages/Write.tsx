@@ -4,17 +4,20 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
-import { useRef, useState, forwardRef, ChangeEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
-import { requestWrite } from '@src/api/postApi'
+import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
-  //페이지 진입 시 토큰 확인
+  //작성 페이지 진입 시 토큰 유효한지 확인
+  //수정 페이지 진입 시 pathname에서 boardId 받아오기
+  //수정 페이지 진입 시 props로 내용 받아와 채워주기
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const location = useLocation()
   const navigate = useNavigate()
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
@@ -23,8 +26,15 @@ const Write = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [priceValue, setPriceValue] = useState<string>('')
   // const [isTimeChange, setIsTimeChange] = useState(false)
-
   const imgRef = useRef<HTMLInputElement>(null)
+  const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
+
+  useEffect(() => {
+    if (location.pathname.includes('edit')) {
+      console.log(location.state.data)
+      setDataForEdit(location.state.data)
+    }
+  }, [])
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -122,9 +132,20 @@ const Write = () => {
       console.log(pair[0] + ', ' + pair[1])
     }
 
-    const res = await requestWrite(formData)
-    if (res === 200) {
-      window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+    if (location.pathname === '/write') {
+      const res = await requestWrite(formData)
+      if (res === 200) {
+        window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+      }
+    } else if (location.pathname.includes('/edit')) {
+      try {
+        const res = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
+        console.log(res)
+        alert('게시글 수정이 완료되었습니다.')
+        navigate(`/board_details/${dataForEdit?.boardId}`) // 해당 게시글로 이동하기
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 
@@ -282,9 +303,7 @@ const Write = () => {
             handleSubmit(event)
           }}
         >
-          <div className="page-title">
-            <h1>게시물 등록</h1>
-          </div>
+          <div className="page-title">{location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}</div>
           <PcDetail>
             <section className="half-section">
               <h2>사진 추가</h2>
@@ -435,7 +454,7 @@ const Write = () => {
           </button>
         </PcForm>
       )}
-      <TimeSelector />
+      {/* <TimeSelector /> */}
     </Container>
   )
 }
@@ -448,8 +467,12 @@ const Container = styled.main`
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: url('select-arrow.png') no-repeat 97% 50%;
+    background: url('/select-arrow.png') no-repeat 97% 50%;
     cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   input,
@@ -695,7 +718,7 @@ const MobileForm = styled.form`
 
     .won {
       position: absolute;
-      top: 39px;
+      top: 35px;
       right: 30px;
       color: ${COLORS.gray40};
     }
