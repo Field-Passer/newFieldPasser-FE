@@ -9,7 +9,9 @@ const PATH = {
   LOGIN: '/login',
   MYPAGE: '/mypage',
   MYPAGE_DETAIL: '/mypage_detail',
-  FIND_PASSWORD: '/find_password',
+  MYPAGE_EDIT: '/mypage/edit-info',
+  MYPAGE_PW: '/mypage/edit-pw',
+  FIND_PASSWORD: '/find-password',
 }
 
 export default PATH
