@@ -68,7 +68,7 @@ const Login = () => {
         </button>
 
         <div className="find_wrap">
-          <Link to="/find_password">비밀번호 찾기</Link>
+          <Link to="/find-password">비밀번호 찾기</Link>
           <Link to="/join">회원가입하기</Link>
         </div>
 

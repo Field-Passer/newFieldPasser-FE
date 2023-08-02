@@ -3,8 +3,13 @@ import { COLORS, FONT } from '@src/globalStyles'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import useInput from '@src/hooks/useInputHook'
+import { editUserPw } from '@src/api/authApi'
+import { removeCookieToken } from '@src/storage/Cookie'
+import { useDispatch } from 'react-redux'
+import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 
 const ResetPw = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const newPwValidator = (newPw: string) => {
     const rNewPw = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/
@@ -15,11 +20,15 @@ const ResetPw = () => {
 
   const changePwHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // const { status } = (await 비밀번호변경api({ newPw })) as IResponseType
-    // if (status === 200) {
-    //   alert('비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.')
-    navigate('/login')
-    // }
+    if (newPwError) return alert('비밀번호 양식을 다시 확인해주세요.')
+    if (newPw !== newConfirmPw) return alert('입력한 비밀번호가 같지 않습니다.')
+    const { status } = (await editUserPw({ newPw })) as IResponseType
+    if (status === 200) {
+      removeCookieToken()
+      dispatch(DELETE_TOKEN())
+      alert('비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.')
+      navigate('/login')
+    }
   }
 
   return (
@@ -34,7 +43,6 @@ const ResetPw = () => {
             <label>새롭게 사용할 비밀번호를 입력해주세요</label>
             <input type="password" name="newPw" onChange={onChangeNewPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={newPw} required />
             <p className="error_message">{newPwError && '8 ~ 10자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
-            {/* <p className="help_message">{mailLoading && '인증 메일 발송중... 잠시 기다려주세요.'}</p> */}
           </div>
 
           <div className="input_wrap_inner">

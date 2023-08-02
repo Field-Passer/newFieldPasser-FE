@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { checkDuplicateEmail, join } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
 
@@ -22,20 +22,26 @@ const Join = () => {
   const nickNameValidator = (userNickName: string) => {
     if (userNickName === null || userNickName.length > 12) return true
   }
+  const userPhoneValidator = (uPhone: string) => {
+    setUserPhone(
+      uPhone
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/g, '$1-$2-$3')
+        .replace(/(-{1,2})$/g, '')
+    )
+    if (uPhone.length >= 0 && uPhone.length <= 8) return true
+    if (uPhone.length >= 11) return false
+  }
 
   const navigate = useNavigate()
+
   const [userEmail, onChangeUserEmail, userEmailError] = useInput(emailValidator, '')
   const [userPw, onChangeUserPw, userPwError] = useInput(pwValidator, '')
   const [userConfirmPw, onChangeUserConfirmPw, userConfirmPwError] = useInput(pwValidator, '')
   const [userName, onChangeUserName, userNameError] = useInput(nameValidator, '')
   const [userNickName, onChangeUserNickName, userNickNameError] = useInput(nickNameValidator, '')
+  const [userPhone, onChangeUserPhone, userPhoneError, setUserPhone] = useInput(userPhoneValidator, '')
   const [checkEmail, setCheckEmail] = useState(false)
-  const [phoneError, setPhoneError] = useState(false)
-  const [userPhone, setUserPhone] = useState('')
-
-  const onChangeUserPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserPhone(e.target.value)
-  }
 
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -50,7 +56,7 @@ const Join = () => {
   const joinHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
-    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || phoneError) return alert('양식을 다시 확인해주세요.')
+    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError) return alert('양식을 다시 확인해주세요.')
     const { status } = (await join({
       userEmail,
       userPw,
@@ -63,17 +69,6 @@ const Join = () => {
       navigate('/login')
     }
   }
-
-  useEffect(() => {
-    setUserPhone(
-      userPhone
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/g, '$1-$2-$3')
-        .replace(/(-{1,2})$/g, '')
-    )
-    if (userPhone.length >= 1 && userPhone.length <= 8) setPhoneError(true)
-    if (userPhone.length >= 11) setPhoneError(false)
-  }, [userPhone])
 
   return (
     <Container>
@@ -115,13 +110,13 @@ const Join = () => {
 
           <div className="input_wrap_inner">
             <label>이름</label>
-            <input type="text" name="userName" onChange={onChangeUserName} placeholder="김필드" required />
+            <input type="text" name="userName" onChange={onChangeUserName} placeholder="김필드" maxLength={5} required />
             <p className="error_message">{userNameError && '이름은 다섯글자를 넘을 수 없습니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
             <label>닉네임</label>
-            <input type="text" name="userNickName" onChange={onChangeUserNickName} placeholder="김필드패서" required />
+            <input type="text" name="userNickName" onChange={onChangeUserNickName} placeholder="김필드패서" maxLength={12} required />
             <p className="error_message">{userNickNameError && '닉네임은 열두글자를 넘을 수 없습니다.'}</p>
           </div>
 
@@ -136,7 +131,7 @@ const Join = () => {
               maxLength={13}
               required
             />
-            <p className="error_message">{phoneError && '전화번호를 정확히 입력해주세요.'}</p>
+            <p className="error_message">{userPhoneError && '전화번호를 정확히 입력해주세요.'}</p>
           </div>
         </div>
 

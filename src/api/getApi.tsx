@@ -30,3 +30,13 @@ export const getPostDetail = async (userId: number) => {
       console.log(err)
     })
 }
+
+// 유저 정보 조회
+export const getUserInfo = async () => {
+  try {
+    const res = await privateApi.get('/my-page/member-inquiry')
+    return res.data.data
+  } catch (err) {
+    console.log(err)
+  }
+}

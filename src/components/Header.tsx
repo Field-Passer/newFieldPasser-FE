@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
-import { COLORS, FONT } from '@src/globalStyles'
+import { COLORS } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import { Mobile } from '@src/hooks/useScreenHook'
 import { FiMenu } from 'react-icons/fi'

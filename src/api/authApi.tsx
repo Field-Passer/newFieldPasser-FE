@@ -33,10 +33,13 @@ export const userLogout = async () => {
     const response = await privateApi('/auth/logout', {
       method: 'POST',
     })
-    return {
-      status: response.status,
-      result: response.data.result,
-      message: response.data.message,
+    if (response.status === 200) {
+      // window.location.replace('/login')
+      return {
+        status: response.status,
+        result: response.data.result,
+        message: response.data.message,
+      }
     }
   } catch (error) {
     if (axios.isAxiosError<IResponseErrorType>(error)) {
@@ -143,7 +146,7 @@ export const checkDuplicateEmail = async ({ userEmail }: IUserInfoType) => {
   }
 }
 
-// 비밀번호 찾기 - 인증번호 메일 요청(PIN번호 메일 전송)
+// 비밀번호 찾기(find-password) - 인증번호 메일 요청(PIN번호 메일 전송)
 export const verifyUserEmail = async ({ userEmail }: IUserInfoType) => {
   try {
     const response = await publicApi('/check-email', {
@@ -178,7 +181,6 @@ export const verifyUserNum = async ({ userEmail, userVerifyNum }: IUserInfoType)
       status: response.status,
     }
   } catch (error) {
-    console.log
     if (isAxiosError<IResponseErrorType>(error)) {
       return {
         status: error.response?.data.state,
@@ -189,7 +191,6 @@ export const verifyUserNum = async ({ userEmail, userVerifyNum }: IUserInfoType)
 
 // 비밀번호 찾기 - 임시 비밀번호 발급(임시 비밀번호 생성, 저장, 메일 전송)
 export const temporaryPassword = async ({ userEmail }: IUserInfoType) => {
-  console.log('temporary 실행')
   try {
     const response = await publicApi('/member-temporary', {
       method: 'POST',
@@ -197,12 +198,76 @@ export const temporaryPassword = async ({ userEmail }: IUserInfoType) => {
         email: userEmail,
       },
     })
-    console.log(response)
     return {
       status: response.status,
     }
   } catch (error) {
-    console.log(error)
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 회원 정보 조회
+export const getUserInfo = async () => {
+  try {
+    const response = await privateApi('/my-page/member-inquiry', {
+      method: 'GET',
+    })
+    return {
+      status: response.status,
+      memberId: response.data.data.memberId,
+      memberName: response.data.data.memberName,
+      memberNickName: response.data.data.memberNickName,
+      memberPhone: response.data.data.memberPhone,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 회원 정보 수정
+export const editUserInfo = async ({ userName, userNickName, userPhone }: IUserInfoType) => {
+  try {
+    const response = await privateApi('/my-page/edit-info', {
+      method: 'PATCH',
+      data: {
+        memberName: userName,
+        memberNickName: userNickName,
+        memberPhone: userPhone,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 비밀번호 변경(마이페이지에서)
+export const editUserPw = async ({ newPw }: IUserInfoType) => {
+  try {
+    const response = await privateApi('/my-page/edit-password', {
+      method: 'POST',
+      data: {
+        password: newPw,
+      },
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
       return {
         status: error.response?.data.state,

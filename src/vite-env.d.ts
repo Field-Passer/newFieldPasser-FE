@@ -8,6 +8,15 @@ interface IUserInfoType {
   userVerifyNum?: string
   newPw?: string
 }
+
+interface IUserInfoEditType {
+  status: number
+  memberId: string
+  memberName: string
+  memberNickName: string
+  memberPhone: string
+}
+
 interface IResponseType {
   status: number
   tokens: {
