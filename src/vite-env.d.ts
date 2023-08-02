@@ -55,6 +55,8 @@ interface POST_TYPE {
   imageUrl: string
   memberId: string
   memberName: string
+  memberNickName: string
+  myBoard : boolean
   phone: string
   price: number
   registerDate: string
