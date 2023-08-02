@@ -3,11 +3,12 @@ import { dateFormat } from '@src/components/Board'
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
 
 const BoardDetails = () => {
   const boardId = useParams()
+  const navigate = useNavigate()
   const [detailData, setDetailData] = useState<POST_TYPE>()
 
   const getDetailData = async () => {
@@ -54,7 +55,7 @@ const BoardDetails = () => {
         </ContentBox>
       </Container>
 
-      <button>수정 test btn</button>
+      <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정 test btn</button>
     </ThemeProvider>
   )
 }
