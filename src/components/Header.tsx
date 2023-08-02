@@ -9,7 +9,6 @@ import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { userLogout } from '@src/api/authApi'
 import { removeCookieToken } from '@src/storage/Cookie'
-
 type PropsType = {
   setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
 }

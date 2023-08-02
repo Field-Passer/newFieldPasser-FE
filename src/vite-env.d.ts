@@ -67,9 +67,39 @@ interface POST_TYPE {
 
 interface SearchValueTypes {
   title: string
-  date: string
+  startDate: string
+  endDate: string
   startTime: string
   endTime: string
   district: string[]
   category: string
+  [prop: string]: any
+}
+
+interface ValueStateType {
+  categoryValue: string
+  districtValue: string[]
+  startTimeValue: string
+  endTimeValue: string
+  startDate: Date
+  endDate: Date
+  searchTextValue: string
+  [prop: string]: any
+}
+
+interface CheckValueStateType {
+  searchBoxOpen: boolean
+  categoryOpen: boolean
+  districtOpen: boolean
+  districtSelect: boolean
+  timeChange: boolean
+  startDateChange: boolean
+  endDateChange: boolean
+  [prop: string]: any
+}
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
 }

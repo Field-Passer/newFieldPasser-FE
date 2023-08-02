@@ -1,16 +1,18 @@
 import { COLORS } from '@src/globalStyles'
 import { AiFillGithub } from 'react-icons/ai'
+import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 
 const Footer = () => {
+  const navigate = useNavigate()
   return (
     <FooterContainer>
       <div className="inner">
         <div className="top">
           <img src="/logo.png" />
           <div className="policy">
-            <span>이용약관</span>
-            <span>운영정책</span>
+            <span onClick={() => navigate('/help')}>이용약관</span>
+            <span onClick={() => navigate('/help')}>운영정책</span>
           </div>
         </div>
         <a href="https://github.com/Field-Passer/newFieldPasser-BE" target="_blank" rel="noopener noreferrer" className="link">
