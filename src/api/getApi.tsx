@@ -8,8 +8,7 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 
   return await publicApi
     .get(
-      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${
-        values.endTime
+      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${values.endTime
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
@@ -22,7 +21,7 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 
 export const getPostDetail = async (userId: number) => {
   return await privateApi
-    .get(`/board/${userId}`)
+    .get(`/detail/${userId}`)
     .then((res) => {
       console.log(res.data.data)
       return res.data.data

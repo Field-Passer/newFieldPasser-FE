@@ -1,20 +1,13 @@
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
+import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
 import { useNavigate } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
+
 interface Props {
   data: POST_TYPE[]
   messege: string
-}
-export const dateFormat = (dateVal: string) => {
-  const nowDate = new Date(dateVal)
-  const month = nowDate.getMonth()
-  const date = nowDate.getDate()
-  const hours = nowDate.getHours() < 10 ? `0${nowDate.getHours()}` : nowDate.getHours()
-  const minutes = nowDate.getMinutes() < 10 ? `0${nowDate.getMinutes()}` : nowDate.getMinutes()
-
-  return `${month + 1}월 ${date}일 ${hours}:${minutes}`
 }
 
 const Board = ({ data, messege }: Props) => {
@@ -28,7 +21,7 @@ const Board = ({ data, messege }: Props) => {
             {data.map((list) => (
               <PostListBox key={list.boardId} blind={list.transactionStatus} onClick={() => navigate(`/board_details/${list.boardId}`)}>
                 <div className="imgae_wrap">
-                  <img src={list.imageUrl} alt="이미지" />
+                  <img src={list.imageUrl ? list.imageUrl : randomImages(list.categoryName, list.boardId)} onError={(e) => handleImgError(e, list.categoryName, list.boardId)} alt="이미지" />
                 </div>
                 <div className="info_wrap">
                   <p className="title">{list.title}</p>
@@ -86,7 +79,7 @@ const BoardContainer = styled.div`
         height: 100%;
         position: absolute;
         border-radius: 20px;
-        object-fit: contain;
+        object-fit: cover;
         background-color: #d9d9d935;
       }
 
