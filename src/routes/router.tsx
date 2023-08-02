@@ -12,8 +12,10 @@ import Join from '@pages/Join'
 import Login from '@pages/Login'
 import MyPage from '@pages/MyPage'
 import MyPageDetail from '@src/pages/MyPageDetail'
+import UserEdit from '@src/components/MyPage/UserEdit'
 import FindPassword from '@src/pages/FindPassword'
 import Edit from '@src/pages/Edit'
+import ResetPw from '@src/components/ResetPassword/ResetPw'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
       { path: PATH.FIND_PASSWORD, element: <FindPassword /> },
       // private route로 element 감싸 주기
       { path: PATH.MYPAGE, element: <MyPage /> },
+      { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
+      { path: PATH.MYPAGE_PW, element: <ResetPw /> },
       { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
     ],
   },
