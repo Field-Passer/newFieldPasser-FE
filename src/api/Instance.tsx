@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { getCookieToken, removeCookieToken, setRefreshToken } from '@src/storage/Cookie'
 import axios from 'axios'
 import { DELETE_TOKEN, SET_TOKEN } from '@src/store/slices/authSlice'
@@ -13,6 +14,7 @@ axios.defaults.withCredentials = true
 // 토큰이 필요 없는 api 요청을 보내는 axios 인스턴스
 export const publicApi = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000,
 })
 
 // 토큰이 필요한 api 요청을 보내는 axios 인스턴스
@@ -26,8 +28,9 @@ privateApi.interceptors.request.use(
     // const access_token = store.getState().accessToken.accessToken
     const refresh_token = getCookieToken()
 
-    const { status }: any = await checkTokenExpire()
-    // console.log('checkTokenExpire :', status)
+    const { status } = (await checkTokenExpire()) as IResponseType
+    // if(status !== 200)
+    console.log('checkTokenExpire :', status)
 
     // const atExpire = store.getState().accessToken.expireTime
     // const curExpire = new Date().getTime()
@@ -40,6 +43,7 @@ privateApi.interceptors.request.use(
       return config
     } else {
       // console.log('at검사 응답 400 or 401 일때')
+      // const navigate = useNavigate()
       if (refresh_token) {
         // console.log('rt로 재발급 시도')
         // console.log('액세스 토큰:', access_token)
@@ -56,14 +60,18 @@ privateApi.interceptors.request.use(
         } else {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
+          alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
           // console.log('만료된 토큰으로 재발급 실패, 로그아웃')
+          // navigate('/login')
           return
         }
       } else {
         // console.log('rt 없어서 브라우저에서 강제 로그아웃')
         removeCookieToken()
         dispatch(DELETE_TOKEN())
+        console.log('리프레시 토큰 없음')
         alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
+        // navigate('/login')
         return
       }
     }

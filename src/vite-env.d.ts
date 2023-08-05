@@ -1,14 +1,34 @@
 /// <reference types="vite/client" />
-interface IuserInfoType {
-  userEmail: string
+interface IUserInfoType {
+  userEmail?: string
   userPw?: string
   userName?: string
   userNickName?: string
   userPhone?: string
+  userVerifyNum?: string
+  newPw?: string
+}
+
+interface IUserInfoEditType {
+  status: number
+  memberId: string
+  memberName: string
+  memberNickName: string
+  memberPhone: string
+}
+
+interface IResponseType {
+  status: number
+  tokens: {
+    accessToken: string
+    refreshToken: string
+  }
+  data?: any
 }
 
 interface IResponseErrorType {
-  state: number
+  status?: number
+  state?: number
 }
 
 interface ISaveImgFile {
@@ -38,6 +58,8 @@ interface POST_TYPE {
   imageUrl: string
   memberId: string
   memberName: string
+  memberNickName: string
+  myBoard : boolean
   phone: string
   price: number
   registerDate: string
@@ -50,11 +72,41 @@ interface POST_TYPE {
 
 interface SearchValueTypes {
   title: string
-  date: string
+  startDate: string
+  endDate: string
   startTime: string
   endTime: string
   district: string[]
   category: string
+  [prop: string]: any
+}
+
+interface ValueStateType {
+  categoryValue: string
+  districtValue: string[]
+  startTimeValue: string
+  endTimeValue: string
+  startDate: Date
+  endDate: Date
+  searchTextValue: string
+  [prop: string]: any
+}
+
+interface CheckValueStateType {
+  searchBoxOpen: boolean
+  categoryOpen: boolean
+  districtOpen: boolean
+  districtSelect: boolean
+  timeChange: boolean
+  startDateChange: boolean
+  endDateChange: boolean
+  [prop: string]: any
+}
+
+interface ICategories {
+  category: string
+  name: string
+  icon: ReactElement
 }
 
 interface CommentTypes {
