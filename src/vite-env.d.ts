@@ -6,13 +6,16 @@ interface IuserInfoType {
   userNickName?: string
   userPhone?: string
 }
+
 interface IResponseErrorType {
   state: number
 }
+
 interface ISaveImgFile {
   imgFile: File | null
   imgSrc: string | undefined
 }
+
 interface IPostPayload {
   title: string
   file: File | null
@@ -52,4 +55,13 @@ interface SearchValueTypes {
   endTime: string
   district: string[]
   category: string
+}
+
+interface CommentTypes {
+  commentId: number
+  memberId: string
+  title: string
+  commentContent: string
+  commentRegisterDate: string
+  commentUpDate: string
 }
