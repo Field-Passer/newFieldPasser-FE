@@ -5,12 +5,16 @@ import testSlice from './slices/testSlice'
 import authReducer from './slices/authSlice'
 import searchVlaue from './slices/searchVlaueSlice'
 import postData from './slices/postDataSlice'
+import infoSlice from './slices/infoSlice'
+import wishlistSlice from './slices/wishlistSlice'
 
 const rootReducer = combineReducers({
   createTest: testSlice.reducer,
   accessToken: authReducer.reducer,
   searchVlaue: searchVlaue.reducer,
   postData: postData.reducer,
+  userInfo: infoSlice.reducer,
+  wishlist: wishlistSlice.reducer,
 })
 
 const persistConfig = {

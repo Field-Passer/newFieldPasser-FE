@@ -25,14 +25,17 @@ interface IResponseType {
   }
   data?: any
 }
+
 interface IResponseErrorType {
   status?: number
   state?: number
 }
+
 interface ISaveImgFile {
   imgFile: File | null
   imgSrc: string | undefined
 }
+
 interface IPostPayload {
   title: string
   file: File | null
@@ -104,4 +107,13 @@ interface ICategories {
   category: string
   name: string
   icon: ReactElement
+}
+
+interface CommentTypes {
+  commentId: number
+  memberId: string
+  title: string
+  commentContent: string
+  commentRegisterDate: string
+  commentUpDate: string
 }
