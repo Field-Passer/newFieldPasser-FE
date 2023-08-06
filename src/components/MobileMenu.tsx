@@ -17,9 +17,7 @@ const MobileMenu = ({ menuLists, activeMenu, setActiveMenu }: IProps) => {
           style={{
             color: `${activeMenu === i ? COLORS.green : '#d9d9d9'}`,
             fontWeight: `${activeMenu === i ? 700 : 400}`,
-            borderBottom: `${
-              activeMenu === i ? `solid 2px ${COLORS.green}` : 'none'
-            }`,
+            borderBottom: `${activeMenu === i ? `solid 2px ${COLORS.green}` : 'none'}`,
           }}
         >
           {list}

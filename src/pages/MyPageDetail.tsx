@@ -13,12 +13,13 @@ import { useGetWishlistQuery } from '@src/store/slices/wishlistSlice'
 const MyPageDetail = () => {
   const [page, setPage] = useState<number>(1)
   const [totalPage, setTotalPage] = useState<number>(1)
-  const [activeMenu, setActiveMenu] = useState(0)
+  const { state }: { state: number } = useLocation()
+  const [activeMenu, setActiveMenu] = useState<number>(state)
   const [posts, setPosts] = useState<POST_TYPE[]>([])
   const { data } = useGetWishlistQuery(page)
   const wishlists = data ? data.content : []
   const menuLists = ['양도', '좋아요', '댓글']
-  const { state }: { state: number } = useLocation()
+
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
       return <Board data={posts} message="글이 없습니다." />

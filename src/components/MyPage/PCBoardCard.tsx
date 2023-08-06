@@ -12,7 +12,7 @@ const PCBoardCard = ({ title, posts }: Props) => {
   const navigate = useNavigate()
   return (
     <Container>
-      <Title onClick={() => navigate('/mypage_detail', { state: { page: 0, posts } })}>
+      <Title onClick={() => navigate('/mypage_detail', { state: 0 })}>
         <span>{title}</span>
         <PlusIcon color={COLORS.gray40} />
       </Title>
