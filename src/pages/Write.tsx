@@ -11,9 +11,6 @@ import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
-  //작성 페이지 진입 시 토큰 유효한지 확인
-  //수정 페이지 진입 시 pathname에서 boardId 받아오기
-  //수정 페이지 진입 시 props로 내용 받아와 채워주기
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -27,14 +24,38 @@ const Write = () => {
   const [priceValue, setPriceValue] = useState<string>('')
   // const [isTimeChange, setIsTimeChange] = useState(false)
   const imgRef = useRef<HTMLInputElement>(null)
+  const [selectedStartTime, setSelectedStartTime] = useState<string>('')
+  const [selectedEndTime, setSelectedEndTime] = useState<string>('')
+  const [writtenTitle, setWrittenTitle] = useState<string>('')
+  const [writtenContent, setWrittenContent] = useState<string>('')
+  const [selectedDistrict, setSelectedDistrict] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
-      console.log(location.state.data)
       setDataForEdit(location.state.data)
+      setSelectedStartTime(location.state.data.startTime.slice(11, 16))
     }
   }, [])
+
+  useEffect(() => {
+    if (dataForEdit) {
+      //데이터채워넣기
+      setImgSrc(dataForEdit.imageUrl)
+      setPriceValue(dataForEdit.price.toLocaleString('ko-KR'))
+      setIsDateChange(true)
+      setSelectedDate(new Date(dataForEdit.startTime))
+      setIsStartChange(true)
+      setSelectedStartTime(dataForEdit.startTime.slice(11, 16)) //첫 페이지 렌더링에 적용안됨..
+      setIsEndChange(true)
+      setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
+      setWrittenTitle(dataForEdit.title)
+      setWrittenContent(dataForEdit.content)
+      setSelectedDistrict(dataForEdit.districtName)
+      setSelectedCategory(dataForEdit.categoryName)
+    }
+  }, [dataForEdit])
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -87,6 +108,15 @@ const Write = () => {
       )}
     </div>
   ))
+
+  const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
+    if (type === 'district') {
+      setSelectedDistrict(event.target.value)
+    } else {
+      setSelectedCategory(event.target.value)
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
@@ -132,20 +162,31 @@ const Write = () => {
       console.log(pair[0] + ', ' + pair[1])
     }
 
-    if (location.pathname === '/write') {
-      const res = await requestWrite(formData)
-      if (res === 200) {
-        window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
-      }
-    } else if (location.pathname.includes('/edit')) {
-      try {
-        const res = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
-        console.log(res)
-        alert('게시글 수정이 완료되었습니다.')
-        navigate(`/board_details/${dataForEdit?.boardId}`) // 해당 게시글로 이동하기
-      } catch (err) {
-        console.log(err)
-      }
+    switch (location.pathname) {
+      case '/write':
+        try {
+          const writeRes = await requestWrite(formData)
+          if (writeRes === 200) {
+            window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+          } else {
+            throw new Error('정상적으로 완료되지 않았습니다. 다시 시도해주세요.')
+          }
+        } catch (err) {
+          console.log(err)
+        }
+        break
+      default:
+        try {
+          // formData.append('imageUrl', imgSrc) // 이미지수정은 src, 이미지삭제는 null로 전송
+          const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
+          if (editRes === 200) {
+            alert('게시글 수정이 완료되었습니다.')
+            navigate(`/board_details/${dataForEdit?.boardId}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+        break
     }
   }
 
@@ -198,6 +239,8 @@ const Write = () => {
                 minLength={2}
                 maxLength={20}
                 title="제목은 2~20자 이내로 입력해주세요"
+                value={writtenTitle}
+                onChange={(e) => setWrittenTitle(e.target.value)}
               />
             </div>
           </section>
@@ -219,7 +262,7 @@ const Write = () => {
           </section>
           <section>
             <div>지역</div>
-            <select name="districtName" required>
+            <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
               {districtOptions.map((item) => {
                 return (
                   <option value={item} key={item}>
@@ -229,7 +272,7 @@ const Write = () => {
               })}
             </select>
             <div>종목</div>
-            <select name="categoryName" required>
+            <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
               {categoryOptions.map((item, index) => {
                 if (index)
                   return (
@@ -264,10 +307,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="start"
-                  defaultValue={'00:00'}
+                  defaultValue={isStartChange ? selectedStartTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsStartChange(true)
+                    setSelectedStartTime(event.target.value)
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
@@ -275,10 +319,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="end"
-                  defaultValue={'00:00'}
+                  defaultValue={isEndChange ? selectedEndTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsEndChange(true)
+                    setSelectedEndTime(event.target.value)
                   }}
                   className={isEndChange ? 'selected' : ''}
                 />
@@ -289,7 +334,14 @@ const Write = () => {
           <section>
             <div>본문내용</div>
             <div>
-              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
+              <ContentInput
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                required
+                minLength={5}
+                name="content"
+                value={writtenContent}
+                onChange={(e) => setWrittenContent(e.target.value)}
+              />
             </div>
           </section>
           <button type="submit" className="submit-button">
@@ -347,6 +399,8 @@ const Write = () => {
                     minLength={2}
                     maxLength={20}
                     title="제목은 2~20자 이내로 입력해주세요"
+                    value={writtenTitle}
+                    onChange={(e) => setWrittenTitle(e.target.value)}
                   />
                 </div>
               </div>
@@ -368,7 +422,7 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">지역</div>
-                <select name="districtName" required>
+                <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
                   {districtOptions.map((item) => {
                     return (
                       <option value={item} key={item}>
@@ -380,7 +434,7 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">종목</div>
-                <select name="categoryName" required>
+                <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
                   {categoryOptions.map((item, index) => {
                     if (index)
                       return (
@@ -419,10 +473,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="start"
-                  defaultValue={'00:00'}
+                  defaultValue={isStartChange ? selectedStartTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsStartChange(true)
+                    setSelectedStartTime(event.target.value)
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
@@ -432,10 +487,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="end"
-                  defaultValue={'00:00'}
+                  defaultValue={isEndChange ? selectedEndTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsEndChange(true)
+                    setSelectedEndTime(event.target.value)
                   }}
                   className={isEndChange ? 'selected' : ''}
                 />
@@ -446,7 +502,14 @@ const Write = () => {
           <section className="full-section">
             <h2>본문내용</h2>
             <div>
-              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
+              <ContentInput
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                required
+                minLength={5}
+                name="content"
+                value={writtenContent}
+                onChange={(e) => setWrittenContent(e.target.value)}
+              />
             </div>
           </section>
           <button className="submit-button" type="submit">
@@ -825,14 +888,14 @@ const MobileReservation = styled.div`
         width: 14px;
         height: 14px;
         padding: 13px;
-        background: url('calendar-light.png') no-repeat 90% 50%;
+        background: url('/calendar-light.png') no-repeat 90% 50%;
       }
     }
     .selected {
       color: ${COLORS.font};
 
       .icon {
-        background: url('calendar-dark.png') no-repeat 90% 50%;
+        background: url('/calendar-dark.png') no-repeat 90% 50%;
       }
     }
   }
