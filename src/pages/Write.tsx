@@ -8,7 +8,7 @@ import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
-import TimeSelector from '@src/components/TimeSelector'
+// import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -31,6 +31,7 @@ const Write = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
+  const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
@@ -47,7 +48,7 @@ const Write = () => {
       setIsDateChange(true)
       setSelectedDate(new Date(dataForEdit.startTime))
       setIsStartChange(true)
-      setSelectedStartTime(dataForEdit.startTime.slice(11, 16)) //첫 페이지 렌더링에 적용안됨..
+      setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
       setIsEndChange(true)
       setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
       setWrittenTitle(dataForEdit.title)
@@ -82,6 +83,7 @@ const Write = () => {
       imgRef.current.value = ''
     }
     setImgSrc('')
+    setIsFileEdit(true)
   }
 
   // 통화단위 콤마 적용
@@ -210,12 +212,24 @@ const Write = () => {
                 accept="image/gif,image/jpeg,image/png"
                 onChange={(event) => {
                   previewImg(event)
+                  setIsFileEdit(true)
                 }}
               />
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-              <span>예약 인증 사진을 올려주세요</span>
-              <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+              <div className="img-text">
+                <span>예약 인증 사진을 올려주세요</span>
+                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+              </div>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+              {location.pathname.includes('edit') && !isFileEdit ? (
+                <div className="img-overlay">
+                  <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                  <div className="img-text">
+                    <span>예약 인증 사진을 올려주세요</span>
+                    <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                  </div>
+                </div>
+              ) : null}
             </FileUpload>
             {imgSrc && (
               <div
@@ -368,12 +382,26 @@ const Write = () => {
                   accept="image/gif,image/jpeg,image/png"
                   onChange={(event) => {
                     previewImg(event)
+                    setIsFileEdit(true)
                   }}
                 />
                 <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                <div className="img-text">
+                  <span>예약 인증 사진을 올려주세요</span>
+                  <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                </div>
                 <span>예약 인증 사진을 올려주세요</span>
                 <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+                {location.pathname.includes('edit') && !isFileEdit ? (
+                  <div className="img-overlay">
+                    <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                    <div className="img-text">
+                      <span>예약 인증 사진을 올려주세요</span>
+                      <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                    </div>
+                  </div>
+                ) : null}
               </FileUpload>
               {imgSrc && (
                 <div
@@ -811,7 +839,7 @@ const MobileForm = styled.form`
       position: absolute;
       background-color: ${COLORS.gray40};
       right: 10px;
-      bottom: 10px;
+      top: 30px;
       padding: 8px;
       border: none;
       border-radius: 10px;
@@ -851,6 +879,28 @@ const FileUpload = styled.label`
   .uploadIcon {
     width: 40px;
     height: 40px;
+  }
+
+  .img-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .img-overlay {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    color: ${COLORS.gray40};
   }
 
   @media (min-width: 834px) {
