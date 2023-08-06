@@ -15,7 +15,7 @@ const CommentLists = ({ screen }: IProps) => {
       setComments(response?.data)
     }
     fetchData()
-  })
+  }, [])
   return (
     <Container screen={screen}>
       {comments.length ? (
