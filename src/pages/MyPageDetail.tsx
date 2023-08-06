@@ -12,6 +12,7 @@ import PCCardLists from '@src/components/MyPage/PCCardLists'
 const MyPageDetail = () => {
   const [activeMenu, setActiveMenu] = useState(0)
   const menuLists = ['양도', '좋아요', '댓글']
+  const { state }: { state: number } = useLocation()
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
       return <CardLists type="handOver" />
@@ -27,8 +28,6 @@ const MyPageDetail = () => {
       return <CommentLists screen="pc" />
     }
   }
-
-  const { state }: { state: number } = useLocation()
 
   useEffect(() => {
     state && setActiveMenu(state)
