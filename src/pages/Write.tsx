@@ -8,12 +8,9 @@ import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
-import TimeSelector from '@src/components/TimeSelector'
+// import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
-  //작성 페이지 진입 시 토큰 유효한지 확인
-  //수정 페이지 진입 시 pathname에서 boardId 받아오기
-  //수정 페이지 진입 시 props로 내용 받아와 채워주기
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -27,14 +24,39 @@ const Write = () => {
   const [priceValue, setPriceValue] = useState<string>('')
   // const [isTimeChange, setIsTimeChange] = useState(false)
   const imgRef = useRef<HTMLInputElement>(null)
+  const [selectedStartTime, setSelectedStartTime] = useState<string>('')
+  const [selectedEndTime, setSelectedEndTime] = useState<string>('')
+  const [writtenTitle, setWrittenTitle] = useState<string>('')
+  const [writtenContent, setWrittenContent] = useState<string>('')
+  const [selectedDistrict, setSelectedDistrict] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
+  const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
-      console.log(location.state.data)
       setDataForEdit(location.state.data)
+      setSelectedStartTime(location.state.data.startTime.slice(11, 16))
     }
   }, [])
+
+  useEffect(() => {
+    if (dataForEdit) {
+      //데이터채워넣기
+      setImgSrc(dataForEdit.imageUrl)
+      setPriceValue(dataForEdit.price.toLocaleString('ko-KR'))
+      setIsDateChange(true)
+      setSelectedDate(new Date(dataForEdit.startTime))
+      setIsStartChange(true)
+      setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
+      setIsEndChange(true)
+      setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
+      setWrittenTitle(dataForEdit.title)
+      setWrittenContent(dataForEdit.content)
+      setSelectedDistrict(dataForEdit.districtName)
+      setSelectedCategory(dataForEdit.categoryName)
+    }
+  }, [dataForEdit])
 
   const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thisFile = event.target.files && event.target.files[0]
@@ -61,6 +83,7 @@ const Write = () => {
       imgRef.current.value = ''
     }
     setImgSrc('')
+    setIsFileEdit(true)
   }
 
   // 통화단위 콤마 적용
@@ -87,6 +110,15 @@ const Write = () => {
       )}
     </div>
   ))
+
+  const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
+    if (type === 'district') {
+      setSelectedDistrict(event.target.value)
+    } else {
+      setSelectedCategory(event.target.value)
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
@@ -132,20 +164,31 @@ const Write = () => {
       console.log(pair[0] + ', ' + pair[1])
     }
 
-    if (location.pathname === '/write') {
-      const res = await requestWrite(formData)
-      if (res === 200) {
-        window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
-      }
-    } else if (location.pathname.includes('/edit')) {
-      try {
-        const res = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
-        console.log(res)
-        alert('게시글 수정이 완료되었습니다.')
-        navigate(`/board_details/${dataForEdit?.boardId}`) // 해당 게시글로 이동하기
-      } catch (err) {
-        console.log(err)
-      }
+    switch (location.pathname) {
+      case '/write':
+        try {
+          const writeRes = await requestWrite(formData)
+          if (writeRes === 200) {
+            window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+          } else {
+            throw new Error('정상적으로 완료되지 않았습니다. 다시 시도해주세요.')
+          }
+        } catch (err) {
+          console.log(err)
+        }
+        break
+      default:
+        try {
+          // formData.append('imageUrl', imgSrc) // 이미지수정은 src, 이미지삭제는 null로 전송
+          const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
+          if (editRes === 200) {
+            alert('게시글 수정이 완료되었습니다.')
+            navigate(`/board_details/${dataForEdit?.boardId}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+        break
     }
   }
 
@@ -169,12 +212,24 @@ const Write = () => {
                 accept="image/gif,image/jpeg,image/png"
                 onChange={(event) => {
                   previewImg(event)
+                  setIsFileEdit(true)
                 }}
               />
               <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
-              <span>예약 인증 사진을 올려주세요</span>
-              <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+              <div className="img-text">
+                <span>예약 인증 사진을 올려주세요</span>
+                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+              </div>
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+              {location.pathname.includes('edit') && !isFileEdit ? (
+                <div className="img-overlay">
+                  <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                  <div className="img-text">
+                    <span>예약 인증 사진을 올려주세요</span>
+                    <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                  </div>
+                </div>
+              ) : null}
             </FileUpload>
             {imgSrc && (
               <div
@@ -198,6 +253,8 @@ const Write = () => {
                 minLength={2}
                 maxLength={20}
                 title="제목은 2~20자 이내로 입력해주세요"
+                value={writtenTitle}
+                onChange={(e) => setWrittenTitle(e.target.value)}
               />
             </div>
           </section>
@@ -219,7 +276,7 @@ const Write = () => {
           </section>
           <section>
             <div>지역</div>
-            <select name="districtName" required>
+            <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
               {districtOptions.map((item) => {
                 return (
                   <option value={item} key={item}>
@@ -229,7 +286,7 @@ const Write = () => {
               })}
             </select>
             <div>종목</div>
-            <select name="categoryName" required>
+            <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
               {categoryOptions.map((item, index) => {
                 if (index)
                   return (
@@ -264,10 +321,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="start"
-                  defaultValue={'00:00'}
+                  defaultValue={isStartChange ? selectedStartTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsStartChange(true)
+                    setSelectedStartTime(event.target.value)
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
@@ -275,10 +333,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="end"
-                  defaultValue={'00:00'}
+                  defaultValue={isEndChange ? selectedEndTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsEndChange(true)
+                    setSelectedEndTime(event.target.value)
                   }}
                   className={isEndChange ? 'selected' : ''}
                 />
@@ -289,7 +348,14 @@ const Write = () => {
           <section>
             <div>본문내용</div>
             <div>
-              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
+              <ContentInput
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                required
+                minLength={5}
+                name="content"
+                value={writtenContent}
+                onChange={(e) => setWrittenContent(e.target.value)}
+              />
             </div>
           </section>
           <button type="submit" className="submit-button">
@@ -316,12 +382,26 @@ const Write = () => {
                   accept="image/gif,image/jpeg,image/png"
                   onChange={(event) => {
                     previewImg(event)
+                    setIsFileEdit(true)
                   }}
                 />
                 <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                <div className="img-text">
+                  <span>예약 인증 사진을 올려주세요</span>
+                  <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                </div>
                 <span>예약 인증 사진을 올려주세요</span>
                 <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
+                {location.pathname.includes('edit') && !isFileEdit ? (
+                  <div className="img-overlay">
+                    <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                    <div className="img-text">
+                      <span>예약 인증 사진을 올려주세요</span>
+                      <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
+                    </div>
+                  </div>
+                ) : null}
               </FileUpload>
               {imgSrc && (
                 <div
@@ -347,6 +427,8 @@ const Write = () => {
                     minLength={2}
                     maxLength={20}
                     title="제목은 2~20자 이내로 입력해주세요"
+                    value={writtenTitle}
+                    onChange={(e) => setWrittenTitle(e.target.value)}
                   />
                 </div>
               </div>
@@ -368,7 +450,7 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">지역</div>
-                <select name="districtName" required>
+                <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
                   {districtOptions.map((item) => {
                     return (
                       <option value={item} key={item}>
@@ -380,7 +462,7 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">종목</div>
-                <select name="categoryName" required>
+                <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
                   {categoryOptions.map((item, index) => {
                     if (index)
                       return (
@@ -419,10 +501,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="start"
-                  defaultValue={'00:00'}
+                  defaultValue={isStartChange ? selectedStartTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsStartChange(true)
+                    setSelectedStartTime(event.target.value)
                   }}
                   className={isStartChange ? 'selected' : ''}
                 />
@@ -432,10 +515,11 @@ const Write = () => {
                 <input
                   type="time"
                   name="end"
-                  defaultValue={'00:00'}
+                  defaultValue={isEndChange ? selectedEndTime : ''}
                   required
-                  onChange={() => {
+                  onChange={(event) => {
                     setIsEndChange(true)
+                    setSelectedEndTime(event.target.value)
                   }}
                   className={isEndChange ? 'selected' : ''}
                 />
@@ -446,7 +530,14 @@ const Write = () => {
           <section className="full-section">
             <h2>본문내용</h2>
             <div>
-              <ContentInput placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요." required minLength={5} name="content" />
+              <ContentInput
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                required
+                minLength={5}
+                name="content"
+                value={writtenContent}
+                onChange={(e) => setWrittenContent(e.target.value)}
+              />
             </div>
           </section>
           <button className="submit-button" type="submit">
@@ -479,6 +570,7 @@ const Container = styled.main`
   textarea {
     &:focus {
       outline: none;
+      background-color: none;
     }
   }
 
@@ -559,6 +651,26 @@ const Container = styled.main`
 
   .react-datepicker__day--keyboard-selected {
     background: none;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: ${COLORS.font};
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    box-shadow: 0 0 0px 1000px #fff inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  input:autofill,
+  input:autofill:hover,
+  input:autofill:focus,
+  input:autofill:active {
+    -webkit-text-fill-color: ${COLORS.font};
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    box-shadow: 0 0 0px 1000px #fff inset;
+    transition: background-color 5000s ease-in-out 0s;
   }
 `
 
@@ -727,7 +839,7 @@ const MobileForm = styled.form`
       position: absolute;
       background-color: ${COLORS.gray40};
       right: 10px;
-      bottom: 10px;
+      top: 30px;
       padding: 8px;
       border: none;
       border-radius: 10px;
@@ -769,6 +881,28 @@ const FileUpload = styled.label`
     height: 40px;
   }
 
+  .img-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .img-overlay {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    color: ${COLORS.gray40};
+  }
+
   @media (min-width: 834px) {
     width: 100%;
     height: 100%;
@@ -804,14 +938,14 @@ const MobileReservation = styled.div`
         width: 14px;
         height: 14px;
         padding: 13px;
-        background: url('calendar-light.png') no-repeat 90% 50%;
+        background: url('/calendar-light.png') no-repeat 90% 50%;
       }
     }
     .selected {
       color: ${COLORS.font};
 
       .icon {
-        background: url('calendar-dark.png') no-repeat 90% 50%;
+        background: url('/calendar-dark.png') no-repeat 90% 50%;
       }
     }
   }

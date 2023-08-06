@@ -3,6 +3,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { Link, useNavigate } from 'react-router-dom'
@@ -22,6 +23,12 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
   const closeSidebar = () => {
     setSideOpen(false)
   }
+
+  useEffect(() => {
+    if (!isMobile) {
+      closeSidebar()
+    }
+  }, [isMobile])
 
   const dispatch = useDispatch()
 
@@ -44,7 +51,6 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
 
   return (
     <>
-      {!isMobile && closeSidebar()}
       <SideContainer id="sidebar" className={sideOpen && isMobile ? 'open' : ''}>
         <FirstSection>
           <div>
