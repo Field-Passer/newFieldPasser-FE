@@ -135,9 +135,12 @@ const Write = () => {
 
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
-
       if (item.name === 'file') {
-        item.files && formData.append('file', item.files[0])
+        if (item.files && !item.files.length) {
+          formData.append('file', '')
+        } else if (item.files) {
+          formData.append('file', item.files[0])
+        }
       } else if (item.name === 'price') {
         formData.append('price', item.value.replace(/,/g, ''))
       } else if (item.name === 'date') {
@@ -159,10 +162,10 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    let entries = formData.entries()
-    for (const pair of entries) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
+    // let entries = formData.entries()
+    // for (const pair of entries) {
+    //   console.log(pair[0] + ', ' + pair[1])
+    // }
 
     switch (location.pathname) {
       case '/write':
@@ -175,11 +178,14 @@ const Write = () => {
           }
         } catch (err) {
           console.log(err)
+          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
         }
         break
       default:
         try {
-          // formData.append('imageUrl', imgSrc) // 이미지수정은 src, 이미지삭제는 null로 전송
+          if (!formData.get('file')) formData.append('imageUrl', imgSrc)
+          else dataForEdit && formData.append('imageUrl', dataForEdit.imageUrl)
+
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
             alert('게시글 수정이 완료되었습니다.')
@@ -187,6 +193,7 @@ const Write = () => {
           }
         } catch (err) {
           console.log(err)
+          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
         }
         break
     }
@@ -390,8 +397,6 @@ const Write = () => {
                   <span>예약 인증 사진을 올려주세요</span>
                   <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 </div>
-                <span>예약 인증 사진을 올려주세요</span>
-                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
                 {location.pathname.includes('edit') && !isFileEdit ? (
                   <div className="img-overlay">
