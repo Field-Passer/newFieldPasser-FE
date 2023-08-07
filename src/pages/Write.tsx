@@ -158,6 +158,9 @@ const Write = () => {
     }
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
 
+    // console.log(start, end)
+    // if (start.)
+
     formData.append('startTime', start)
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
@@ -183,9 +186,17 @@ const Write = () => {
         break
       default:
         try {
-          if (!formData.get('file')) formData.append('imageUrl', imgSrc)
-          else dataForEdit && formData.append('imageUrl', dataForEdit.imageUrl)
-
+          if (dataForEdit?.imageUrl && !formData.get('file') && !imgSrc) {
+            formData.append('imageUrlDel', 'true')
+          } else if (!dataForEdit?.imageUrl && !formData.get('file')) {
+            formData.append('imageUrlDel', 'false')
+          } else if (dataForEdit?.imageUrl && !formData.get('file') && imgSrc) {
+            formData.append('imageUrlDel', 'false')
+          }
+          let entries = formData.entries()
+          for (const pair of entries) {
+            console.log(pair[0] + ', ' + pair[1])
+          }
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
             alert('게시글 수정이 완료되었습니다.')
