@@ -1,29 +1,36 @@
 import MobileMenu from '@src/components/MobileMenu'
 import CommentLists from '@src/components/MyPage/CommentLists'
-import CardLists from '@src/components/MyPage/CardLists'
 import Title from '@src/components/Title'
 import { Mobile } from '@src/hooks/useScreenHook'
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import Inner from '@src/components/Inner'
-import PCCardLists from '@src/components/MyPage/PCCardLists'
+import Board from '@src/components/Board'
+import { getMyPost } from '@src/api/authApi'
+import { useGetWishlistQuery } from '@src/store/slices/wishlistSlice'
 
 const MyPageDetail = () => {
-  const [activeMenu, setActiveMenu] = useState(0)
-  const menuLists = ['양도', '좋아요', '댓글']
+  const [page, setPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(1)
   const { state }: { state: number } = useLocation()
+  const [activeMenu, setActiveMenu] = useState<number>(state)
+  const [posts, setPosts] = useState<POST_TYPE[]>([])
+  const { data } = useGetWishlistQuery(page)
+  const wishlists = data ? data.content : []
+  const menuLists = ['양도', '좋아요', '댓글']
+
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
-      return <CardLists type="handOver" />
+      return <Board data={posts} message="글이 없습니다." />
     } else if (activeMenu === 1 && screen === 'mobile') {
-      return <CardLists type="like" />
+      return <Board data={wishlists} message="글이 없습니다." />
     } else if (activeMenu === 2 && screen === 'mobile') {
       return <CommentLists screen="mobile" />
     } else if (activeMenu === 0 && screen === 'pc') {
-      return <PCCardLists />
+      return <Board data={posts} message="글이 없습니다." />
     } else if (activeMenu === 1 && screen === 'pc') {
-      return <PCCardLists />
+      return <Board data={wishlists} message="글이 없습니다." />
     } else if (activeMenu === 2 && screen === 'pc') {
       return <CommentLists screen="pc" />
     }
@@ -31,6 +38,12 @@ const MyPageDetail = () => {
 
   useEffect(() => {
     state && setActiveMenu(state)
+    const fetchData = async () => {
+      const postsResponse = await getMyPost(1)
+      setPosts(postsResponse?.data)
+    }
+    fetchData()
+    setTotalPage(Math.ceil(data?.numberOfElements / 10))
   }, [])
 
   const isPC = useMediaQuery({
