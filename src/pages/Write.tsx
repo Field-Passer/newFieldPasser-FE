@@ -143,9 +143,6 @@ const Write = () => {
         }
       } else if (item.name === 'price') {
         formData.append('price', item.value.replace(/,/g, ''))
-      } else if (item.name === 'date') {
-        start += item.value
-        end += item.value
       } else if (item.name === 'start') {
         start += selectedDate && selectedDate.toISOString().slice(0, 10)
         start += 'T' + item.value + ':00'
@@ -158,8 +155,7 @@ const Write = () => {
     }
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
 
-    // console.log(start, end)
-    // if (start.)
+    console.log(selectedDate.toISOString().slice(0, 10))
 
     formData.append('startTime', start)
     formData.append('endTime', end)
@@ -188,14 +184,10 @@ const Write = () => {
         try {
           if (dataForEdit?.imageUrl && !formData.get('file') && !imgSrc) {
             formData.append('imageUrlDel', 'true')
-          } else if (!dataForEdit?.imageUrl && !formData.get('file')) {
-            formData.append('imageUrlDel', 'false')
           } else if (dataForEdit?.imageUrl && !formData.get('file') && imgSrc) {
             formData.append('imageUrlDel', 'false')
-          }
-          let entries = formData.entries()
-          for (const pair of entries) {
-            console.log(pair[0] + ', ' + pair[1])
+          } else if (!dataForEdit?.imageUrl && !formData.get('file')) {
+            formData.append('imageUrlDel', 'false')
           }
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
