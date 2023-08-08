@@ -37,3 +37,18 @@ export const requestEdit = async (formData: FormData, postId: number) => {
     console.log(error)
   }
 }
+
+// 관리자 문의글 답변 등록
+export const questionWrite = async (questionId: number, data: QuestionTypes) => {
+  try {
+    const response = await privateApi(`/admin/answer/register?questionId=${questionId}`, {
+      method: 'POST',
+      data,
+    })
+    return {
+      status: response.status,
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}

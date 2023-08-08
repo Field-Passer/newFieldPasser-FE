@@ -12,10 +12,6 @@ const Title = ({ screen, name }: IProps) => {
 
 export default Title
 
-interface StyleProps {
-  screen: string
-}
-
 const TitleStyle = styled.h1<StyleProps>`
   font-size: ${({ screen }) => (screen === 'pc' ? '20px' : FONT['m-lg'])};
   text-align: center;

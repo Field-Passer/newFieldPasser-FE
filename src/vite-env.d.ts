@@ -59,7 +59,7 @@ interface POST_TYPE {
   memberId: string
   memberName: string
   memberNickName: string
-  myBoard : boolean
+  myBoard: boolean
   phone: string
   price: number
   registerDate: string
@@ -116,4 +116,13 @@ interface CommentTypes {
   commentContent: string
   commentRegisterDate: string
   commentUpDate: string
+}
+
+interface QuestionTypes {
+  answerTitle: string
+  answerContent: string
+}
+
+interface StyleProps {
+  screen: string
 }

@@ -33,6 +33,8 @@ const Header = ({ setSideOpen }: PropsType) => {
       if (authenticated) {
         const response = await getMemberInfo()
         dispatch(SET_INFO(response?.data))
+      } else if (!authenticated) {
+        dispatch(DELETE_INFO())
       }
     }
     fetchData()
@@ -76,6 +78,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <Link to="/help">고객센터</Link>
               {authenticated && <Link to="/mypage">마이페이지</Link>}
               {!authenticated && <Link to="/join">회원가입</Link>}
+              {authenticated && <Link to="/one_on_one">1:1 문의</Link>}
               {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to="/login">로그인</Link>}
               <button
                 onClick={() => {
