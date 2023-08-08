@@ -17,10 +17,6 @@ const Ask = ({ title, comment, screen }: IAsk) => {
 
 export default Ask
 
-interface StyleProps {
-  screen: string
-}
-
 const AskStyle = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;

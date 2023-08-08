@@ -79,10 +79,6 @@ const Help = () => {
 
 export default Help
 
-interface StyleProps {
-  screen: string
-}
-
 const MenuStyle = styled.menu`
   display: flex;
   justify-content: center;

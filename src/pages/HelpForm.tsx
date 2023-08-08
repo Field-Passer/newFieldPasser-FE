@@ -47,10 +47,6 @@ const HelpForm = () => {
 
 export default HelpForm
 
-interface StyleProps {
-  screen: string
-}
-
 const FormStyle = styled.form`
   display: flex;
   flex-direction: column;

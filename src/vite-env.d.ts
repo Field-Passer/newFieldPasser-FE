@@ -122,3 +122,7 @@ interface QuestionTypes {
   answerTitle: string
   answerContent: string
 }
+
+interface StyleProps {
+  screen: string
+}
