@@ -8,7 +8,8 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 
   return await publicApi
     .get(
-      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${values.endTime
+      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${
+        values.endTime
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
@@ -40,3 +41,6 @@ export const getUserInfo = async () => {
     console.log(err)
   }
 }
+
+// 관리자 문의글 전체 조회
+// 백엔드 문의
