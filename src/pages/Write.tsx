@@ -93,7 +93,7 @@ const Write = () => {
     setPriceValue(price)
   }
 
-  const CustomDateInput = forwardRef<HTMLDivElement>(({ value, onClick }, ref) => (
+  const CustomDateInput = forwardRef<HTMLDivElement, { value: any; onClick: any }>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
       {isMobile ? (
         <>
@@ -154,9 +154,9 @@ const Write = () => {
       }
     }
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
-
-    console.log(selectedDate.toISOString().slice(0, 10))
-
+    // if (+start.slice(11, 13) > +end.slice(11, 13)) {
+    // end의 날짜인 8,9인덱스를 +1해주기
+    // }
     formData.append('startTime', start)
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
