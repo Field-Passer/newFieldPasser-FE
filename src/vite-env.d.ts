@@ -59,7 +59,7 @@ interface POST_TYPE {
   memberId: string
   memberName: string
   memberNickName: string
-  myBoard : boolean
+  myBoard: boolean
   phone: string
   price: number
   registerDate: string
@@ -93,7 +93,6 @@ interface ValueStateType {
 }
 
 interface CheckValueStateType {
-  searchBoxOpen: boolean
   categoryOpen: boolean
   districtOpen: boolean
   districtSelect: boolean
