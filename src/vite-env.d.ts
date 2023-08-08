@@ -116,3 +116,12 @@ interface CommentTypes {
   commentRegisterDate: string
   commentUpDate: string
 }
+
+interface QuestionTypes {
+  answerTitle: string
+  answerContent: string
+}
+
+interface StyleProps {
+  screen: string
+}
