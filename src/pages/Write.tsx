@@ -153,18 +153,20 @@ const Write = () => {
         formData.append(item.name, item.value)
       }
     }
-    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
-    // if (+start.slice(11, 13) > +end.slice(11, 13)) {
-    // end의 날짜인 8,9인덱스를 +1해주기
-    // }
+    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
+    if (+start.slice(11, 13) > +end.slice(11, 13)) {
+      const newDate = +end.slice(8, 10) + 1 + 'T'
+      end = end.replace(/[0-9]+[0-9]+T/, newDate)
+    }
+
     formData.append('startTime', start)
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    // let entries = formData.entries()
-    // for (const pair of entries) {
-    //   console.log(pair[0] + ', ' + pair[1])
-    // }
+    let entries = formData.entries()
+    for (const pair of entries) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
 
     switch (location.pathname) {
       case '/write':
