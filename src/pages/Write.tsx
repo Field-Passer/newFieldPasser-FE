@@ -93,7 +93,7 @@ const Write = () => {
     setPriceValue(price)
   }
 
-  const CustomDateInput = forwardRef<HTMLDivElement>(({ value, onClick }, ref) => (
+  const CustomDateInput = forwardRef<HTMLDivElement, { value: any; onClick: any }>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
       {isMobile ? (
         <>
@@ -135,14 +135,14 @@ const Write = () => {
 
     for (let i = 0; i < 9; i += 1) {
       const item = target[i] as HTMLInputElement
-
       if (item.name === 'file') {
-        item.files && formData.append('file', item.files[0])
+        if (item.files && !item.files.length) {
+          formData.append('file', '')
+        } else if (item.files) {
+          formData.append('file', item.files[0])
+        }
       } else if (item.name === 'price') {
         formData.append('price', item.value.replace(/,/g, ''))
-      } else if (item.name === 'date') {
-        start += item.value
-        end += item.value
       } else if (item.name === 'start') {
         start += selectedDate && selectedDate.toISOString().slice(0, 10)
         start += 'T' + item.value + ':00'
@@ -153,7 +153,11 @@ const Write = () => {
         formData.append(item.name, item.value)
       }
     }
-    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1해주기
+    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
+    if (+start.slice(11, 13) > +end.slice(11, 13)) {
+      const newDate = +end.slice(8, 10) + 1 + 'T'
+      end = end.replace(/[0-9]+[0-9]+T/, newDate)
+    }
 
     formData.append('startTime', start)
     formData.append('endTime', end)
@@ -175,11 +179,18 @@ const Write = () => {
           }
         } catch (err) {
           console.log(err)
+          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
         }
         break
       default:
         try {
-          // formData.append('imageUrl', imgSrc) // 이미지수정은 src, 이미지삭제는 null로 전송
+          if (dataForEdit?.imageUrl && !formData.get('file') && !imgSrc) {
+            formData.append('imageUrlDel', 'true')
+          } else if (dataForEdit?.imageUrl && !formData.get('file') && imgSrc) {
+            formData.append('imageUrlDel', 'false')
+          } else if (!dataForEdit?.imageUrl && !formData.get('file')) {
+            formData.append('imageUrlDel', 'false')
+          }
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
             alert('게시글 수정이 완료되었습니다.')
@@ -187,6 +198,7 @@ const Write = () => {
           }
         } catch (err) {
           console.log(err)
+          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
         }
         break
     }
@@ -390,8 +402,6 @@ const Write = () => {
                   <span>예약 인증 사진을 올려주세요</span>
                   <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 </div>
-                <span>예약 인증 사진을 올려주세요</span>
-                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
                 {location.pathname.includes('edit') && !isFileEdit ? (
                   <div className="img-overlay">
