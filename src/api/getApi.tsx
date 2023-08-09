@@ -1,5 +1,4 @@
 import { publicApi, privateApi } from './Instance'
-
 // 유저 정보 조회
 export const getUserInfo = async () => {
   try {
