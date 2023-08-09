@@ -38,7 +38,7 @@ const Header = ({ setSideOpen }: PropsType) => {
       }
     }
     fetchData()
-  }, [])
+  }, [authenticated])
 
   const logoutHandler = async () => {
     const { status }: any = await userLogout()

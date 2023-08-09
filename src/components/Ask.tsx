@@ -21,6 +21,7 @@ const AskStyle = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: 1024px;
   h3 {
     font-weight: ${({ screen }) => (screen === 'pc' ? 700 : 500)};
   }
