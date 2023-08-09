@@ -16,6 +16,7 @@ import UserEdit from '@src/components/MyPage/UserEdit'
 import FindPassword from '@src/pages/FindPassword'
 import Edit from '@src/pages/Edit'
 import ResetPw from '@src/components/ResetPassword/ResetPw'
+import OneOnOne from '@src/pages/OneOnOne'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
       { path: PATH.MYPAGE_PW, element: <ResetPw /> },
       { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
+      { path: PATH.ONE_ON_ONE, element: <OneOnOne /> },
     ],
   },
 ])
