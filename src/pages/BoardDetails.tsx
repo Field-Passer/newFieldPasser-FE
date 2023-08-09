@@ -8,18 +8,21 @@ import { ThemeProvider, styled } from 'styled-components'
 import { delPost } from './../api/boardApi';
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config';
+import BoardComment from '@src/components/Comment'
 
 const BoardDetails = () => {
   const boardId = useParams()
   const navigate = useNavigate()
   const [detailData, setDetailData] = useState<POST_TYPE>()
   const [moreBtnChk, setMoreBtnChk] = useState(false);
+  const [likeState, setLikeState] = useState(detailData?.likeBoard);
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
 
   const getDetailData = async () => {
     try {
       const postDetailData = await getPostDetail(Number(boardId.boardId), authenticated)
       setDetailData(postDetailData)
+      setLikeState(postDetailData.likeBoard)
     } catch (err) {
       console.log(err)
     }
@@ -41,6 +44,8 @@ const BoardDetails = () => {
         : await postLikeBoard(boardId, authenticated)
     } catch (err) {
       console.log(err)
+    } finally {
+      getDetailData()
     }
   }
 
@@ -58,7 +63,7 @@ const BoardDetails = () => {
                 <div>
                   <p className="title">{detailData.title}</p>
                   <button onClick={() => likePostFn(detailData.boardId, detailData.likeBoard)}>
-                    <BigHart size="20" color={detailData.likeBoard ? '#5FCA7B' : ''} />
+                    <BigHart size="20" color={likeState ? '#5FCA7B' : ''} />
                   </button>
                 </div>
                 <div>
@@ -97,10 +102,11 @@ const BoardDetails = () => {
                   <p>{detailData.content}</p>
                 </div>
               </ContentBox>
+
+              <BoardComment boardId={detailData.boardId} loginVal={authenticated} />
             </>
           )
         }
-
       </Container>
     </ThemeProvider>
   )

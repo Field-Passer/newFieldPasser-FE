@@ -48,10 +48,26 @@ export const getComment = async (boardId: number, page: number, loginVal: boolea
   const Instance = loginVal ? privateApi : publicApi
 
   return await Instance
-    .get(`comment/${boardId}/${page}`)
+    .get(`comment-lookup/${boardId}/${page}`)
     .then((res) => {
-      console.log(res.data.data)
-      return res.data.data
+      return res.data.data.content
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const postComment = async (boardId: number, comment: string, parentId?: number) => {
+  console.log(parentId)
+  return await privateApi
+    .post('comment/write', {
+      "commentContent": comment,
+      "boardId": boardId,
+      "parentId": parentId
+    })
+    .then((res) => {
+      console.log(res)
+      return res
     })
     .catch((err) => {
       console.log(err)
@@ -63,9 +79,7 @@ export const postLikeBoard = async (boardId: number, loginVal: boolean) => {
 
   return await privateApi
     .post('/board/register/wish-list', {
-      data: {
-        boardId: boardId
-      }
+      boardId: boardId
     })
     .then(() => {
       alert('관심글에 저장되었습니다.')

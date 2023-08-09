@@ -176,3 +176,12 @@ export const MoreIcon = () => {
     </svg>
   )
 }
+
+export const UpLoadIcon = () => {
+  return (
+    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12.25" r="12" fill="#5FCA7B" />
+      <path d="M12 18V6M12 6L9 9.56757M12 6L15 9.56757" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
