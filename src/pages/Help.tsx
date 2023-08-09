@@ -1,4 +1,3 @@
-import Inner from '@src/components/Inner'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
