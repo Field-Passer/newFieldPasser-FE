@@ -25,3 +25,5 @@ export const getQuestion = async (page: number) => {
     console.log(error)
   }
 }
+
+
