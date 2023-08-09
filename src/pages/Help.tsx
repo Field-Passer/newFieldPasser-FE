@@ -58,7 +58,7 @@ const Help = () => {
           </OtherAskStyle>
         </Container>
       ) : (
-        <Container>
+        <Mobile>
           <Title screen="mobile" name="자주 묻는 질문" />
           <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           <AskListStyle screen="mobile">
@@ -70,7 +70,7 @@ const Help = () => {
             <span>원하는 답변이 없다면?</span>
             <button>등록하기</button>
           </OtherAskStyle>
-        </Container>
+        </Mobile>
       )}
     </>
   )

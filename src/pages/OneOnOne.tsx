@@ -28,7 +28,7 @@ const OneOnOne = () => {
   return (
     <>
       {isPC ? (
-        <Inner padding="64px 0">
+        <Container>
           <Title screen="pc" name="내 문의 목록" />
           {questions.length ? (
             questions.map((list, index) => <Ask key={index} title="문의글 작성부터 해 보ㅏ야 됨" comment="진짜로요..." screen="pc" />)
@@ -39,7 +39,7 @@ const OneOnOne = () => {
             <span>원하는 답변이 없다면?</span>
             <button onClick={() => navigate('/help_form')}>1:1 질문하기</button>
           </OtherAskStyle>
-        </Inner>
+        </Container>
       ) : (
         <Inner width="100%" padding="16px 0">
           <Title screen="mobile" name="내 문의 목록" />
@@ -59,6 +59,16 @@ const OneOnOne = () => {
 }
 
 export default OneOnOne
+
+const Container = styled.div`
+  @media screen and (max-width: 360px) {
+    padding: 0 16px;
+    width: 100%;
+  }
+
+  margin: 64px auto;
+  max-width: 1024px;
+`
 
 const OtherAskStyle = styled.div`
   margin-top: 64px;
