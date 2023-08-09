@@ -1,4 +1,6 @@
 import { publicApi, privateApi } from './Instance'
+import { Cookies } from 'react-cookie'
+const cookies = new Cookies()
 
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
   if (values.startTime.slice(0, 10) === values.endTime.slice(0, 10)) {
@@ -20,7 +22,9 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 }
 
 export const getPostDetail = async (userId: number) => {
-  return await privateApi
+  const Instance = cookies.get('refresh-token') ? privateApi : publicApi
+
+  return await Instance
     .get(`/detail/${userId}`)
     .then((res) => {
       console.log(res.data.data)
@@ -39,4 +43,19 @@ export const getUserInfo = async () => {
   } catch (err) {
     console.log(err)
   }
+}
+
+
+export const getComment = async (boardId: number, page: number) => {
+  const Instance = cookies.get('refresh-token') ? privateApi : publicApi
+
+  return await Instance
+    .get(`comment/${boardId}/${page}`)
+    .then((res) => {
+      console.log(res.data.data)
+      return res.data.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }

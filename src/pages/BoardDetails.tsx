@@ -1,3 +1,4 @@
+import { delPost } from '@src/api/authApi'
 import { getPostDetail } from '@src/api/getApi'
 import { BigHart, Harticon, MoreIcon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
@@ -46,18 +47,18 @@ const BoardDetails = () => {
               <span className="like"><Harticon size="14" /> {detailData?.wishCount}</span>
             </p>
             {
-              // detailData?.myBoard && (
-              <button onClick={() => moreBtnChk ? setMoreBtnChk(false) : setMoreBtnChk(true)}>
-                <MoreIcon />
-              </button>
-              // )
+              detailData?.myBoard && (
+                <button onClick={() => moreBtnChk ? setMoreBtnChk(false) : setMoreBtnChk(true)}>
+                  <MoreIcon />
+                </button>
+              )
             }
             {
               moreBtnChk && (
                 <ul className='more_menu'>
                   <li><button>양도 완료하기</button></li>
-                  <li><button>삭제</button></li>
-                  <li><button>수정</button></li>
+                  <li><button onClick={() => delPost(detailData?.boardId)}>삭제</button></li>
+                  <li><button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button></li>
                 </ul>
               )
             }
@@ -72,8 +73,6 @@ const BoardDetails = () => {
           </div>
         </ContentBox>
       </Container>
-
-      <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정 test btn</button>
     </ThemeProvider>
   )
 }

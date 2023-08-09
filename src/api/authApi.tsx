@@ -275,3 +275,13 @@ export const editUserPw = async ({ newPw }: IUserInfoType) => {
     }
   }
 }
+
+export const delPost = async (boardId: number | undefined) => {
+  return await privateApi.delete(`/board/delete/${boardId}`)
+    .then(() => {
+      console.log('삭제되었습니다.')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
