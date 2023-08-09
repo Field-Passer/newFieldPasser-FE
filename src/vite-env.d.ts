@@ -93,7 +93,6 @@ interface ValueStateType {
 }
 
 interface CheckValueStateType {
-  searchBoxOpen: boolean
   categoryOpen: boolean
   districtOpen: boolean
   districtSelect: boolean

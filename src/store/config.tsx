@@ -8,6 +8,7 @@ import postData from './slices/postDataSlice'
 import infoSlice from './slices/infoSlice'
 import wishlistSlice, { wishlistApi } from './slices/wishlistSlice'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
+import searchBox from './slices/searchChkSlice'
 
 const rootReducer = combineReducers({
   createTest: testSlice.reducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   userInfo: infoSlice.reducer,
   wishlist: wishlistSlice.reducer,
   [wishlistApi.reducerPath]: wishlistApi.reducer,
+  searchBox: searchBox.reducer,
 })
 
 const persistConfig = {
