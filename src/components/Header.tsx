@@ -33,8 +33,6 @@ const Header = ({ setSideOpen }: PropsType) => {
       if (authenticated) {
         const response = await getMemberInfo()
         dispatch(SET_INFO(response?.data))
-      } else if (!authenticated) {
-        dispatch(DELETE_INFO())
       }
     }
     fetchData()

@@ -10,15 +10,15 @@ interface Props {
   message: string
 }
 
-const Board = (props: Props) => {
+const Board = ({ data, message }: Props) => {
   const navigate = useNavigate()
 
   return (
     <ThemeProvider theme={theme}>
       <BoardContainer>
-        {props.data && props.data.length > 0 ? (
+        {data && data.length > 0 ? (
           <ul>
-            {props.data.map((list) => (
+            {data.map((list) => (
               <PostListBox key={list.boardId} blind={list.transactionStatus} onClick={() => navigate(`/board_details/${list.boardId}`)}>
                 <div className="imgae_wrap">
                   <img
@@ -45,7 +45,7 @@ const Board = (props: Props) => {
             ))}
           </ul>
         ) : (
-          <p>{props.message}</p>
+          <p>{message}</p>
         )}
       </BoardContainer>
     </ThemeProvider>
