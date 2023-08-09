@@ -25,14 +25,17 @@ interface IResponseType {
   }
   data?: any
 }
+
 interface IResponseErrorType {
   status?: number
   state?: number
 }
+
 interface ISaveImgFile {
   imgFile: File | null
   imgSrc: string | undefined
 }
+
 interface IPostPayload {
   title: string
   file: File | null
@@ -56,7 +59,7 @@ interface POST_TYPE {
   memberId: string
   memberName: string
   memberNickName: string
-  myBoard : boolean
+  myBoard: boolean
   phone: string
   price: number
   registerDate: string
@@ -65,6 +68,7 @@ interface POST_TYPE {
   transactionStatus: string | null
   viewCount: number
   wishCount: number
+  likeBoard: boolean
 }
 
 interface SearchValueTypes {
@@ -90,7 +94,6 @@ interface ValueStateType {
 }
 
 interface CheckValueStateType {
-  searchBoxOpen: boolean
   categoryOpen: boolean
   districtOpen: boolean
   districtSelect: boolean
@@ -104,4 +107,22 @@ interface ICategories {
   category: string
   name: string
   icon: ReactElement
+}
+
+interface CommentTypes {
+  commentId: number
+  memberId: string
+  title: string
+  commentContent: string
+  commentRegisterDate: string
+  commentUpDate: string
+}
+
+interface QuestionTypes {
+  answerTitle: string
+  answerContent: string
+}
+
+interface StyleProps {
+  screen: string
 }

@@ -276,12 +276,81 @@ export const editUserPw = async ({ newPw }: IUserInfoType) => {
   }
 }
 
-export const delPost = async (boardId: number | undefined) => {
-  return await privateApi.delete(`/board/delete/${boardId}`)
-    .then(() => {
-      console.log('삭제되었습니다.')
+// 회원 정보 조회
+export const getMemberInfo = async () => {
+  try {
+    const response = await privateApi('/my-page/member-inquiry', {
+      method: 'GET',
     })
-    .catch((err) => {
-      console.log(err)
+    return {
+      status: response.status,
+      data: response.data.data,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 내가 작성한 글 조회
+export const getMyPost = async (page: number) => {
+  try {
+    const response = await privateApi(`/my-page/post-inquiry/${page}`, {
+      method: 'GET',
     })
+    return {
+      status: response.status,
+      message: response.data.message,
+      data: response.data.data.content,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 관심글 조회
+export const getWishlist = async (page: number) => {
+  try {
+    const response = await privateApi(`/my-page/wish-list/${page}`, {
+      method: 'GET',
+    })
+    return {
+      status: response.status,
+      message: response.data.message,
+      data: response.data.data.content,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
+}
+
+// 내가 작성한 댓글 조회
+export const getMyReply = async (page: number) => {
+  try {
+    const response = await privateApi(`/comment/my-inquiry/${page}`, {
+      method: 'GET',
+    })
+    return {
+      status: response.status,
+      message: response.data.message,
+      data: response.data.data.content,
+    }
+  } catch (error) {
+    if (isAxiosError<IResponseErrorType>(error)) {
+      return {
+        status: error.response?.data.state,
+      }
+    }
+  }
 }

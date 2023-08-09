@@ -7,21 +7,25 @@ import { ThemeProvider, styled } from 'styled-components'
 
 interface Props {
   data: POST_TYPE[]
-  messege: string
+  message: string
 }
 
-const Board = ({ data, messege }: Props) => {
+const Board = (props: Props) => {
   const navigate = useNavigate()
 
   return (
     <ThemeProvider theme={theme}>
       <BoardContainer>
-        {data && data.length > 0 ? (
+        {props.data && props.data.length > 0 ? (
           <ul>
-            {data.map((list) => (
+            {props.data.map((list) => (
               <PostListBox key={list.boardId} blind={list.transactionStatus} onClick={() => navigate(`/board_details/${list.boardId}`)}>
                 <div className="imgae_wrap">
-                  <img src={list.imageUrl ? list.imageUrl : randomImages(list.categoryName, list.boardId)} onError={(e) => handleImgError(e, list.categoryName, list.boardId)} alt="이미지" />
+                  <img
+                    src={list.imageUrl ? list.imageUrl : randomImages(list.categoryName, list.boardId)}
+                    onError={(e) => handleImgError(e, list.categoryName, list.boardId)}
+                    alt="이미지"
+                  />
                 </div>
                 <div className="info_wrap">
                   <p className="title">{list.title}</p>
@@ -41,7 +45,7 @@ const Board = ({ data, messege }: Props) => {
             ))}
           </ul>
         ) : (
-          <p>{messege}</p>
+          <p>{props.message}</p>
         )}
       </BoardContainer>
     </ThemeProvider>
