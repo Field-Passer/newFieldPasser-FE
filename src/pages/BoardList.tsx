@@ -10,9 +10,9 @@ const BoardList = () => {
   const [postList, setPostList] = useState<POST_TYPE[]>([])
   const [ref, inView] = useInView()
   const [page, setPage] = useState(1)
-  const [lastPage, setLastPage] = useState(false);
+  const [lastPage, setLastPage] = useState(false)
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const searchValue = useSelector((state: RootState) => {
     return {
@@ -31,39 +31,40 @@ const BoardList = () => {
   })
 
   const getPostList = useCallback(async () => {
-    setIsLoading(true)
     try {
+      setIsLoading(true)
+
       const postData = await getSearchPostList(searchValue, page)
       if (page === 1) setPostList(postData.content)
-      else setPostList(prevState => [...prevState, ...postData.content])
+      else setPostList((prevState) => [...prevState, ...postData.content])
 
       if (postData.last) setLastPage(true)
       else if (!postData.last) setLastPage(false)
-
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }, [page, title, startDate, endDate, district, category])
 
   useEffect(() => {
     getPostList()
-  }, [getPostList]);
+  }, [getPostList])
 
   useEffect(() => {
     setPage(1)
-  }, [title, startDate, endDate, district, category])
+  }, [])
 
   useEffect(() => {
     if (inView && !isLoading && !lastPage) {
       setPage((prev) => prev + 1)
     }
-  }, [inView, isLoading]);
+  }, [inView, isLoading])
 
   return (
     <>
       <SearchForm />
-      <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다 !'} />
+      <Board data={postList} message={'일치하는 조건의 게시글이 없습니다 !'} />
       <div ref={ref}></div>
     </>
   )
