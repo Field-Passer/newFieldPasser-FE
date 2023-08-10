@@ -85,7 +85,7 @@ const BoardComment = (props: PropsType) => {
         {comments.map((item: CommentTypes, key: number) => (
           <li key={key} className="comment-box">
             <p>
-              {item.memberNickname} {item.memberId}
+              {item.memberNickname} {item.memberId} {item.commentRegisterDate.substring(0, 20) !== item.commentUpDate.substring(0, 20) ? '(수정됨)' : null}
             </p>
             {commentData.commentAdd !== item.commentId ? (
               <p style={item.deleteCheck ? { color: '#999' } : {}}>{item.deleteCheck ? '삭제된 댓글입니다.' : item.commentContent}</p>
@@ -139,9 +139,22 @@ const BoardComment = (props: PropsType) => {
                 {item.children.map((child: any, idx: number) => (
                   <ChildComment key={idx}>
                     <p>
-                      {item.memberNickname} {item.memberId}
+                      {child.memberNickname} {child.memberId}{' '}
+                      {child.commentRegisterDate.substring(0, 20) !== child.commentUpDate.substring(0, 20) ? '(수정됨)' : null}
                     </p>
-                    <p>{child.deleteCheck ? '삭제된 댓글입니다.' : child.commentContent}</p>
+                    {commentData.commentAdd !== child.commentId ? (
+                      <p>{child.commentContent}</p>
+                    ) : (
+                      <InputBox type="add">
+                        <BoardCommentInput
+                          loginVal={props.loginVal}
+                          boardId={props.boardId}
+                          commentId={child.commentId}
+                          type={'add'}
+                          commentContent={child.commentContent}
+                        />
+                      </InputBox>
+                    )}
                     <div className="comment-info-box">
                       <p>
                         <span>
