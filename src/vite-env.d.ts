@@ -68,6 +68,7 @@ interface POST_TYPE {
   transactionStatus: string | null
   viewCount: number
   wishCount: number
+  likeBoard: boolean
 }
 
 interface SearchValueTypes {

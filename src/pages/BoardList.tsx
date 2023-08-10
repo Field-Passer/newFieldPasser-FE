@@ -3,7 +3,7 @@ import SearchForm from '@src/components/SearchForm'
 import { useEffect, useState, useCallback } from 'react'
 import { RootState } from '../store/config'
 import { useSelector } from 'react-redux'
-import { getSearchPostList } from '@src/api/getApi'
+import { getSearchPostList } from '@src/api/boardApi'
 import { useInView } from 'react-intersection-observer'
 
 const BoardList = () => {

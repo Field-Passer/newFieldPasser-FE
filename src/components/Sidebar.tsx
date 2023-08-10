@@ -32,6 +32,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
 
   const dispatch = useDispatch()
 
+  const userName = useSelector((state: RootState) => state.userInfo.memberName)
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
   const logoutHandler = async () => {
@@ -71,7 +72,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
           {authenticated ? (
             <>
               <div className="name">
-                <span>필드패서</span>
+                <span>{userName}</span>
                 <span>님</span>
               </div>
               <Link to="/write">
