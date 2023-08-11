@@ -8,7 +8,8 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 
   return await publicApi
     .get(
-      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${values.endTime
+      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${
+        values.endTime
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
@@ -22,10 +23,8 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 export const getPostDetail = async (userId: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
 
-  return await Instance
-    .get(`/detail/${userId}`)
+  return await Instance.get(`/detail/${userId}`)
     .then((res) => {
-      console.log(res.data.data)
       return res.data.data
     })
     .catch((err) => {
@@ -46,11 +45,10 @@ export const delPost = async (boardId: number | undefined) => {
 
 export const getComment = async (boardId: number, page: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
-
-  return await Instance
-    .get(`comment-lookup/${boardId}/${page}`)
+  console.log(page)
+  return await Instance.get(`comment-lookup/${boardId}/${page}`)
     .then((res) => {
-      return res.data.data.content
+      return res.data.data
     })
     .catch((err) => {
       console.log(err)
@@ -61,9 +59,9 @@ export const postComment = async (boardId: number, comment: string, parentId?: n
   console.log(parentId)
   return await privateApi
     .post('comment/write', {
-      "commentContent": comment,
-      "boardId": boardId,
-      "parentId": parentId
+      commentContent: comment,
+      boardId: boardId,
+      parentId: parentId,
     })
     .then((res) => {
       console.log(res)
@@ -79,7 +77,7 @@ export const postLikeBoard = async (boardId: number, loginVal: boolean) => {
 
   return await privateApi
     .post('/board/register/wish-list', {
-      boardId: boardId
+      boardId: boardId,
     })
     .then(() => {
       alert('관심글에 저장되었습니다.')
@@ -90,15 +88,37 @@ export const postLikeBoard = async (boardId: number, loginVal: boolean) => {
 }
 
 export const delLikeBoard = async (boardId: number) => {
-
   return await privateApi
     .delete('board/delete/wish-list', {
       data: {
-        boardId: boardId
-      }
+        boardId: boardId,
+      },
     })
     .then(() => {
       alert('관심글에서 삭제되었습니다.')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const delComment = async (commentId: number) => {
+  return await privateApi
+    .delete(`/comment/delete/${commentId}`)
+    .then(() => {
+      alert('삭제되었습니다.')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+export const addComment = async (commentId: number, content: string) => {
+  return await privateApi
+    .put(`/comment/edit/${commentId}`, {
+      commentContent: content,
+    })
+    .then(() => {
+      alert('수정되었습니다.')
     })
     .catch((err) => {
       console.log(err)
