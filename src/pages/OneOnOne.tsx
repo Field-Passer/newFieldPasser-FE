@@ -9,12 +9,12 @@ import { getQuestion } from '@src/api/getApi'
 import Ask from '@src/components/Ask'
 
 const OneOnOne = () => {
-  const [questions, setQuestions] = useState([])
+  const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getQuestion(1)
-      setQuestions(response?.data)
+      setQuestions(response?.data.content)
     }
     fetchData()
   }, [])
@@ -30,11 +30,13 @@ const OneOnOne = () => {
       {isPC ? (
         <Container>
           <Title screen="pc" name="내 문의 목록" />
-          {questions.length ? (
-            questions.map((list, index) => <Ask key={index} title="문의글 작성부터 해 보ㅏ야 됨" comment="진짜로요..." screen="pc" />)
-          ) : (
-            <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
-          )}
+          <QuestionContainer screen="pc">
+            {questions.length ? (
+              questions.map((list) => <Ask key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" />)
+            ) : (
+              <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
+            )}
+          </QuestionContainer>
           <OtherAskStyle>
             <span>원하는 답변이 없다면?</span>
             <button onClick={() => navigate('/help_form')}>1:1 질문하기</button>
@@ -43,11 +45,13 @@ const OneOnOne = () => {
       ) : (
         <Inner width="100%" padding="16px 0">
           <Title screen="mobile" name="내 문의 목록" />
-          {questions.length ? (
-            questions.map((list, index) => <Ask key={index} title="문의글 작성부터 해 보ㅏ야 됨" comment="진짜로요..." screen="mobile" />)
-          ) : (
-            <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
-          )}
+          <QuestionContainer screen="mobile">
+            {questions.length ? (
+              questions.map((list) => <Ask key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" />)
+            ) : (
+              <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
+            )}
+          </QuestionContainer>
           <MobileOtherAsk>
             <span>원하는 답변이 없다면?</span>
             <button onClick={() => navigate('/help_form')}>1:1 질문하기</button>
@@ -68,6 +72,12 @@ const Container = styled.div`
 
   margin: 64px auto;
   max-width: 1024px;
+`
+
+const QuestionContainer = styled.div<StyleProps>`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ screen }) => (screen === 'pc' ? '24px' : '16px')};
 `
 
 const OtherAskStyle = styled.div`

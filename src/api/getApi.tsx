@@ -1,4 +1,4 @@
-import { publicApi, privateApi } from './Instance'
+import { privateApi } from './Instance'
 
 // 유저 정보 조회
 export const getUserInfo = async () => {
@@ -19,7 +19,7 @@ export const getQuestion = async (page: number) => {
   try {
     const response = await privateApi.get(`/question/inquiry/${page}`)
     return {
-      data: response.data,
+      data: response.data.data,
     }
   } catch (error) {
     console.log(error)

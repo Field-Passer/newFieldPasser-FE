@@ -136,3 +136,14 @@ interface QuestionPostType {
   questionContent: string
   questionCategory: string
 }
+
+interface QuestionGetTypes {
+  answerId: number
+  questionCategory: string
+  questionContent: string
+  questionId: number
+  questionProcess: string
+  questionRegisterDate: string
+  questionTitle: string
+  questionUpdateDate: string
+}
