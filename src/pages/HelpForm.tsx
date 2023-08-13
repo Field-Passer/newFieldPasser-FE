@@ -3,41 +3,70 @@ import Title from '@src/components/Title'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import styled from 'styled-components'
+import { useState } from 'react'
+import { postQuestion } from '@src/api/postApi'
+import { useNavigate } from 'react-router'
 
 const HelpForm = () => {
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
   })
+
+  const navigate = useNavigate()
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    let data = {
+      questionTitle: title,
+      questionContent: content,
+      questionCategory: 'TRANSACTION',
+    }
+    try {
+      postQuestion(data)
+      const confirm = window.confirm('문의 작성이 완료되었습니다. 메인으로 이동합니다.')
+      if (confirm) {
+        navigate('/')
+      }
+    } catch (error) {
+      alert('오류가 발생하였습니다.')
+    }
+  }
   return (
     <>
       {isPC ? (
         <Inner padding="64px 0">
           <Title screen="pc" name="1:1 문의하기" />
-          <FormStyle>
+          <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="pc">
               <h2>제목</h2>
-              <input type="text" />
+              <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
             </FormDetailStyle>
             <FormDetailStyle screen="pc">
               <h2>내용</h2>
-              <textarea cols={30} rows={10}></textarea>
+              <textarea cols={30} rows={10} value={content} onChange={(event) => setContent(event.target.value)}></textarea>
             </FormDetailStyle>
-            <ButtonStyle screen="pc">문의 등록</ButtonStyle>
+            <ButtonStyle screen="pc" type="submit">
+              문의 등록
+            </ButtonStyle>
           </FormStyle>
         </Inner>
       ) : (
         <Inner width="100%" padding="16px 0">
           <Title screen="mobile" name="1:1 문의하기" />
-          <FormStyle>
+          <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="mobile">
               <h2>제목</h2>
-              <input type="text" />
+              <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
             </FormDetailStyle>
             <FormDetailStyle screen="mobile">
               <h2>내용</h2>
-              <textarea cols={30} rows={10}></textarea>
+              <textarea cols={30} rows={10} value={content} onChange={(event) => setContent(event.target.value)}></textarea>
             </FormDetailStyle>
-            <ButtonStyle screen="mobile">문의 등록</ButtonStyle>
+            <ButtonStyle screen="mobile" type="submit">
+              문의 등록
+            </ButtonStyle>
           </FormStyle>
         </Inner>
       )}
@@ -79,7 +108,7 @@ const FormDetailStyle = styled.div<StyleProps>`
   }
 `
 
-const ButtonStyle = styled.div<StyleProps>`
+const ButtonStyle = styled.button<StyleProps>`
   display: flex;
   justify-content: center;
   align-items: center;

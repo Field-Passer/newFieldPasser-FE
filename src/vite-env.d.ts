@@ -130,3 +130,9 @@ interface QuestionTypes {
 interface StyleProps {
   screen: string
 }
+
+interface QuestionPostType {
+  questionTitle: string
+  questionContent: string
+  questionCategory: string
+}
