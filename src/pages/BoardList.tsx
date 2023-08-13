@@ -3,7 +3,7 @@ import SearchForm from '@src/components/SearchForm'
 import { useEffect, useState, useCallback } from 'react'
 import { RootState } from '../store/config'
 import { useSelector } from 'react-redux'
-import { getSearchPostList } from '@src/api/getApi'
+import { getSearchPostList } from '@src/api/boardApi'
 import { useInView } from 'react-intersection-observer'
 
 const BoardList = () => {
@@ -31,8 +31,9 @@ const BoardList = () => {
   })
 
   const getPostList = useCallback(async () => {
-    setIsLoading(true)
     try {
+      setIsLoading(true)
+
       const postData = await getSearchPostList(searchValue, page)
       if (page === 1) setPostList(postData.content)
       else setPostList((prevState) => [...prevState, ...postData.content])
@@ -41,8 +42,9 @@ const BoardList = () => {
       else if (!postData.last) setLastPage(false)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }, [page, title, startDate, endDate, district, category])
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const BoardList = () => {
 
   useEffect(() => {
     setPage(1)
-  }, [title, startDate, endDate, district, category])
+  }, [])
 
   useEffect(() => {
     if (inView && !isLoading && !lastPage) {

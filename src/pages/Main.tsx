@@ -6,7 +6,7 @@ import { BadmintonIcon, BasketballIcon, DownwardArrowIcon, FutsalIcon, SoccerIco
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
-import { getSearchPostList } from '@src/api/getApi'
+import { getSearchPostList } from '@src/api/boardApi'
 
 const Main = () => {
   const isMobile = useMediaQuery({

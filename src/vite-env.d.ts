@@ -68,6 +68,7 @@ interface POST_TYPE {
   transactionStatus: string | null
   viewCount: number
   wishCount: number
+  likeBoard: boolean
 }
 
 interface SearchValueTypes {
@@ -109,12 +110,16 @@ interface ICategories {
 }
 
 interface CommentTypes {
-  commentId: number
-  memberId: string
-  title: string
+  children: CommentTypes[]
   commentContent: string
+  commentId: number
   commentRegisterDate: string
   commentUpDate: string
+  deleteCheck: boolean
+  memberId: string
+  memberNickname: string
+  myComment: boolean
+  title: string
 }
 
 interface QuestionTypes {
