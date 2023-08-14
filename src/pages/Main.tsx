@@ -37,6 +37,7 @@ const Main = () => {
     category: category,
     date: '',
   }
+  // let pageCount: number = 1
 
   useEffect(() => {
     setBackground(`/banner${Math.floor(Math.random() * 5)}.png`)
@@ -238,7 +239,13 @@ const Main = () => {
                   setIsSortOpen(false)
                 }}
               >
-                <div className="default option" onClick={() => setSelectedSortOption('정렬')}>
+                <div
+                  className="default option"
+                  onClick={() => {
+                    setSelectedSortOption('정렬')
+                    setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
+                  }}
+                >
                   정렬
                 </div>
                 {sortOptions.map((item) => {
