@@ -110,7 +110,7 @@ const MyPage = () => {
       <Mobile>
         <NameStyle random={random}>
           <p>
-            <span>김필드</span> 님
+            <span>{userInfo.memberName}</span> 님
           </p>
           <p>안녕하세요</p>
         </NameStyle>

@@ -256,7 +256,7 @@ const Main = () => {
             )}
           </div>
         </Options>
-        <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다.'} />
+        <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
       </ListSection>
     </Container>
   )
