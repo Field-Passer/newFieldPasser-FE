@@ -43,10 +43,23 @@ const Main = () => {
   }, [])
 
   useEffect(() => {
-    // api재요청 / 무한스크롤이면?
-    // selected : 지역, 정렬 일 때 값 넣기 제외
-    // 정렬옵션은 같은 api로 못 보냄, 카테고리별 전체 게시글 불러와서 따로 정렬코드 넣어주기
+    switch (selectedSortOption) {
+      case '인기순':
+        setPostList([...postList.sort((a, b) => b.viewCount - a.viewCount)])
+        break
+      case '가장 최신 순':
+        setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
+        break
+      case '낮은 가격 순':
+        setPostList([...postList.sort((a, b) => a.price - b.price)])
+        break
+      case '높은 가격 순':
+        setPostList([...postList.sort((a, b) => b.price - a.price)])
+        break
+    }
+  }, [selectedSortOption])
 
+  useEffect(() => {
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
@@ -235,7 +248,6 @@ const Main = () => {
                       className="option"
                       onClick={() => {
                         setSelectedSortOption(item)
-                        console.log(item)
                       }}
                     >
                       {item}
