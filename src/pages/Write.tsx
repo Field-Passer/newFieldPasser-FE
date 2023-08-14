@@ -42,7 +42,6 @@ const Write = () => {
 
   useEffect(() => {
     if (dataForEdit) {
-      //데이터채워넣기
       setImgSrc(dataForEdit.imageUrl)
       setPriceValue(dataForEdit.price.toLocaleString('ko-KR'))
       setIsDateChange(true)

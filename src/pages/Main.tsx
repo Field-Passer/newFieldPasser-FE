@@ -9,6 +9,7 @@ import Board from '@src/components/Board'
 import { getSearchPostList } from '@src/api/boardApi'
 
 const Main = () => {
+  const categoryNames = 'futsal' || 'soccer' || 'basketball' || 'badminton' || 'tennis'
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -49,10 +50,9 @@ const Main = () => {
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
-        console.log(postData.content)
         setPostList(postData.content)
       } catch (err) {
-        console.log(err)
+        alert(err)
       }
     }
     getPostList()
@@ -174,7 +174,7 @@ const Main = () => {
                 }}
               >
                 {item.icon}
-                <span className={isActive[item.category] ? 'green' : ''}>{item.name}</span>
+                <span className={isActive[item.category as typeof categoryNames] ? 'green' : ''}>{item.name}</span>
               </div>
             )
           })}
@@ -256,7 +256,7 @@ const Main = () => {
             )}
           </div>
         </Options>
-        <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다.'} />
+        <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
       </ListSection>
     </Container>
   )
