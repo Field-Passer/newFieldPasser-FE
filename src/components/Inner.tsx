@@ -26,7 +26,7 @@ const InnerStyle = styled.div<{
 }>`
   width: ${({ width }) => width};
   height: ${({ height }) => height};
-  margin: 0 auto;
+  margin: auto;
   display: ${({ display }) => display};
   padding: ${({ padding }) => padding};
 `

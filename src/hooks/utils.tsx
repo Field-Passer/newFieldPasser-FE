@@ -1,9 +1,12 @@
-export const dateFormat = (dateVal: string) => {
+export const dateFormat = (dateVal: string, type?: string) => {
   const nowDate = new Date(dateVal)
   const month = nowDate.getMonth()
   const date = nowDate.getDate()
   const hours = nowDate.getHours() < 10 ? `0${nowDate.getHours()}` : nowDate.getHours()
   const minutes = nowDate.getMinutes() < 10 ? `0${nowDate.getMinutes()}` : nowDate.getMinutes()
+
+  if (type === 'comment' && nowDate.getDate() === new Date().getDate()) return `${hours}:${minutes}`
+  else if (type === 'comment') return `${month + 1}.${date} ${hours}:${minutes}`
 
   return `${month + 1}월 ${date}일 ${hours}:${minutes}`
 }

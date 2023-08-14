@@ -110,12 +110,16 @@ interface ICategories {
 }
 
 interface CommentTypes {
-  commentId: number
-  memberId: string
-  title: string
+  children: CommentTypes[]
   commentContent: string
+  commentId: number
   commentRegisterDate: string
   commentUpDate: string
+  deleteCheck: boolean
+  memberId: string
+  memberNickname: string
+  myComment: boolean
+  title: string
 }
 
 interface QuestionTypes {
@@ -125,4 +129,21 @@ interface QuestionTypes {
 
 interface StyleProps {
   screen: string
+}
+
+interface QuestionPostType {
+  questionTitle: string
+  questionContent: string
+  questionCategory: string
+}
+
+interface QuestionGetTypes {
+  answerId: number
+  questionCategory: string
+  questionContent: string
+  questionId: number
+  questionProcess: string
+  questionRegisterDate: string
+  questionTitle: string
+  questionUpdateDate: string
 }
