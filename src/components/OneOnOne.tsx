@@ -1,24 +1,28 @@
 import { styled } from 'styled-components'
+import { COLORS, FONT } from '@src/globalStyles'
+import { useNavigate } from 'react-router'
 
 interface IAsk {
   title: string
   comment: string
   screen: string
+  info: QuestionGetTypes
 }
 
-const Ask = ({ title, comment, screen }: IAsk) => {
+const OneOnOne = ({ title, comment, screen, info }: IAsk) => {
+  const navigate = useNavigate()
   return (
     <AskStyle screen={screen}>
       <div className="question">
-        <h3>Q. {title}</h3>
+        <h3 onClick={() => navigate(`/one_on_one/${info.questionId}`)}>Q. {title}</h3>
+        <span>{info.questionProcess}</span>
       </div>
-
-      <div className="answer">A. {comment}</div>
+      <div className="answer">{comment}</div>
     </AskStyle>
   )
 }
 
-export default Ask
+export default OneOnOne
 
 const AskStyle = styled.div<StyleProps>`
   display: flex;
@@ -30,6 +34,11 @@ const AskStyle = styled.div<StyleProps>`
     gap: 10px;
     h3 {
       font-weight: ${({ screen }) => (screen === 'pc' ? 700 : 500)};
+      font-size: ${({ screen }) => (screen === 'pc' ? FONT['pc-lg'] : FONT.pc)};
+      cursor: pointer;
+    }
+    span {
+      color: ${COLORS.gray40};
     }
   }
 

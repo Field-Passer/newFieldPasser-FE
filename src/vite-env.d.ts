@@ -147,3 +147,10 @@ interface QuestionGetTypes {
   questionTitle: string
   questionUpdateDate: string
 }
+
+interface QuestionAnswerTypes {
+  answerContent: string
+  answerRegisterDate: string
+  answerTitle: string
+  memberName: string
+}

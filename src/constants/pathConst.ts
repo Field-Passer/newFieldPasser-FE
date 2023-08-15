@@ -14,6 +14,7 @@ const PATH = {
   MYPAGE_PW: '/mypage/edit-pw',
   FIND_PASSWORD: '/find-password',
   ONE_ON_ONE: '/one_on_one',
+  ONE_ON_ONE_DETAIL: '/one_on_one/:questionId',
 }
 
 export default PATH

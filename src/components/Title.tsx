@@ -17,6 +17,6 @@ const TitleStyle = styled.h1<StyleProps>`
   text-align: center;
   font-family: 'NanumSquareNeo-Variable';
   font-weight: ${({ screen }) => (screen === 'pc' ? 700 : 500)};
-  margin: ${({ screen }) => screen === 'mobile' && '11px 0 14px 0'};
+  margin: ${({ screen }) => screen === 'mobile' && '16px 0'};
   padding-bottom: ${({ screen }) => screen === 'pc' && '48px'};
 `
