@@ -486,6 +486,9 @@ const SearchCorver = styled.div<{ path: string }>`
       }
     }
   }
+  @media (min-width: 834px) {
+    border-radius: 40px;
+  }
 `
 
 const SearchInform = styled.div`
