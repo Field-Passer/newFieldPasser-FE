@@ -68,7 +68,7 @@ const BoardDetails = () => {
                 </div>
                 <div>
                   <p className="date">예약일 {dateFormat(detailData.startTime || '')}</p>
-                  <p className="price">{detailData.price}</p>
+                  <p className="price">{detailData.price.toLocaleString()}</p>
                 </div>
                 <div>
                   <p>
