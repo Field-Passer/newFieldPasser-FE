@@ -5,19 +5,26 @@ import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useState, useEffect } from 'react'
-import { getQuestion } from '@src/api/getApi'
-import Ask from '@src/components/Ask'
+import { getQuestion, getAdminQuestion } from '@src/api/getApi'
+import { useSelector } from 'react-redux'
+import { RootState } from '@src/store/config'
+import OneOneOne from '@components/OneOnOne'
 
 const OneOnOne = () => {
   const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
+  const [adminQuestions, setAdminQuestions] = useState<QuestionGetTypes[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getQuestion(1)
       setQuestions(response?.data.content)
+      const adminResponse = await getAdminQuestion(1)
+      setAdminQuestions(adminResponse?.data.content)
     }
     fetchData()
   }, [])
+
+  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
@@ -31,8 +38,16 @@ const OneOnOne = () => {
         <Container>
           <Title screen="pc" name="내 문의 목록" />
           <QuestionContainer screen="pc">
-            {questions.length ? (
-              questions.map((list) => <Ask key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" />)
+            {userInfo.role === '관리자' ? (
+              adminQuestions.length ? (
+                adminQuestions.map((list) => (
+                  <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" info={list} />
+                ))
+              ) : (
+                <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
+              )
+            ) : questions.length ? (
+              questions.map((list) => <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" info={list} />)
             ) : (
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}
@@ -46,8 +61,16 @@ const OneOnOne = () => {
         <Inner width="100%" padding="16px 0">
           <Title screen="mobile" name="내 문의 목록" />
           <QuestionContainer screen="mobile">
-            {questions.length ? (
-              questions.map((list) => <Ask key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" />)
+            {userInfo.role === '관리자' ? (
+              adminQuestions.length ? (
+                adminQuestions.map((list) => (
+                  <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" info={list} />
+                ))
+              ) : (
+                <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
+              )
+            ) : questions.length ? (
+              questions.map((list) => <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" info={list} />)
             ) : (
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}
