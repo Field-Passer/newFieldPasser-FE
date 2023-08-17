@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import Inner from '@src/components/Inner'
 
-const OneOnOneDetail = () => {
+const AskDetail = () => {
   const [question, setQuestion] = useState<QuestionGetTypes>()
   const [answer, setAnswer] = useState<QuestionAnswerTypes>()
   const { pathname } = useLocation()
@@ -89,7 +89,7 @@ const OneOnOneDetail = () => {
   )
 }
 
-export default OneOnOneDetail
+export default AskDetail
 
 const Container = styled.div`
   @media screen and (max-width: 360px) {

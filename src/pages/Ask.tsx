@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import OneOneOne from '@components/OneOnOne'
 
-const OneOnOne = () => {
+const Ask = () => {
   const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
   const [adminQuestions, setAdminQuestions] = useState<QuestionGetTypes[]>([])
 
@@ -85,7 +85,7 @@ const OneOnOne = () => {
   )
 }
 
-export default OneOnOne
+export default Ask
 
 const Container = styled.div`
   @media screen and (max-width: 360px) {
