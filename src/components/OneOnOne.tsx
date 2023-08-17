@@ -1,6 +1,7 @@
 import { styled } from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useNavigate } from 'react-router'
+import PATH from '@src/constants/pathConst'
 
 interface IAsk {
   title: string
@@ -14,7 +15,7 @@ const OneOnOne = ({ title, comment, screen, info }: IAsk) => {
   return (
     <AskStyle screen={screen}>
       <div className="question">
-        <h3 onClick={() => navigate(`/one_on_one/${info.questionId}`)}>Q. {title}</h3>
+        <h3 onClick={() => navigate(`${PATH.ASK}/${info.questionId}`)}>Q. {title}</h3>
         <span>{info.questionProcess}</span>
       </div>
       <div className="answer">{comment}</div>

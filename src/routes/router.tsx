@@ -18,6 +18,7 @@ import Edit from '@src/pages/Edit'
 import ResetPw from '@src/components/ResetPassword/ResetPw'
 import Ask from '@src/pages/Ask'
 import AskDetail from '@src/pages/AskDetail'
+import AskAnswerForm from '@src/pages/AskAnswerForm'
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
       { path: PATH.ASK, element: <Ask /> },
       { path: PATH.ASK_DETAIL, element: <AskDetail /> },
+      { path: PATH.ASK_ANSWER_FORM, element: <AskAnswerForm /> },
     ],
   },
 ])

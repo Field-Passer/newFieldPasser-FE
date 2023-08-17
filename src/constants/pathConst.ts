@@ -15,6 +15,7 @@ const PATH = {
   FIND_PASSWORD: '/find_password',
   ASK: '/ask',
   ASK_DETAIL: '/ask/:questionId',
+  ASK_ANSWER_FORM: '/ask/answer_form',
 }
 
 export default PATH
