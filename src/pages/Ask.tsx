@@ -9,8 +9,9 @@ import { getQuestion, getAdminQuestion } from '@src/api/getApi'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import OneOneOne from '@components/OneOnOne'
+import PATH from '@src/constants/pathConst'
 
-const OneOnOne = () => {
+const Ask = () => {
   const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
   const [adminQuestions, setAdminQuestions] = useState<QuestionGetTypes[]>([])
 
@@ -54,7 +55,7 @@ const OneOnOne = () => {
           </QuestionContainer>
           <OtherAskStyle>
             <span>원하는 답변이 없다면?</span>
-            <button onClick={() => navigate('/help_form')}>1:1 질문하기</button>
+            <button onClick={() => navigate(PATH.HELP_FORM)}>1:1 질문하기</button>
           </OtherAskStyle>
         </Container>
       ) : (
@@ -77,7 +78,7 @@ const OneOnOne = () => {
           </QuestionContainer>
           <MobileOtherAsk>
             <span>원하는 답변이 없다면?</span>
-            <button onClick={() => navigate('/help_form')}>1:1 질문하기</button>
+            <button onClick={() => navigate(PATH.HELP_FORM)}>1:1 질문하기</button>
           </MobileOtherAsk>
         </Inner>
       )}
@@ -85,7 +86,7 @@ const OneOnOne = () => {
   )
 }
 
-export default OneOnOne
+export default Ask
 
 const Container = styled.div`
   @media screen and (max-width: 360px) {

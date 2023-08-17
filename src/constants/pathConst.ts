@@ -10,11 +10,12 @@ const PATH = {
   LOGIN: '/login',
   MYPAGE: '/mypage',
   MYPAGE_DETAIL: '/mypage_detail',
-  MYPAGE_EDIT: '/mypage/edit-info',
-  MYPAGE_PW: '/mypage/edit-pw',
-  FIND_PASSWORD: '/find-password',
-  ONE_ON_ONE: '/one_on_one',
-  ONE_ON_ONE_DETAIL: '/one_on_one/:questionId',
+  MYPAGE_EDIT: '/mypage/edit_info',
+  MYPAGE_PW: '/mypage/edit_pw',
+  FIND_PASSWORD: '/find_password',
+  ASK: '/ask',
+  ASK_DETAIL: '/ask/:questionId',
+  ASK_ANSWER_FORM: '/ask/answer_form',
 }
 
 export default PATH

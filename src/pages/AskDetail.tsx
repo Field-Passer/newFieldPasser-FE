@@ -2,21 +2,24 @@ import { getQuestionDetail, getQuestionAnswer } from '@src/api/getApi'
 import Title from '@src/components/Title'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import { useLocation } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import Inner from '@src/components/Inner'
+import PATH from '@src/constants/pathConst'
 
-const OneOnOneDetail = () => {
+const AskDetail = () => {
   const [question, setQuestion] = useState<QuestionGetTypes>()
   const [answer, setAnswer] = useState<QuestionAnswerTypes>()
   const { pathname } = useLocation()
-  const questionId = Number(pathname.slice(12))
+  const questionId = Number(pathname.slice(5))
+
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
   })
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getQuestionDetail(questionId)
@@ -26,6 +29,8 @@ const OneOnOneDetail = () => {
     }
     fetchData()
   }, [])
+
+  const navigate = useNavigate()
 
   const userInfo = useSelector((state: RootState) => state.userInfo)
   return (
@@ -50,7 +55,7 @@ const OneOnOneDetail = () => {
               <div className="answerTitle">
                 <span>A. 답변 전입니다.</span>
                 <span>{''}</span>
-                {userInfo.role === '관리자' && <button>답변</button>}
+                {userInfo.role === '관리자' && <button onClick={() => navigate(PATH.ASK_ANSWER_FORM, { state: questionId })}>답변</button>}
               </div>
               <div className="answerContent">답변 전입니다.</div>
             </AnswerContent>
@@ -89,7 +94,7 @@ const OneOnOneDetail = () => {
   )
 }
 
-export default OneOnOneDetail
+export default AskDetail
 
 const Container = styled.div`
   @media screen and (max-width: 360px) {
