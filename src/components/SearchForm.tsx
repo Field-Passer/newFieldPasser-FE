@@ -500,7 +500,7 @@ const SearchInform = styled.div`
   gap: 16px;
   position: fixed;
   top: 60px;
-  z-index: 9999;
+  z-index: 50;
   background: #fff;
   overflow: auto;
   height: 100%;
