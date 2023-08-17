@@ -11,7 +11,7 @@ const Modal = ({ modalOpen, setModalOpen }: IModalProps) => {
   }
 
   return (
-    <Container>
+    <Container className={modalOpen ? 'open' : ''}>
       <div onClick={() => closeModal()}>닫기</div>
       <div>공통 사용 모달</div>
     </Container>
@@ -20,6 +20,10 @@ const Modal = ({ modalOpen, setModalOpen }: IModalProps) => {
 
 const Container = styled.div`
   position: relative;
+
+  &.open {
+    background-color: aliceblue;
+  }
 `
 
 export default Modal
