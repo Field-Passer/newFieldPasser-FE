@@ -1,9 +1,25 @@
-import React from 'react'
+import { styled } from 'styled-components'
+const Modal = ({ modalOpen, setModalOpen }: IModalProps) => {
+  // 필요한 props 및 기능
+  // 닫기 버튼
+  // text content
+  // confirm기능 추가할 경우 navigate
+  // overlay
 
-type Props = {}
+  const closeModal = () => {
+    setModalOpen(false)
+  }
 
-const Modal = (props: Props) => {
-  return <div>Modal</div>
+  return (
+    <Container>
+      <div onClick={() => closeModal()}>닫기</div>
+      <div>공통 사용 모달</div>
+    </Container>
+  )
 }
+
+const Container = styled.div`
+  position: relative;
+`
 
 export default Modal

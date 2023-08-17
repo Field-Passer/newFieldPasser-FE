@@ -154,3 +154,18 @@ interface QuestionAnswerTypes {
   answerTitle: string
   memberName: string
 }
+
+interface ISidebarProps {
+  sideOpen: boolean
+  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+interface IModalProps {
+  modalOpen: boolean
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+interface IOverlayProps {
+  sideOpen?: boolean
+  setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  modalOpen?: boolean
+  setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
+}
