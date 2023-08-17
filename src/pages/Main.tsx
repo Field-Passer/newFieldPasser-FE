@@ -69,10 +69,8 @@ const Main = () => {
   }, [selectedSortOption])
 
   const getPostList = useCallback(async () => {
-    //인터섹션옵저버
     try {
       setIsLoading(true)
-
       const postData = await getSearchPostList(searchValue, page)
       if (page === 1) setPostList(postData.content)
       else setPostList((prevState) => [...prevState, ...postData.content])
@@ -87,17 +85,20 @@ const Main = () => {
   }, [page, category, selectedDistrict])
 
   useEffect(() => {
-    // const getPostList = async () => {
-    //   try {
-    //     const postData = await getSearchPostList(searchValue, page)
-    //     setPostList(postData.content)
-    //   } catch (err) {
-    //     alert(err)
-    //   }
-    // }
+    getPostList()
+  }, [getPostList])
+
+  useEffect(() => {
     getPostList()
     setPage(1)
   }, [category, selectedDistrict])
+
+  useEffect(() => {
+    if (inView && !isLoading && !lastPage) {
+      console.log('페이지추가')
+      setPage((prev) => prev + 1)
+    }
+  }, [inView, isLoading])
 
   const categories: ICategories[] = [
     {
@@ -302,6 +303,7 @@ const Main = () => {
           </div>
         </Options>
         <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
+        <div ref={ref}></div>
       </ListSection>
     </Container>
   )
