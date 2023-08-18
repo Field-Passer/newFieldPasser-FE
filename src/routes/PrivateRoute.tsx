@@ -1,32 +1,23 @@
-import React from 'react'
-// import PATH from '@src/constants/pathConst'
+import { useEffect } from 'react'
+import { Outlet, Navigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { getCookieToken } from '@src/storage/Cookie'
+import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 
-interface IPrivateRoute {
-  children: React.ReactNode
-}
+const PrivateRoute = () => {
+  const dispatch = useDispatch()
 
-const PrivateRoute = ({ children }: IPrivateRoute) => {
-  // 로그인 여부 확인 코드 작성 필요
-  // 로그인 상태라면 children을 리턴, 아니라면 로그인 창으로 돌아가기
-  // 아래는 예시 코드입니다 로그인 기능 구현 후 수정 예정
-  // const accessToken = getCookie('accessToken')
-  // const dispatch = useDispatch()
-  // const navigate = useNavigate()
+  const access_token = window.localStorage.getItem('accessToken')
+  const refresh_token = getCookieToken()
+  if (!access_token || !refresh_token) {
+    alert('자동 로그아웃 되었습니다.')
+    useEffect(() => {
+      dispatch(DELETE_TOKEN())
+    })
+    return <Navigate to="/login" replace={true} />
+  }
 
-  // if (!accessToken) {
-  //   dispatch(
-  //     setModal({
-  //       isOpen: true,
-  //       text: MESSAGES.INVALID_AUTH,
-  //       onClickOK: () => {
-  //         dispatch(setModal({ route: navigate(PATH.LOGIN) }))
-  //       },
-  //     })
-  //   )
-  // }
-  // return accessToken && children
-
-  return children
+  return <Outlet />
 }
 
 export default PrivateRoute

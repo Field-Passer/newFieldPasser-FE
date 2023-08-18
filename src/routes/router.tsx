@@ -16,6 +16,7 @@ import UserEdit from '@src/components/MyPage/UserEdit'
 import FindPassword from '@src/pages/FindPassword'
 import Edit from '@src/pages/Edit'
 import ResetPw from '@src/components/ResetPassword/ResetPw'
+import PrivateRoute from './PrivateRoute'
 
 const router = createBrowserRouter([
   {
@@ -33,11 +34,16 @@ const router = createBrowserRouter([
       { path: PATH.JOIN, element: <Join /> },
       { path: PATH.LOGIN, element: <Login /> },
       { path: PATH.FIND_PASSWORD, element: <FindPassword /> },
-      // private route로 element 감싸 주기
-      { path: PATH.MYPAGE, element: <MyPage /> },
-      { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
-      { path: PATH.MYPAGE_PW, element: <ResetPw /> },
-      { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
+      {
+        path: PATH.MYPAGE,
+        element: <PrivateRoute />,
+        children: [
+          { path: '', element: <MyPage /> },
+          { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
+          { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
+          { path: PATH.MYPAGE_PW, element: <ResetPw /> },
+        ],
+      },
     ],
   },
 ])
