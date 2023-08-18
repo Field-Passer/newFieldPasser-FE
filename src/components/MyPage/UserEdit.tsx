@@ -4,9 +4,12 @@ import { styled } from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import { editUserInfo, getUserInfo } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
+import { useDispatch } from 'react-redux'
+import { SET_INFO } from '@src/store/slices/infoSlice'
 
 const UserEdit = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   // 인풋 유효성 검사
   const nameValidator = (userName: string) => {
@@ -56,6 +59,14 @@ const UserEdit = () => {
       userPhone,
     })) as IResponseType
     if (status === 200) {
+      dispatch(
+        SET_INFO({
+          memberId: userEmail,
+          memberName: userName,
+          memberNickName: userNickName,
+          memberPhone: userPhone,
+        })
+      )
       navigate('/mypage')
       alert('회원 정보가 변경되었습니다.')
     }
@@ -67,7 +78,7 @@ const UserEdit = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일(변경 불가)</label>
-            <input type="email" name="userEmail" value={userEmail || ''} placeholder="field-passer@naver.com" disabled />
+            <input type="email" name="userEmail" onChange={onChangeUserEmail} value={userEmail || ''} placeholder="field-passer@naver.com" disabled />
           </div>
 
           <div className="input_wrap_inner">
