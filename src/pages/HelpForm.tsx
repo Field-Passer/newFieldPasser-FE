@@ -1,5 +1,7 @@
+import HelpNAskForm from '@src/components/HelpNAskForm'
+
 const HelpForm = () => {
-  return <div>HelpForm</div>
+  return <HelpNAskForm type="help" />
 }
 
 export default HelpForm

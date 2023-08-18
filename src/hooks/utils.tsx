@@ -1,9 +1,12 @@
-export const dateFormat = (dateVal: string) => {
+export const dateFormat = (dateVal: string, type?: string) => {
   const nowDate = new Date(dateVal)
   const month = nowDate.getMonth()
   const date = nowDate.getDate()
   const hours = nowDate.getHours() < 10 ? `0${nowDate.getHours()}` : nowDate.getHours()
   const minutes = nowDate.getMinutes() < 10 ? `0${nowDate.getMinutes()}` : nowDate.getMinutes()
+
+  if (type === 'comment' && nowDate.getDate() === new Date().getDate()) return `${hours}:${minutes}`
+  else if (type === 'comment') return `${month + 1}.${date} ${hours}:${minutes}`
 
   return `${month + 1}월 ${date}일 ${hours}:${minutes}`
 }
@@ -11,7 +14,6 @@ export const dateFormat = (dateVal: string) => {
 export const randomImages = (category: string, imgNum: number) => {
   const randomNum = imgNum % 3
   const publicPath = import.meta.env.BASE_URL
-  const path = 'public/'
   const badminton = ['badminton0.png', 'badminton1.png', 'badminton2.png']
   const basketball = ['basketball0.png', 'basketball1.png', 'basketball2.png']
   const soccer = ['soccer0.png', 'soccer1.png', 'soccer2.png']
@@ -32,10 +34,10 @@ export const randomImages = (category: string, imgNum: number) => {
     농구장: basketball[randomNum],
     축구장: soccer[randomNum],
     테니스장: tennis[randomNum],
-    풋살장: futsal[randomNum]
+    풋살장: futsal[randomNum],
   }
 
-  return publicPath + path + categoryId[category]
+  return publicPath + categoryId[category]
 }
 
 export const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>, category: string, imgNum: number) => {

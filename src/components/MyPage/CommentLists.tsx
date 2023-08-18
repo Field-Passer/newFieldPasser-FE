@@ -1,66 +1,43 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
+import { useState, useEffect } from 'react'
+import { getMyReply } from '@src/api/authApi'
 
 interface IProps {
   screen: string
 }
 
 const CommentLists = ({ screen }: IProps) => {
-  const comments = [
-    {
-      commentId: 0,
-      boardTitle: '광나루 한강공원 농구장 양도',
-      content: '저 양도 받을래요!',
-      date: '23년 06월 19일',
-      reply: 1,
-    },
-    {
-      commentId: 1,
-      boardTitle: '뚝섬한강공원 베드민턴장 양도',
-      content: '저 양도 받을래요!',
-      date: '23년 06월 19일',
-      reply: 1,
-    },
-    {
-      commentId: 2,
-      boardTitle: '한강 농구장 양도',
-      content: '저 양도 받을래요!',
-      date: '23년 06월 19일',
-      reply: 2,
-    },
-    {
-      commentId: 3,
-      boardTitle: '북산고 농구장 양도',
-      content: '저 양도 받을래요!',
-      date: '23년 06월 19일',
-      reply: 5,
-    },
-    {
-      commentId: 4,
-      boardTitle: '북산고 농구장 양도',
-      content: '양도 끝났나요?',
-      date: '23년 06월 19일',
-      reply: 0,
-    },
-  ]
+  const [comments, setComments] = useState<CommentTypes[]>([])
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getMyReply(1)
+      setComments(response?.data)
+    }
+    fetchData()
+  }, [])
   return (
     <Container screen={screen}>
-      {comments.map((comment) => (
-        <CommentBox key={comment.commentId}>
-          <BoardTitle screen={screen}>{comment.boardTitle}</BoardTitle>
-          <Content screen={screen}>{comment.content}</Content>
-          <Des screen={screen}>
-            <div>
-              <img src="/calendar.svg" alt="달력" />
-              <span>{comment.date}</span>
-            </div>
-            <div>
-              <img src="/chat_bubble.svg" alt="댓글" />
-              <span>{comment.reply}</span>
-            </div>
-          </Des>
-        </CommentBox>
-      ))}
+      {comments.length ? (
+        comments.map((comment) => (
+          <CommentBox key={comment.commentId}>
+            <BoardTitle screen={screen}>{comment.title}</BoardTitle>
+            <Content screen={screen}>{comment.commentContent}</Content>
+            <Des screen={screen}>
+              <div>
+                <img src="/calendar.svg" alt="달력" />
+                <span>{comment.commentUpDate}</span>
+              </div>
+              <div>
+                <img src="/chat_bubble.svg" alt="댓글" />
+                <span>{comment.commentId}</span>
+              </div>
+            </Des>
+          </CommentBox>
+        ))
+      ) : (
+        <NoComment>댓글이 없습니다.</NoComment>
+      )}
     </Container>
   )
 }
@@ -102,4 +79,10 @@ const Des = styled.div<IProps>`
       font-size: ${({ screen }) => (screen === 'pc' ? FONT.m : '12px ')};
     }
   }
+`
+
+const NoComment = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px;
 `

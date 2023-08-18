@@ -6,9 +6,10 @@ import { BadmintonIcon, BasketballIcon, DownwardArrowIcon, FutsalIcon, SoccerIco
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
-import { getSearchPostList } from '@src/api/getApi'
+import { getSearchPostList } from '@src/api/boardApi'
 
 const Main = () => {
+  const categoryNames = 'futsal' || 'soccer' || 'basketball' || 'badminton' || 'tennis'
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -36,23 +37,36 @@ const Main = () => {
     category: category,
     date: '',
   }
+  // let pageCount: number = 1
 
   useEffect(() => {
     setBackground(`/banner${Math.floor(Math.random() * 5)}.png`)
   }, [])
 
   useEffect(() => {
-    // api재요청 / 무한스크롤이면?
-    // selected : 지역, 정렬 일 때 값 넣기 제외
-    // 정렬옵션은 같은 api로 못 보냄, 카테고리별 전체 게시글 불러와서 따로 정렬코드 넣어주기
+    switch (selectedSortOption) {
+      case '인기순':
+        setPostList([...postList.sort((a, b) => b.viewCount - a.viewCount)])
+        break
+      case '가장 최신 순':
+        setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
+        break
+      case '낮은 가격 순':
+        setPostList([...postList.sort((a, b) => a.price - b.price)])
+        break
+      case '높은 가격 순':
+        setPostList([...postList.sort((a, b) => b.price - a.price)])
+        break
+    }
+  }, [selectedSortOption])
 
+  useEffect(() => {
     const getPostList = async () => {
       try {
         const postData = await getSearchPostList(searchValue)
-        console.log(postData.content)
         setPostList(postData.content)
       } catch (err) {
-        console.log(err)
+        alert(err)
       }
     }
     getPostList()
@@ -174,7 +188,7 @@ const Main = () => {
                 }}
               >
                 {item.icon}
-                <span className={isActive[item.category] ? 'green' : ''}>{item.name}</span>
+                <span className={isActive[item.category as typeof categoryNames] ? 'green' : ''}>{item.name}</span>
               </div>
             )
           })}
@@ -225,7 +239,13 @@ const Main = () => {
                   setIsSortOpen(false)
                 }}
               >
-                <div className="default option" onClick={() => setSelectedSortOption('정렬')}>
+                <div
+                  className="default option"
+                  onClick={() => {
+                    setSelectedSortOption('정렬')
+                    setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
+                  }}
+                >
                   정렬
                 </div>
                 {sortOptions.map((item) => {
@@ -235,7 +255,6 @@ const Main = () => {
                       className="option"
                       onClick={() => {
                         setSelectedSortOption(item)
-                        console.log(item)
                       }}
                     >
                       {item}
@@ -256,7 +275,7 @@ const Main = () => {
             )}
           </div>
         </Options>
-        <Board data={postList} messege={'일치하는 조건의 게시글이 없습니다.'} />
+        <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
       </ListSection>
     </Container>
   )

@@ -1,4 +1,3 @@
-import Inner from '@src/components/Inner'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
@@ -8,6 +7,7 @@ import { Mobile } from '@src/hooks/useScreenHook'
 import MobileMenu from '@src/components/MobileMenu'
 import Title from '@src/components/Title'
 import { useMediaQuery } from 'react-responsive'
+import { useNavigate } from 'react-router'
 
 const Help = () => {
   const menuLists = ['회원 / 계정', '거래 분쟁 / 운영 정책', '이용 방법 / 기타']
@@ -25,10 +25,12 @@ const Help = () => {
     query: '(min-width: 450px)',
   })
 
+  const navigate = useNavigate()
+
   return (
     <>
-      {isPC && (
-        <Inner padding="32px 16px">
+      {isPC ? (
+        <Container>
           <Title screen="pc" name="자주 묻는 질문" />
           <MenuStyle>
             {menuLists.map((list, i) => (
@@ -51,12 +53,11 @@ const Help = () => {
           </AskListStyle>
           <OtherAskStyle>
             <span>원하는 답변이 없다면?</span>
-            <button>등록하기</button>
+            <button onClick={() => navigate('/help_form')}>등록하기</button>
           </OtherAskStyle>
-        </Inner>
-      )}
-      <Mobile>
-        <Inner width="100%">
+        </Container>
+      ) : (
+        <Mobile>
           <Title screen="mobile" name="자주 묻는 질문" />
           <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           <AskListStyle screen="mobile">
@@ -68,22 +69,28 @@ const Help = () => {
             <span>원하는 답변이 없다면?</span>
             <button>등록하기</button>
           </OtherAskStyle>
-        </Inner>
-      </Mobile>
+        </Mobile>
+      )}
     </>
   )
 }
 
 export default Help
 
-interface StyleProps {
-  screen: string
-}
+const Container = styled.div`
+  @media screen and (max-width: 360px) {
+    padding: 0 16px;
+    width: 100%;
+  }
+
+  margin: 64px auto;
+  max-width: 1024px;
+`
 
 const MenuStyle = styled.menu`
   display: flex;
   justify-content: center;
-  gap: 100px;
+  gap: 3em;
   margin: 64px 0;
   li {
     cursor: pointer;

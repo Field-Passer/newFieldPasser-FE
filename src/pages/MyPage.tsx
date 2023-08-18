@@ -7,34 +7,54 @@ import Inner from '@src/components/Inner'
 import PCBoardCard from '@src/components/MyPage/PCBoardCard'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
+import { getMyPost, getWishlist, getMyReply } from '@src/api/authApi'
+import { useDispatch, useSelector } from 'react-redux'
 import { userLogout } from '@src/api/authApi'
-import { useDispatch } from 'react-redux'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
+import { SET_WISHLIST } from '@src/store/slices/wishlistSlice'
+import { RootState } from '@src/store/config'
+import { DELETE_INFO } from '@src/store/slices/infoSlice'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
+  const [myPost, setMyPost] = useState<POST_TYPE[]>([])
+  const [wishlist, setWishlist] = useState([])
+  const [myReply, setMyReply] = useState([])
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   useEffect(() => {
     const randomNumFn = (total: number) => {
       const num = Math.floor(Math.random() * total + 1)
       setRandom(num)
     }
     randomNumFn(3)
-  })
+    const fetchData = async () => {
+      const postResponse = await getMyPost(1)
+      setMyPost(postResponse?.data)
+      const wishlistResponse = await getWishlist(1)
+      setWishlist(wishlistResponse?.data)
+      dispatch(SET_WISHLIST(postResponse?.data))
+      const replyResponse = await getMyReply(1)
+      setMyReply(replyResponse?.data)
+    }
+    fetchData()
+  }, [])
 
+  const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
   })
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
   const logoutHandler = async () => {
     const { status }: any = await userLogout()
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
-      navigate('/login')
-      alert('로그아웃 되었습니다.')
+      dispatch(DELETE_INFO())
+      return navigate('/login')
     }
   }
 
@@ -46,7 +66,7 @@ const MyPage = () => {
             <Inner>
               <PCName>
                 <p>
-                  <span>김필드</span> 님
+                  <span>{userInfo.memberName}</span> 님
                 </p>
                 <p>안녕하세요</p>
               </PCName>
@@ -57,13 +77,13 @@ const MyPage = () => {
               <Title>작성 글 목록</Title>
               <ul>
                 <li>
-                  <PCBoardCard title="양도" />
+                  <PCBoardCard title="양도" posts={myPost} />
                 </li>
                 <li>
-                  <PCBoardCard title="좋아요" />
+                  <PCBoardCard title="좋아요" posts={wishlist} />
                 </li>
                 <li>
-                  <PCBoardCard title="댓글" />
+                  <PCBoardCard title="댓글" posts={myReply} />
                 </li>
               </ul>
             </PCBoardContainer>
@@ -90,7 +110,7 @@ const MyPage = () => {
       <Mobile>
         <NameStyle random={random}>
           <p>
-            <span>김필드</span> 님
+            <span>{userInfo.memberName}</span> 님
           </p>
           <p>안녕하세요</p>
         </NameStyle>

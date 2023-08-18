@@ -7,8 +7,12 @@ import { FiMenu } from 'react-icons/fi'
 import type { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogout } from '@src/api/authApi'
+import { getMemberInfo, userLogout } from '@src/api/authApi'
 import { removeCookieToken } from '@src/storage/Cookie'
+import { useEffect } from 'react'
+import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
+import PATH from '@src/constants/pathConst'
+
 type PropsType = {
   setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -25,11 +29,24 @@ const Header = ({ setSideOpen }: PropsType) => {
 
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (authenticated) {
+        const response = await getMemberInfo()
+        dispatch(SET_INFO(response?.data))
+      } else if (!authenticated) {
+        dispatch(DELETE_INFO())
+      }
+    }
+    fetchData()
+  }, [authenticated])
+
   const logoutHandler = async () => {
     const { status } = (await userLogout()) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
+      dispatch(DELETE_INFO())
       return navigate('/login')
     }
   }
@@ -60,8 +77,9 @@ const Header = ({ setSideOpen }: PropsType) => {
             </Link>
             <div className="menu">
               <Link to="/help">고객센터</Link>
-              {authenticated && <Link to="/mypage">마이페이지</Link>}
-              {!authenticated && <Link to="/join">회원가입</Link>}
+              {authenticated && <Link to={PATH.MYPAGE}>마이페이지</Link>}
+              {!authenticated && <Link to={PATH.JOIN}>회원가입</Link>}
+              {authenticated && <Link to={PATH.ASK}>1:1 문의</Link>}
               {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to="/login">로그인</Link>}
               <button
                 onClick={() => {

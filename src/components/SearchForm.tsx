@@ -11,6 +11,7 @@ import { ko } from 'date-fns/esm/locale'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createSearchValue } from '@src/store/slices/searchVlaueSlice'
 import { RootState } from '../store/config'
+import { cheakOpenBox } from '@src/store/slices/searchChkSlice'
 
 const SearchForm = () => {
   const dispatch = useDispatch()
@@ -35,6 +36,11 @@ const SearchForm = () => {
     }
   })
 
+  // search box open value
+  const searchBoxOpen = useSelector((state: RootState) => {
+    return state.searchBox.openBox
+  })
+
   // current state value
   const [valueState, setValueState] = useState<ValueStateType>({
     categoryValue: selectVal.category && selectVal.category !== '전체' ? selectVal.category : '전체',
@@ -48,7 +54,6 @@ const SearchForm = () => {
 
   // cheack State
   const [checkState, setCheckState] = useState<CheckValueStateType>({
-    searchBoxOpen: false,
     categoryOpen: false,
     districtOpen: valueState.districtValue ? true : false,
     districtSelect: false,
@@ -89,15 +94,15 @@ const SearchForm = () => {
 
   // searchbox click function *
   const searchBoxOpenFn = () => {
-    if (checkState.searchBoxOpen) {
-      checkValueStateChangeFn('searchBoxOpen', false)
+    if (searchBoxOpen) {
+      dispatch(cheakOpenBox({ openBox: false }))
       window.document.body.classList.remove('stop-scrolling')
     } else {
-      checkValueStateChangeFn('searchBoxOpen', true)
+      dispatch(cheakOpenBox({ openBox: true }))
       window.document.body.classList.add('stop-scrolling')
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0 })
   }
 
   // district select function
@@ -179,15 +184,15 @@ const SearchForm = () => {
     return dispatch(createSearchValue(dispatchValue))
   }
 
-  // set date + 1 day Fn 
+  // set date + 1 day Fn
   const setDate = (date: Date) => {
     return new Date(date.setDate(date.getDate() + 1))
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <Container searchboxopen={checkState.searchBoxOpen.toString()} path={urlPathname}>
-        {checkState.searchBoxOpen ? (
+      <Container searchboxopen={searchBoxOpen.toString()} path={urlPathname}>
+        {searchBoxOpen ? (
           <SearchInform>
             <CloseBtn onClick={() => searchBoxOpenFn()}>
               <CloseIcon size={'16'} />
@@ -480,6 +485,9 @@ const SearchCorver = styled.div<{ path: string }>`
         font-size: 12px;
       }
     }
+  }
+  @media (min-width: 834px) {
+    border-radius: 40px;
   }
 `
 

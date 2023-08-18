@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router'
 
 interface Props {
   title: string
+  posts: POST_TYPE[]
 }
 
-const PCBoardCard = ({ title }: Props) => {
+const PCBoardCard = ({ title, posts }: Props) => {
   const navigate = useNavigate()
   return (
     <Container>
@@ -15,10 +16,7 @@ const PCBoardCard = ({ title }: Props) => {
         <span>{title}</span>
         <PlusIcon color={COLORS.gray40} />
       </Title>
-      <Text>
-        <span>강동구 광나루 한강공원 농구장 양도</span>
-        <span>중구 광나루 한강공원 축구장 양도</span>
-      </Text>
+      <Text>{posts.length ? posts.slice(0, 3).map((post, idx) => <span key={idx}>{post.title}</span>) : <span>게시글이 없습니다.</span>}</Text>
     </Container>
   )
 }

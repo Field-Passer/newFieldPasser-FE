@@ -5,14 +5,17 @@ const PATH = {
   EDIT: '/edit/:postId',
   BOARD_LIST: '/board_list',
   HELP: '/help',
-  HELP_FORM: '/help_from',
+  HELP_FORM: '/help_form',
   JOIN: '/join',
   LOGIN: '/login',
   MYPAGE: '/mypage',
   MYPAGE_DETAIL: '/mypage_detail',
-  MYPAGE_EDIT: '/mypage/edit-info',
-  MYPAGE_PW: '/mypage/edit-pw',
-  FIND_PASSWORD: '/find-password',
+  MYPAGE_EDIT: '/mypage/edit_info',
+  MYPAGE_PW: '/mypage/edit_pw',
+  FIND_PASSWORD: '/find_password',
+  ASK: '/ask',
+  ASK_DETAIL: '/ask/:questionId',
+  ASK_ANSWER_FORM: '/ask/answer_form',
 }
 
 export default PATH
