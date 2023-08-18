@@ -38,6 +38,8 @@ const Login = () => {
       setRefreshToken(tokens.refreshToken)
       console.log('로그인함', new Date())
       return navigate('/')
+    } else {
+      alert('아이디와 비밀번호를 다시 확인해주세요.')
     }
   }
 
