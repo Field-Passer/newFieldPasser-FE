@@ -39,13 +39,35 @@ const router = createBrowserRouter([
       { path: PATH.FIND_PASSWORD, element: <FindPassword /> },
       {
         path: PATH.MYPAGE,
-        element: <PrivateRoute />,
-        children: [
-          { path: '', element: <MyPage /> },
-          { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
-          { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
-          { path: PATH.MYPAGE_PW, element: <ResetPw /> },
-        ],
+        element: (
+          <PrivateRoute>
+            <MyPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_DETAIL,
+        element: (
+          <PrivateRoute>
+            <MyPageDetail />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_EDIT,
+        element: (
+          <PrivateRoute>
+            <UserEdit />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_PW,
+        element: (
+          <PrivateRoute>
+            <ResetPw />
+          </PrivateRoute>
+        ),
       },
       { path: PATH.ASK, element: <Ask /> },
       { path: PATH.ASK_DETAIL, element: <AskDetail /> },
