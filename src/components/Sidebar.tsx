@@ -8,13 +8,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { Link, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
+import PATH from '@src/constants/pathConst'
 
-type PropsType = {
-  sideOpen: boolean
-  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
+const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -41,12 +37,12 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       alert('로그아웃 되었습니다.')
-      return navigate('/')
+      return navigate(PATH.HOME)
     }
   }
 
   const clickWithoutLogin = () => {
-    navigate('/login')
+    navigate(PATH.LOGIN)
     alert('로그인 후 이용 가능합니다.')
   }
 
@@ -65,7 +61,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             />
           </div>
           <div>
-            <Link to="/" onClick={() => closeSidebar()}>
+            <Link to={PATH.HOME} onClick={() => closeSidebar()}>
               <img src="/logo.png" alt="로고" className="logo" />
             </Link>
           </div>
@@ -75,7 +71,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
                 <span>{userName}</span>
                 <span>님</span>
               </div>
-              <Link to="/write">
+              <Link to={PATH.WRITE}>
                 <button
                   onClick={() => {
                     closeSidebar()
@@ -91,7 +87,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
                 <span>로그인하고 양도하기!</span>
               </div>
               <div className="not-member">
-                <Link to="/login">
+                <Link to={PATH.LOGIN}>
                   <button
                     className="login"
                     onClick={() => {
@@ -101,7 +97,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
                     로그인
                   </button>
                 </Link>
-                <Link to="/join">
+                <Link to={PATH.JOIN}>
                   <button
                     className="join"
                     onClick={() => {
@@ -120,7 +116,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/mypage') : clickWithoutLogin()
+              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
             }}
           >
             <img src="/my_page.svg" alt="마이페이지" />
@@ -130,7 +126,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/mypage') : clickWithoutLogin()
+              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
             }}
           >
             <img src="/my_heart.svg" alt="내 좋아요 목록" />
@@ -140,7 +136,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/mypage') : clickWithoutLogin()
+              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
             }}
           >
             <img src="/my_comment.svg" alt="내가 남긴 댓글" />
@@ -150,7 +146,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/mypage') : clickWithoutLogin()
+              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
             }}
           >
             <img src="/my_post.svg" alt="나의 양도글" />
@@ -162,7 +158,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/help') : clickWithoutLogin()
+              authenticated ? navigate(PATH.HELP) : clickWithoutLogin()
             }}
           >
             <span>고객센터</span>
@@ -171,7 +167,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: PropsType) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate('/mypage') : clickWithoutLogin()
+              authenticated ? navigate(PATH.ASK) : clickWithoutLogin()
             }}
           >
             1:1 문의하기
@@ -203,7 +199,7 @@ const SideContainer = styled.div`
   padding: 32px 0;
   border-right: 1px solid ${COLORS.gray20};
   font-size: ${FONT.m};
-  z-index: 1000;
+  z-index: 100;
   background-color: white;
   left: -150%;
   transition: 0.3s ease;

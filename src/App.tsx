@@ -8,10 +8,12 @@ import Overlay from './components/Overlay'
 import { useState, useEffect } from 'react'
 import { cheakOpenBox } from './store/slices/searchChkSlice'
 import { useDispatch } from 'react-redux'
+import Modal from './components/Modal'
 
 const App = () => {
   const dispatch = useDispatch()
   const [sideOpen, setSideOpen] = useState<boolean>(false)
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
   const location = useLocation()
   useEffect(() => {
     if (window.document.body.classList.contains('stop-scrolling')) {
@@ -22,6 +24,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} />
       <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
       <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} />
       <Header setSideOpen={setSideOpen} />
