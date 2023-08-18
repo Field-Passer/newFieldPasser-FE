@@ -13,13 +13,10 @@ const CheckAuthorization = async (config: AxiosInterceptorConfigType) => {
   if (config) {
     const refresh_token = getCookieToken()
     const access_token = localStorage.getItem('accessToken')
-    console.log(access_token)
 
     if (!access_token) {
-      console.log('accessToken이 없습니다.')
     }
     const status = await checkTokenExpire()
-    console.log('api 요청 checkTokenExpire :', status)
 
     if (status === 200 && config) {
       config.headers['Authorization'] = `Bearer ${access_token}`
@@ -42,7 +39,6 @@ const CheckAuthorization = async (config: AxiosInterceptorConfigType) => {
       } else {
         removeCookieToken()
         dispatch(DELETE_TOKEN())
-        console.log('리프레시 토큰 없음')
         return 'Failed'
       }
     }
