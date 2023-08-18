@@ -13,7 +13,6 @@ const PrivateRoute = ({ children }: IPrivateRoute) => {
 
   const access_token = window.localStorage.getItem('accessToken')
   const refresh_token = getCookieToken()
-
   if (!access_token || !refresh_token) {
     alert('자동 로그아웃 되었습니다.')
     useEffect(() => {
