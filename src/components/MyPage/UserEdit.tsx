@@ -67,7 +67,7 @@ const UserEdit = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일(변경 불가)</label>
-            <input type="email" name="userEmail" onChange={onChangeUserEmail} value={userEmail || ''} placeholder="field-passer@naver.com" disabled />
+            <input type="email" name="userEmail" value={userEmail || ''} placeholder="field-passer@naver.com" disabled />
           </div>
 
           <div className="input_wrap_inner">

@@ -26,7 +26,7 @@ const Header = ({ setSideOpen }: PropsType) => {
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
 
   const logoutHandler = async () => {
-    const { status }: any = await userLogout()
+    const { status } = (await userLogout()) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())

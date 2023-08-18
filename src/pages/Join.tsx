@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { checkDuplicateEmail, join } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
 
@@ -22,16 +22,19 @@ const Join = () => {
   const nickNameValidator = (userNickName: string) => {
     if (userNickName === null || userNickName.length > 12) return true
   }
-  const userPhoneValidator = (uPhone: string) => {
-    setUserPhone(
-      uPhone
+  const userPhoneValidator = () => {
+    setUserPhone((userPhone) =>
+      userPhone
         .replace(/[^0-9]/g, '')
         .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/g, '$1-$2-$3')
         .replace(/(-{1,2})$/g, '')
     )
-    if (uPhone.length >= 0 && uPhone.length <= 8) return true
-    if (uPhone.length >= 11) return false
   }
+
+  useEffect(() => {
+    if (userPhone.length >= 1 && userPhone.length <= 8) setPhoneError(true)
+    if (userPhone.length >= 11) setPhoneError(false)
+  })
 
   const navigate = useNavigate()
 
@@ -41,13 +44,15 @@ const Join = () => {
   const [userName, onChangeUserName, userNameError] = useInput(nameValidator, '')
   const [userNickName, onChangeUserNickName, userNickNameError] = useInput(nickNameValidator, '')
   const [userPhone, onChangeUserPhone, userPhoneError, setUserPhone] = useInput(userPhoneValidator, '')
+
   const [checkEmail, setCheckEmail] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
 
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     if (!userEmail) return alert('이메일을 입력해주세요.')
     if (userEmailError) return alert('올바른 이메일 형식이 아닙니다.')
-    const { status } = (await checkDuplicateEmail({ userEmail })) as IResponseType
+    const status = await checkDuplicateEmail({ userEmail })
     if (status === 200) {
       setCheckEmail(true)
     } else return alert('사용할 수 없는 이메일 입니다.')
@@ -57,13 +62,13 @@ const Join = () => {
     e.preventDefault()
     if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
     if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError) return alert('양식을 다시 확인해주세요.')
-    const { status } = (await join({
+    const status = await join({
       userEmail,
       userPw,
       userName,
       userNickName,
       userPhone,
-    })) as IResponseType
+    })
     if (status === 200) {
       alert('회원가입에 성공했습니다!')
       navigate('/login')
@@ -131,7 +136,7 @@ const Join = () => {
               maxLength={13}
               required
             />
-            <p className="error_message">{userPhoneError && '전화번호를 정확히 입력해주세요.'}</p>
+            <p className="error_message">{phoneError && '전화번호를 정확히 입력해주세요.'}</p>
           </div>
         </div>
 
