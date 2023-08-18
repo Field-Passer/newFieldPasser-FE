@@ -1,18 +1,24 @@
 import { districtOptions, sortOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { BadmintonIcon, BasketballIcon, DownwardArrowIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
 import { getSearchPostList } from '@src/api/boardApi'
+import { useInView } from 'react-intersection-observer'
 
 const Main = () => {
   const categoryNames = 'futsal' || 'soccer' || 'basketball' || 'badminton' || 'tennis'
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const [ref, inView] = useInView()
+  const [page, setPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [lastPage, setLastPage] = useState(false)
+
   const [postList, setPostList] = useState<POST_TYPE[]>([])
   const [category, setCategory] = useState<string>('풋살장')
   const [background, setBackground] = useState<string>('')
@@ -37,7 +43,6 @@ const Main = () => {
     category: category,
     date: '',
   }
-  // let pageCount: number = 1
 
   useEffect(() => {
     setBackground(`/banner${Math.floor(Math.random() * 5)}.png`)
@@ -57,20 +62,43 @@ const Main = () => {
       case '높은 가격 순':
         setPostList([...postList.sort((a, b) => b.price - a.price)])
         break
+      default:
+        setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
+        break
     }
   }, [selectedSortOption])
 
-  useEffect(() => {
-    const getPostList = async () => {
-      try {
-        const postData = await getSearchPostList(searchValue)
-        setPostList(postData.content)
-      } catch (err) {
-        alert(err)
-      }
+  const getPostList = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const postData = await getSearchPostList(searchValue, page)
+      if (page === 1) setPostList(postData.content)
+      else setPostList((prevState) => [...prevState, ...postData.content])
+
+      if (postData.last) setLastPage(true)
+      else if (!postData.last) setLastPage(false)
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsLoading(false)
     }
+  }, [page, category, selectedDistrict])
+
+  useEffect(() => {
     getPostList()
+  }, [getPostList])
+
+  useEffect(() => {
+    getPostList()
+    setPage(1)
   }, [category, selectedDistrict])
+
+  useEffect(() => {
+    if (inView && !isLoading && !lastPage) {
+      console.log('페이지추가')
+      setPage((prev) => prev + 1)
+    }
+  }, [inView, isLoading])
 
   const categories: ICategories[] = [
     {
@@ -243,7 +271,6 @@ const Main = () => {
                   className="default option"
                   onClick={() => {
                     setSelectedSortOption('정렬')
-                    setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
                   }}
                 >
                   정렬
@@ -276,6 +303,7 @@ const Main = () => {
           </div>
         </Options>
         <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
+        <div ref={ref}></div>
       </ListSection>
     </Container>
   )
