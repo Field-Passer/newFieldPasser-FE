@@ -19,6 +19,7 @@ import ResetPw from '@src/components/ResetPassword/ResetPw'
 import Ask from '@src/pages/Ask'
 import AskDetail from '@src/pages/AskDetail'
 import AskAnswerForm from '@src/pages/AskAnswerForm'
+import PrivateRoute from './PrivateRoute'
 
 const router = createBrowserRouter([
   {
@@ -36,11 +37,38 @@ const router = createBrowserRouter([
       { path: PATH.JOIN, element: <Join /> },
       { path: PATH.LOGIN, element: <Login /> },
       { path: PATH.FIND_PASSWORD, element: <FindPassword /> },
-      // private route로 element 감싸 주기
-      { path: PATH.MYPAGE, element: <MyPage /> },
-      { path: PATH.MYPAGE_EDIT, element: <UserEdit /> },
-      { path: PATH.MYPAGE_PW, element: <ResetPw /> },
-      { path: PATH.MYPAGE_DETAIL, element: <MyPageDetail /> },
+      {
+        path: PATH.MYPAGE,
+        element: (
+          <PrivateRoute>
+            <MyPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_DETAIL,
+        element: (
+          <PrivateRoute>
+            <MyPageDetail />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_EDIT,
+        element: (
+          <PrivateRoute>
+            <UserEdit />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.MYPAGE_PW,
+        element: (
+          <PrivateRoute>
+            <ResetPw />
+          </PrivateRoute>
+        ),
+      },
       { path: PATH.ASK, element: <Ask /> },
       { path: PATH.ASK_DETAIL, element: <AskDetail /> },
       { path: PATH.ASK_ANSWER_FORM, element: <AskAnswerForm /> },
