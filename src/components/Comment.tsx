@@ -18,7 +18,7 @@ const BoardComment = (props: PropsType) => {
   const [page, setPage] = useState(1)
   const [comments, setComments] = useState<CommentTypes[]>([])
   const dispatch = useDispatch()
-  const [totalPage, setTotalPage] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  const [totalPage, setTotalPage] = useState<number[]>([])
 
   //element
   const commentMoreBtn = useRef<HTMLButtonElement>(null)
@@ -37,13 +37,13 @@ const BoardComment = (props: PropsType) => {
     async (boardId: number, page: number, loginVal: boolean) => {
       try {
         const CommentData = await getComment(boardId, page, loginVal)
-        console.log(CommentData)
 
-        // let total = []
-        // for(let i = 1; i <= CommentData.totalPage + 1; i ++){
-        //   total.push(i)
-        // }
-        // setTotalPage(total)
+        let total = []
+        for (let i = 1; i <= CommentData.totalPages; i++) {
+          total.push(i)
+        }
+
+        setTotalPage(total)
         setComments(CommentData.content)
       } catch (err) {
         console.log(err)
@@ -324,7 +324,7 @@ const PagenationBtn = styled.ul`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 0 auto;
+  margin: 20px auto;
   gap: 5px;
 
   button {
@@ -334,6 +334,7 @@ const PagenationBtn = styled.ul`
 
   .selected {
     color: #000;
+    pointer-events: none; 
   }
 `
 
