@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
 const storage = JSON.parse(localStorage.getItem('persist:root') as string)
-const token = JSON.parse(storage.accessToken)
+// const token = JSON.parse(storage.accessToken)
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
