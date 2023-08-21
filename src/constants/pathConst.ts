@@ -16,6 +16,8 @@ const PATH = {
   ASK: '/ask',
   ASK_DETAIL: '/ask/:questionId',
   ASK_ANSWER_FORM: '/ask/answer-form',
+  PROFILE: '/profile/:user',
+  BOARD_BLIND: '/board-list/blind',
 }
 
 export default PATH

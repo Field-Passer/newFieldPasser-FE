@@ -15,12 +15,16 @@ import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { SET_WISHLIST } from '@src/store/slices/wishlistSlice'
 import { RootState } from '@src/store/config'
 import { DELETE_INFO } from '@src/store/slices/infoSlice'
+import PATH from '@src/constants/pathConst'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
   const [myPost, setMyPost] = useState<POST_TYPE[]>([])
   const [wishlist, setWishlist] = useState([])
   const [myReply, setMyReply] = useState([])
+  const [postNum, setPostNum] = useState(0)
+  const [wishNum, setWishNum] = useState(0)
+  const [replyNum, setReplyNum] = useState(0)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -34,11 +38,14 @@ const MyPage = () => {
     const fetchData = async () => {
       const postResponse = await getMyPost(1)
       setMyPost(postResponse?.data)
+      setPostNum(postResponse?.element)
       const wishlistResponse = await getWishlist(1)
       setWishlist(wishlistResponse?.data)
+      setWishNum(wishlistResponse?.element)
       dispatch(SET_WISHLIST(postResponse?.data))
       const replyResponse = await getMyReply(1)
       setMyReply(replyResponse?.data)
+      setReplyNum(replyResponse?.element)
     }
     fetchData()
   }, [])
@@ -77,13 +84,13 @@ const MyPage = () => {
               <Title>작성 글 목록</Title>
               <ul>
                 <li>
-                  <PCBoardCard title="양도" posts={myPost} />
+                  <PCBoardCard title="양도" posts={myPost} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 0 })} />
                 </li>
                 <li>
-                  <PCBoardCard title="좋아요" posts={wishlist} />
+                  <PCBoardCard title="좋아요" posts={wishlist} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 1 })} />
                 </li>
                 <li>
-                  <PCBoardCard title="댓글" posts={myReply} />
+                  <PCBoardCard title="댓글" posts={myReply} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 2 })} />
                 </li>
               </ul>
             </PCBoardContainer>
@@ -115,16 +122,16 @@ const MyPage = () => {
           <p>안녕하세요</p>
         </NameStyle>
         <MyMenuStyle>
-          <li onClick={() => navigate('/mypage_detail', { state: 0 })}>
-            <span>2</span>
+          <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 0 })}>
+            <span>{postNum}</span>
             <span>양도</span>
           </li>
-          <li onClick={() => navigate('/mypage_detail', { state: 1 })}>
-            <span>1</span>
+          <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 1 })}>
+            <span>{wishNum}</span>
             <span>좋아요</span>
           </li>
-          <li onClick={() => navigate('/mypage_detail', { state: 2 })}>
-            <span>3</span>
+          <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 2 })}>
+            <span>{replyNum}</span>
             <span>댓글</span>
           </li>
         </MyMenuStyle>
