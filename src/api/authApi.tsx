@@ -1,20 +1,22 @@
 import axios, { isAxiosError } from 'axios'
 import { privateApi, publicApi } from './Instance'
-import store from '@src/store/config'
 
 // 로그인
 export const userLogin = async ({ userEmail, userPw }: IUserInfoType) => {
   try {
-    const response = await publicApi<IResponseType>('/auth/login', {
+    const response = await publicApi('/auth/login', {
       method: 'POST',
       data: {
         memberId: userEmail,
         password: userPw,
       },
     })
-    return {
-      status: response.status,
-      tokens: response.data.data,
+    // if(!response) return
+    if (response.status && response.data.data) {
+      return {
+        status: response.status,
+        tokens: response.data.data,
+      }
     }
   } catch (error) {
     if (axios.isAxiosError<IResponseErrorType>(error)) {
@@ -27,7 +29,8 @@ export const userLogin = async ({ userEmail, userPw }: IUserInfoType) => {
 
 // 로그아웃
 export const userLogout = async () => {
-  const access_token = store.getState().accessToken.accessToken
+  // const access_token = store.getState().accessToken.accessToken
+  const access_token = window.localStorage.getItem('accessToken')
   if (access_token == null) return console.log('로그아웃 요청에서 at=null')
   try {
     const response = await privateApi('/auth/logout', {
@@ -52,9 +55,11 @@ export const userLogout = async () => {
 
 // accessToken 검사 (AT 검사)
 export async function checkTokenExpire() {
-  const access_token = store.getState().accessToken.accessToken
+  // const access_token = store.getState().accessToken.accessToken
+  const access_token = window.localStorage.getItem('accessToken')
+  // const navigate = useNavigate()
   if (access_token == null) {
-    console.log('------null 거르기------')
+    console.log('at검사에서 at=null')
     return
   }
   try {
@@ -64,9 +69,7 @@ export async function checkTokenExpire() {
         Authorization: `Bearer ${access_token}`,
       },
     })
-    return {
-      status: response.status,
-    }
+    return response.status
   } catch (error) {
     if (axios.isAxiosError<IResponseErrorType>(error)) {
       return {
@@ -78,7 +81,8 @@ export async function checkTokenExpire() {
 
 // refreshToken 재발급
 export async function postRefereshToken() {
-  const access_token = store.getState().accessToken.accessToken
+  // const access_token = store.getState().accessToken.accessToken
+  const access_token = window.localStorage.getItem('accessToken')
   try {
     const response = await publicApi('/auth/reissue', {
       withCredentials: true,
@@ -103,7 +107,7 @@ export async function postRefereshToken() {
 // 회원가입
 export const join = async ({ userEmail, userPw, userName, userNickName, userPhone }: IUserInfoType) => {
   try {
-    const response = await publicApi<IResponseType>('/signup', {
+    const response = await publicApi('/signup', {
       method: 'POST',
       data: {
         memberId: userEmail,
@@ -113,9 +117,7 @@ export const join = async ({ userEmail, userPw, userName, userNickName, userPhon
         memberPhone: userPhone,
       },
     })
-    return {
-      status: response.status!,
-    }
+    return response.status
   } catch (error) {
     if (axios.isAxiosError<IResponseErrorType>(error)) {
       return {
@@ -134,9 +136,7 @@ export const checkDuplicateEmail = async ({ userEmail }: IUserInfoType) => {
         memberId: userEmail,
       },
     })
-    return {
-      status: response.status,
-    }
+    return response.status
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
       return {
