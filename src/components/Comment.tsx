@@ -18,7 +18,7 @@ const BoardComment = (props: PropsType) => {
   const [page, setPage] = useState(1)
   const [comments, setComments] = useState<CommentTypes[]>([])
   const dispatch = useDispatch()
-  const [totalPage, setTotalPage] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  const [totalPage, setTotalPage] = useState<number[]>([])
 
   //element
   const commentMoreBtn = useRef<HTMLButtonElement>(null)
@@ -37,13 +37,13 @@ const BoardComment = (props: PropsType) => {
     async (boardId: number, page: number, loginVal: boolean) => {
       try {
         const CommentData = await getComment(boardId, page, loginVal)
-        console.log(CommentData)
 
-        // let total = []
-        // for(let i = 1; i <= CommentData.totalPage + 1; i ++){
-        //   total.push(i)
-        // }
-        // setTotalPage(total)
+        let total = []
+        for (let i = 1; i <= CommentData.totalPages; i++) {
+          total.push(i)
+        }
+
+        setTotalPage(total)
         setComments(CommentData.content)
       } catch (err) {
         console.log(err)
@@ -64,6 +64,7 @@ const BoardComment = (props: PropsType) => {
 
   useEffect(() => {
     const outClickFn = (e: MouseEvent) => {
+      console.log(e.currentTarget)
       const moreBtn = document.querySelector('.comment-more-btn')
       if (e.currentTarget !== moreBtn) return dispatch(setCommentOptions({ commentBox: -1 }))
       return
@@ -111,22 +112,24 @@ const BoardComment = (props: PropsType) => {
                   {item.children.length}
                 </span>
               </p>
-              <button
-                className="comment-more-btn"
-                ref={commentMoreBtn}
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  commentData.commentBox === item.commentId
-                    ? dispatch(setCommentOptions({ commentBox: -1 }))
-                    : dispatch(setCommentOptions({ commentBox: item.commentId }))
-                  e.stopPropagation()
-                }}
-              >
-                <MoreIcon color="#D9D9D9" />
-              </button>
+              {item.deleteCheck ? null : (
+                <button
+                  className="comment-more-btn"
+                  ref={commentMoreBtn}
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    commentData.commentBox === item.commentId
+                      ? dispatch(setCommentOptions({ commentBox: -1 }))
+                      : dispatch(setCommentOptions({ commentBox: item.commentId }))
+                    e.stopPropagation()
+                  }}
+                >
+                  <MoreIcon color="#D9D9D9" />
+                </button>
+              )}
             </div>
             {commentData.commentBox === item.commentId && (
               <CommentOptionBox>
-                <CommentOptions item={item} login={props.loginVal} boardId={props.boardId} />
+                <CommentOptions item={item} login={props.loginVal} boardId={props.boardId} child={false} />
               </CommentOptionBox>
             )}
             {commentData.commentNum === item.commentId && (
@@ -178,7 +181,7 @@ const BoardComment = (props: PropsType) => {
 
                     {commentData.commentBox === child.commentId && (
                       <CommentOptionBox>
-                        <CommentOptions item={child} login={props.loginVal} boardId={props.boardId} />
+                        <CommentOptions item={child} login={props.loginVal} boardId={props.boardId} child={true} />
                       </CommentOptionBox>
                     )}
                   </ChildComment>
@@ -219,6 +222,10 @@ const InputBox = styled.div<{ type: string }>`
   border-left: 0;
   height: 72px;
   position: relative;
+
+  @media ${({ theme }) => theme.device.tablet} {
+    padding-right: 16px;
+  }
 `
 
 const CommentList = styled.ul`
@@ -238,6 +245,10 @@ const CommentList = styled.ul`
       font-size: 16px;
       color: #000;
       margin: 12px 0 8px;
+
+      @media ${({ theme }) => theme.device.tablet} {
+        font-size: 14px !important;
+      }
     }
 
     .comment-info-box {
@@ -298,13 +309,31 @@ const ChildComment = styled.li`
 
 const CommentOptionBox = styled.ul`
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   top: 100px;
-  right: 0;
+  right: 10px;
   background: #fff;
   border: 1px solid #d9d9d9;
   padding: 16px;
   width: 120px;
   z-index: 100;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+
+  &::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-right: none;
+    position: absolute;
+    top: -11px;
+    right: 5px;
+    background: #fff;
+    transform: rotate(50deg) skew(20deg, 15deg);
+  }
 
   li {
     padding: 0;
@@ -313,10 +342,6 @@ const CommentOptionBox = styled.ul`
       text-align: left;
     }
   }
-
-  li:nth-child(2) {
-    margin: 10px 0;
-  }
 `
 
 const PagenationBtn = styled.ul`
@@ -324,7 +349,7 @@ const PagenationBtn = styled.ul`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 0 auto;
+  margin: 20px auto;
   gap: 5px;
 
   button {
@@ -334,6 +359,7 @@ const PagenationBtn = styled.ul`
 
   .selected {
     color: #000;
+    pointer-events: none;
   }
 `
 
