@@ -7,9 +7,10 @@ type Props = {
   item: CommentTypes
   login: boolean
   boardId: number
+  child: boolean
 }
 
-const CommentOptions = ({ item, login, boardId }: Props) => {
+const CommentOptions = ({ item, login, boardId, child }: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -24,16 +25,19 @@ const CommentOptions = ({ item, login, boardId }: Props) => {
 
   return (
     <>
-      <li>
-        <button
-          onClick={() => {
-            if (!login) return alert('로그인 회원만 댓글 작성 가능합니다.'), navigate('/login')
-            dispatch(setCommentInput({ commentNum: item.commentId }))
-          }}
-        >
-          답글쓰기
-        </button>
-      </li>
+      {!child && (
+        <li>
+          <button
+            onClick={() => {
+              if (!login) return alert('로그인 회원만 댓글 작성 가능합니다.'), navigate('/login')
+              dispatch(setCommentInput({ commentNum: item.commentId }))
+            }}
+          >
+            답글쓰기
+          </button>
+        </li>
+      )}
+
       {item.myComment && (
         <>
           <li>

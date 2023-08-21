@@ -51,14 +51,14 @@ const BoardCommentInput = (props: PropsType) => {
           }
         }}
         onKeyUp={(e) => {
-          if (e.keyCode === 13 && props.type !== 'add' && e.currentTarget.value.replace(/ /g, '')) {
+          if (e.keyCode === 13 && props.type !== 'add' && e.currentTarget.value.replace(/ /g, '') !== '') {
             postComment(props.boardId, e.currentTarget.value, props.commentId)
             dispatch(setCommentInput({ commentNum: -1 }))
             getCommnetData(props.boardId, 1, props.loginVal)
             e.currentTarget.value = ''
-          } else if (e.keyCode === 13 && e.currentTarget.value.replace(/ /g, '')) {
+          } else if (e.keyCode === 13 && e.currentTarget.value.replace(/ /g, '') !== '') {
             addCommentFn()
-          } else {
+          } else if (e.keyCode === 13 && e.currentTarget.value.replace(/ /g, '')) {
             alert('내용을 입력해주세요.')
           }
         }}
@@ -68,7 +68,17 @@ const BoardCommentInput = (props: PropsType) => {
       />
       {props.type === 'add' ? (
         <div>
-          <button className="add_comment_btn" onClick={() => addCommentFn()}>
+          <button
+            className="add_comment_btn"
+            onClick={() => {
+              const comment = commentValue.current as HTMLInputElement
+              if (comment.value.replace(/ /g, '') !== '') {
+                addCommentFn()
+              } else {
+                alert('내용을 입력해주세요.')
+              }
+            }}
+          >
             수정
           </button>
           <button className="cancle_comment_btn" onClick={() => dispatch(setCommentAdd({ commentAdd: -1 }))}>
@@ -79,7 +89,7 @@ const BoardCommentInput = (props: PropsType) => {
         <button
           onClick={() => {
             const comment = commentValue.current as HTMLInputElement
-            if (comment.value.replace(/ /g, '')) {
+            if (comment.value.replace(/ /g, '') !== '') {
               postComment(props.boardId, comment.value, props.commentId)
               dispatch(setCommentInput({ commentNum: -1 }))
               getCommnetData(props.boardId, 1, props.loginVal)

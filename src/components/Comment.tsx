@@ -129,7 +129,7 @@ const BoardComment = (props: PropsType) => {
             </div>
             {commentData.commentBox === item.commentId && (
               <CommentOptionBox>
-                <CommentOptions item={item} login={props.loginVal} boardId={props.boardId} />
+                <CommentOptions item={item} login={props.loginVal} boardId={props.boardId} child={false} />
               </CommentOptionBox>
             )}
             {commentData.commentNum === item.commentId && (
@@ -181,7 +181,7 @@ const BoardComment = (props: PropsType) => {
 
                     {commentData.commentBox === child.commentId && (
                       <CommentOptionBox>
-                        <CommentOptions item={child} login={props.loginVal} boardId={props.boardId} />
+                        <CommentOptions item={child} login={props.loginVal} boardId={props.boardId} child={true} />
                       </CommentOptionBox>
                     )}
                   </ChildComment>
@@ -309,6 +309,9 @@ const ChildComment = styled.li`
 
 const CommentOptionBox = styled.ul`
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   top: 100px;
   right: 10px;
   background: #fff;
@@ -338,10 +341,6 @@ const CommentOptionBox = styled.ul`
     button {
       text-align: left;
     }
-  }
-
-  li:nth-child(2) {
-    margin: 10px 0;
   }
 `
 
