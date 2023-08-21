@@ -17,7 +17,7 @@ const MyPageDetail = () => {
   const [activeMenu, setActiveMenu] = useState<number>(state)
   const [posts, setPosts] = useState<POST_TYPE[]>([])
   const { data } = useGetWishlistQuery(page)
-  const wishlists = data ? data.content : []
+  const wishlists = data ? data.data.content : []
   const menuLists = ['양도', '좋아요', '댓글']
 
   const activeList = (activeMenu: number, screen: string) => {

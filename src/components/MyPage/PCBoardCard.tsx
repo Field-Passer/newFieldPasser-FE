@@ -1,22 +1,21 @@
 import { PlusIcon } from '@src/constants/icons'
 import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router'
 
 interface Props {
   title: string
   posts: POST_TYPE[]
+  onClick: React.MouseEventHandler<HTMLDivElement>
 }
 
-const PCBoardCard = ({ title, posts }: Props) => {
-  const navigate = useNavigate()
+const PCBoardCard = ({ title, posts, onClick }: Props) => {
   return (
     <Container>
-      <Title onClick={() => navigate('/mypage_detail', { state: 0 })}>
+      <Title onClick={onClick}>
         <span>{title}</span>
         <PlusIcon color={COLORS.gray40} />
       </Title>
-      <Text>{posts.length ? posts.slice(0, 3).map((post, idx) => <span key={idx}>{post.title}</span>) : <span>게시글이 없습니다.</span>}</Text>
+      <Text>{posts?.length ? posts.slice(0, 3).map((post, idx) => <span key={idx}>{post.title}</span>) : <span>게시글이 없습니다.</span>}</Text>
     </Container>
   )
 }
