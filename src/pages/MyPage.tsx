@@ -123,15 +123,15 @@ const MyPage = () => {
         </NameStyle>
         <MyMenuStyle>
           <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 0 })}>
-            <span>{postNum}</span>
+            <span>{postNum || 0}</span>
             <span>양도</span>
           </li>
           <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 1 })}>
-            <span>{wishNum}</span>
+            <span>{wishNum || 0}</span>
             <span>좋아요</span>
           </li>
           <li onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 2 })}>
-            <span>{replyNum}</span>
+            <span>{replyNum || 0}</span>
             <span>댓글</span>
           </li>
         </MyMenuStyle>
