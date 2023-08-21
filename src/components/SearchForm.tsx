@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { createSearchValue } from '@src/store/slices/searchVlaueSlice'
 import { RootState } from '../store/config'
 import { cheakOpenBox } from '@src/store/slices/searchChkSlice'
+import PATH from '@src/constants/pathConst'
 
 const SearchForm = () => {
   const dispatch = useDispatch()
@@ -173,7 +174,7 @@ const SearchForm = () => {
   const dispatchSearchValue = () => {
     if (dispatchValue.startDate > dispatchValue.endDate) return alert('날짜를 확인해주세요')
     if (dispatchValue.startTime > dispatchValue.endTime) return alert('시간을 확인해주세요')
-    return dispatch(createSearchValue(dispatchValue)), navigate('/board_list'), searchBoxOpenFn()
+    return dispatch(createSearchValue(dispatchValue)), navigate(PATH.BOARD_LIST), searchBoxOpenFn()
   }
 
   // search keyWord btn function
