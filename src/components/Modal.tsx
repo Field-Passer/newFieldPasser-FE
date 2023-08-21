@@ -54,6 +54,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  font-weight: 700;
 
   @media (min-width: 834px) {
     min-width: 500px;
@@ -81,6 +82,10 @@ const Content = styled.div`
   width: 90%;
   margin: 0 auto;
   text-align: center;
+
+  :first-child {
+    color: ${COLORS.error};
+  }
 `
 
 const MobileButton = styled.button`
