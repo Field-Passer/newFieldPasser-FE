@@ -31,7 +31,7 @@ export const userLogin = async ({ userEmail, userPw }: IUserInfoType) => {
 export const userLogout = async () => {
   // const access_token = store.getState().accessToken.accessToken
   const access_token = window.localStorage.getItem('accessToken')
-  if (access_token == null) return console.log('로그아웃 요청에서 at=null')
+  if (access_token == null) return
   try {
     const response = await privateApi('/auth/logout', {
       method: 'POST',
@@ -55,11 +55,8 @@ export const userLogout = async () => {
 
 // accessToken 검사 (AT 검사)
 export async function checkTokenExpire() {
-  // const access_token = store.getState().accessToken.accessToken
   const access_token = window.localStorage.getItem('accessToken')
-  // const navigate = useNavigate()
   if (access_token == null) {
-    // console.log('at검사에서 at===null')
     return
   }
   try {

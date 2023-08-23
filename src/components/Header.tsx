@@ -35,12 +35,12 @@ const Header = ({ setSideOpen }: PropsType) => {
       if (refreshToken) {
         const response = await getMemberInfo()
         dispatch(SET_INFO(response?.data))
-      } else if (!authenticated) {
+      } else if (!refreshToken) {
         dispatch(DELETE_INFO())
       }
     }
     fetchData()
-  }, [authenticated])
+  }, [refreshToken])
 
   const logoutHandler = async () => {
     const { status } = (await userLogout()) as IResponseType
