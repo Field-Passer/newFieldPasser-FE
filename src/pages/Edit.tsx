@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Write from './Write'
-import { checkTokenExpire } from '@src/api/authApi'
 import { getUserInfo } from '@src/api/getApi'
 import { useLocation, useNavigate } from 'react-router'
 
@@ -18,9 +17,8 @@ const Edit = () => {
   useEffect(() => {
     const checkId = async () => {
       try {
-        const tokenRes = await checkTokenExpire() // 임시 토큰확인코드 (private 라우터 완성되면 지울 것)
         const idRes = await getUserInfo()
-        if (tokenRes?.status === 200 && idRes.memberId) {
+        if (idRes.memberId) {
           setUserId(idRes.memberId)
         }
       } catch (err) {
