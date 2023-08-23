@@ -8,7 +8,7 @@ import type { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMemberInfo, userLogout } from '@src/api/authApi'
-import { removeCookieToken } from '@src/storage/Cookie'
+import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
 import { useEffect } from 'react'
 import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
@@ -28,10 +28,11 @@ const Header = ({ setSideOpen }: PropsType) => {
   const dispatch = useDispatch()
 
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
+  const refreshToken = getCookieToken()
 
   useEffect(() => {
     const fetchData = async () => {
-      if (authenticated) {
+      if (refreshToken) {
         const response = await getMemberInfo()
         dispatch(SET_INFO(response?.data))
       } else if (!authenticated) {
