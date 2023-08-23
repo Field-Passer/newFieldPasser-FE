@@ -14,18 +14,19 @@ import PATH from '@src/constants/pathConst'
 const Ask = () => {
   const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
   const [adminQuestions, setAdminQuestions] = useState<QuestionGetTypes[]>([])
+  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getQuestion(1)
       setQuestions(response?.data.content)
-      const adminResponse = await getAdminQuestion(1)
-      setAdminQuestions(adminResponse?.data.content)
+      if (userInfo.role === '관리자') {
+        const adminResponse = await getAdminQuestion(1)
+        setAdminQuestions(adminResponse?.data.content)
+      }
     }
     fetchData()
   }, [])
-
-  const userInfo = useSelector((state: RootState) => state.userInfo)
 
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
