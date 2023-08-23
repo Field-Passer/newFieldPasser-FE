@@ -48,12 +48,12 @@ const Header = ({ setSideOpen }: PropsType) => {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      return navigate('/login')
+      return navigate(PATH.LOGIN)
     }
   }
 
   const clickWithoutLogin = () => {
-    navigate('/login')
+    navigate(PATH.LOGIN)
     alert('로그인 후 이용 가능합니다.')
   }
 
@@ -67,7 +67,7 @@ const Header = ({ setSideOpen }: PropsType) => {
             }}
             className="sidebar"
           />
-          <img src="/logo.png" alt="logo" onClick={() => navigate('/')} />
+          <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} />
         </MContainer>
       </Mobile>
       {!isMobile && (
@@ -85,7 +85,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <button
                 onClick={() => {
                   {
-                    authenticated ? navigate('/write') : clickWithoutLogin()
+                    authenticated ? navigate(PATH.WRITE) : clickWithoutLogin()
                   }
                 }}
               >

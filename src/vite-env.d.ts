@@ -162,6 +162,7 @@ interface ISidebarProps {
 interface IModalProps {
   modalOpen: boolean
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  content: string[]
 }
 interface IOverlayProps {
   sideOpen?: boolean
