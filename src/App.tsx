@@ -24,9 +24,9 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} content={['잘못된 로그인 정보입니다.', '아이디 또는 비밀번호를 다시 입력해주세요.']} />
       <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
-      <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} />
+      <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} modalOpen={modalOpen} setModalOpen={setModalOpen} />
       <Header setSideOpen={setSideOpen} />
       <Outlet />
       <Footer />
