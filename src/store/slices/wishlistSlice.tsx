@@ -2,13 +2,14 @@ import { createSlice } from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const BASE_URL = import.meta.env.VITE_BASE_URL
-const storage = JSON.parse(localStorage.getItem('persist:root') as string)
-// const token = JSON.parse(storage.accessToken)
+//const storage = JSON.parse(localStorage.getItem('persist:root') as string)
+//const token = JSON.parse(storage.accessToken)
+const access_token = localStorage.getItem('accessToken')
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   prepareHeaders: (headers) => {
-    headers.set('Authorization', `Bearer ${token.accessToken}`)
+    headers.set('Authorization', `Bearer ${access_token}`)
     return headers
   },
 })
