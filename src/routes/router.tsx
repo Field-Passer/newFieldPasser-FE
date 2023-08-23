@@ -12,7 +12,7 @@ import Join from '@pages/Join'
 import Login from '@pages/Login'
 import MyPage from '@pages/MyPage'
 import MyPageDetail from '@src/pages/MyPageDetail'
-import UserEdit from '@src/components/MyPage/UserEdit'
+import UserEdit from '@src/pages/UserEdit'
 import FindPassword from '@src/pages/FindPassword'
 import Edit from '@src/pages/Edit'
 import ResetPw from '@src/components/ResetPassword/ResetPw'
@@ -29,8 +29,22 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: PATH.HOME, element: <Home /> },
       { path: PATH.BOARD_DETAILS, element: <BoardDetails /> },
-      { path: PATH.WRITE, element: <Write /> },
-      { path: PATH.EDIT, element: <Edit /> },
+      {
+        path: PATH.WRITE,
+        element: (
+          <PrivateRoute>
+            <Write />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: PATH.EDIT,
+        element: (
+          <PrivateRoute>
+            <Edit />
+          </PrivateRoute>
+        ),
+      },
       { path: PATH.BOARD_LIST, element: <BoardList /> },
       { path: PATH.HELP, element: <Help /> },
       { path: PATH.HELP_FORM, element: <HelpForm /> },
