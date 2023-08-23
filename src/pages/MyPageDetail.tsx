@@ -44,7 +44,7 @@ const MyPageDetail = () => {
     }
     fetchData()
     setTotalPage(Math.ceil(data?.numberOfElements / 10))
-  }, [])
+  }, [state])
 
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
