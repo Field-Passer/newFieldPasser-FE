@@ -1,6 +1,6 @@
 import { userLogout } from '@src/api/authApi'
 import { COLORS, FONT } from '@src/globalStyles'
-import { removeCookieToken } from '@src/storage/Cookie'
+import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
 import { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useEffect } from 'react'
@@ -29,7 +29,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
   const dispatch = useDispatch()
 
   const userName = useSelector((state: RootState) => state.userInfo.memberName)
-  const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
+  const refreshToken = getCookieToken()
 
   const logoutHandler = async () => {
     const { status }: any = await userLogout()
@@ -65,7 +65,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
               <img src="/logo.png" alt="로고" className="logo" />
             </Link>
           </div>
-          {authenticated ? (
+          {refreshToken ? (
             <>
               <div className="name">
                 <span>{userName}</span>
@@ -116,7 +116,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE) : clickWithoutLogin()
             }}
           >
             <img src="/my_page.svg" alt="마이페이지" />
@@ -126,7 +126,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : clickWithoutLogin()
             }}
           >
             <img src="/my_heart.svg" alt="내 좋아요 목록" />
@@ -136,7 +136,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : clickWithoutLogin()
             }}
           >
             <img src="/my_comment.svg" alt="내가 남긴 댓글" />
@@ -146,7 +146,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.MYPAGE) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : clickWithoutLogin()
             }}
           >
             <img src="/my_post.svg" alt="나의 양도글" />
@@ -158,7 +158,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.HELP) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.HELP) : clickWithoutLogin()
             }}
           >
             <span>고객센터</span>
@@ -167,13 +167,13 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              authenticated ? navigate(PATH.ASK) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.ASK) : clickWithoutLogin()
             }}
           >
             1:1 문의하기
           </div>
         </MiddleSection>
-        {authenticated && (
+        {refreshToken && (
           <LastSection>
             <div
               onClick={() => {

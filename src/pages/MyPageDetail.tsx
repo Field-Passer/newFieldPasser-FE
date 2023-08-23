@@ -44,7 +44,7 @@ const MyPageDetail = () => {
       setTotalPage(Math.ceil(wishlistResponse?.element / 10))
     }
     fetchData()
-  }, [])
+  }, [state])
 
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
