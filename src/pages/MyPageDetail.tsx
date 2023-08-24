@@ -7,8 +7,7 @@ import { useLocation } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import Inner from '@src/components/Inner'
 import Board from '@src/components/Board'
-import { getMyPost } from '@src/api/authApi'
-import { useGetWishlistQuery } from '@src/store/slices/wishlistSlice'
+import { getMyPost, getWishlist } from '@src/api/authApi'
 
 const MyPageDetail = () => {
   const [page, setPage] = useState<number>(1)
@@ -16,9 +15,8 @@ const MyPageDetail = () => {
   const { state }: { state: number } = useLocation()
   const [activeMenu, setActiveMenu] = useState<number>(state)
   const [posts, setPosts] = useState<POST_TYPE[]>([])
-  const { data } = useGetWishlistQuery(page)
-  const wishlists = data ? data.data.content : []
   const menuLists = ['양도', '좋아요', '댓글']
+  const [wishlists, setWishlists] = useState([])
 
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
@@ -41,10 +39,12 @@ const MyPageDetail = () => {
     const fetchData = async () => {
       const postsResponse = await getMyPost(1)
       setPosts(postsResponse?.data)
+      const wishlistResponse = await getWishlist(1)
+      setWishlists(wishlistResponse?.data)
+      setTotalPage(Math.ceil(wishlistResponse?.element / 10))
     }
     fetchData()
-    setTotalPage(Math.ceil(data?.numberOfElements / 10))
-  }, [])
+  }, [state])
 
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
