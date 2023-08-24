@@ -92,7 +92,12 @@ const Write = () => {
     setPriceValue(price)
   }
 
-  const CustomDateInput = forwardRef<HTMLDivElement, { value: any; onClick: any }>(({ value, onClick }, ref) => (
+  interface CustomDateInputProps {
+    value: ''
+    onClick: () => void
+  }
+  //<HTMLDivElement, { value: any; onClick: any }>
+  const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
       {isMobile ? (
         <>
@@ -323,7 +328,7 @@ const Write = () => {
                     setIsDateChange(true)
                   }}
                   className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput />}
+                  customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
                   minDate={new Date()}
                   required
                 />
@@ -500,7 +505,7 @@ const Write = () => {
                     setIsDateChange(true)
                   }}
                   className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput />}
+                  customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
                   minDate={new Date()}
                   required
                 />
