@@ -14,6 +14,8 @@ const MyPageDetail = () => {
   const [totalPage, setTotalPage] = useState<number>(1)
   const { state }: { state: number } = useLocation()
   const [activeMenu, setActiveMenu] = useState<number>(state)
+  console.log('state', state)
+  console.log('activeMenu', activeMenu)
   const [posts, setPosts] = useState<POST_TYPE[]>([])
   const menuLists = ['양도', '좋아요', '댓글']
   const [wishlists, setWishlists] = useState([])
