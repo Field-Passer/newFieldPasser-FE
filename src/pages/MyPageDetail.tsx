@@ -9,6 +9,8 @@ import Inner from '@src/components/Inner'
 import Board from '@src/components/Board'
 import { getMyPost, getWishlist } from '@src/api/authApi'
 import { useInView } from 'react-intersection-observer'
+import styled from 'styled-components'
+import MBoardList from '@src/components/MBoardList'
 
 const MyPageDetail = () => {
   const [ref, inView] = useInView()
@@ -24,9 +26,17 @@ const MyPageDetail = () => {
 
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
-      return <Board data={posts} message="글이 없습니다." />
+      return (
+        <PostContainer>
+          {posts?.length ? posts.map((post) => <MBoardList key={post.boardId} post={post} />) : <div>작성한 게시물이 없습니다.</div>}
+        </PostContainer>
+      )
     } else if (activeMenu === 1 && screen === 'mobile') {
-      return <Board data={wishlists} message="글이 없습니다." />
+      return (
+        <PostContainer>
+          {wishlists?.length ? wishlists.map((post) => <MBoardList key={post.boardId} post={post} />) : <div>게시물이 없습니다.</div>}
+        </PostContainer>
+      )
     } else if (activeMenu === 2 && screen === 'mobile') {
       return <CommentLists screen="mobile" />
     } else if (activeMenu === 0 && screen === 'pc') {
@@ -97,3 +107,10 @@ const MyPageDetail = () => {
 }
 
 export default MyPageDetail
+
+const PostContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 16px;
+`

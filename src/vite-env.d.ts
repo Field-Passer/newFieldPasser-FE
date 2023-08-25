@@ -52,7 +52,7 @@ interface POST_TYPE {
   boardId: number
   categoryName: string
   content: string
-  deleteCheck?: boolean
+  deleteCheck: boolean
   districtName: string
   endTime: string
   imageUrl: string
