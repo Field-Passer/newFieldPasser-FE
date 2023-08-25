@@ -25,6 +25,7 @@ const MyPage = () => {
   const [postNum, setPostNum] = useState(0)
   const [wishNum, setWishNum] = useState(0)
   const [replyNum, setReplyNum] = useState(0)
+  console.log(setPostNum, setWishNum)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -38,10 +39,8 @@ const MyPage = () => {
     const fetchData = async () => {
       const postResponse = await getMyPost(1)
       setMyPost(postResponse?.data)
-      setPostNum(postResponse?.element)
       const wishlistResponse = await getWishlist(1)
       setWishlist(wishlistResponse?.data)
-      setWishNum(wishlistResponse?.element)
       dispatch(SET_WISHLIST(postResponse?.data))
       const replyResponse = await getMyReply(1)
       setMyReply(replyResponse?.data)

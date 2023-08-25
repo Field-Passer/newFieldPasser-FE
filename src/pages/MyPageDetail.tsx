@@ -8,19 +8,19 @@ import { useMediaQuery } from 'react-responsive'
 import Inner from '@src/components/Inner'
 import Board from '@src/components/Board'
 import { getMyPost, getWishlist } from '@src/api/authApi'
+import { useInView } from 'react-intersection-observer'
 
 const MyPageDetail = () => {
-  const [page, setPage] = useState<number>(1)
-  const [totalPage, setTotalPage] = useState<number>(1)
+  const [ref, inView] = useInView()
+  const [postPage, setPostPage] = useState<number>(1)
+  const [postLastPage, setPostLastPage] = useState<boolean>(false)
+  const [wishlistPage, setWishlistPage] = useState<number>(1)
+  const [wishlistLastPage, setWishilistLastPage] = useState<boolean>(false)
   const { state }: { state: number } = useLocation()
   const [activeMenu, setActiveMenu] = useState<number>(state)
-  console.log('state', state)
-  console.log('activeMenu', activeMenu)
   const [posts, setPosts] = useState<POST_TYPE[]>([])
+  const [wishlists, setWishlists] = useState<IWishlistType[]>([])
   const menuLists = ['양도', '좋아요', '댓글']
-  const [wishlists, setWishlists] = useState([])
-
-  console.log(page, setPage, totalPage)
 
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
@@ -40,16 +40,39 @@ const MyPageDetail = () => {
 
   useEffect(() => {
     state && setActiveMenu(state)
-    const fetchData = async () => {
-      const postsResponse = await getMyPost(1)
-      setPosts(postsResponse?.data)
-      const wishlistResponse = await getWishlist(1)
-      setWishlists(wishlistResponse?.data)
-      setTotalPage(Math.ceil(wishlistResponse?.element / 10))
+    const postData = async () => {
+      try {
+        const postsResponse = await getMyPost(postPage)
+        if (postPage === 1) setPosts(postsResponse?.data)
+        else setPosts((prev) => [...prev, ...postsResponse?.data])
+        setPostLastPage(postsResponse?.lastPage)
+      } catch (error) {
+        console.log(error)
+      }
     }
-    fetchData()
-  }, [state])
+    const wishlistData = async () => {
+      try {
+        const wishlistResponse = await getWishlist(1)
+        if (wishlistPage === 1) setWishlists(wishlistResponse?.data)
+        else setWishlists((prev) => [...prev, ...wishlistResponse?.data])
+        setWishilistLastPage(wishlistResponse?.lastPage)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    postData()
+    wishlistData()
+  }, [state, postPage, wishlistPage])
 
+  useEffect(() => {
+    if (inView && !postLastPage) {
+      console.log('페이지 추가')
+      setPostPage((prev) => prev + 1)
+    }
+    if (inView && !wishlistLastPage) {
+      setWishlistPage((prev) => prev + 1)
+    }
+  }, [inView])
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
   })
@@ -60,12 +83,14 @@ const MyPageDetail = () => {
           <Title screen="pc" name="작성 글 목록" />
           <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
           {activeList(activeMenu, 'pc')}
+          <div ref={ref}></div>
         </Inner>
       )}
       <Mobile>
         <Title screen="mobile" name="작성 글 목록" />
         <MobileMenu menuLists={menuLists} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
         {activeList(activeMenu, 'mobile')}
+        <div ref={ref}></div>
       </Mobile>
     </>
   )

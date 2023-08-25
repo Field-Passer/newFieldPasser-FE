@@ -52,7 +52,7 @@ interface POST_TYPE {
   boardId: number
   categoryName: string
   content: string
-  deleteCheck: boolean
+  deleteCheck?: boolean
   districtName: string
   endTime: string
   imageUrl: string
@@ -169,4 +169,20 @@ interface IOverlayProps {
   setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
   modalOpen?: boolean
   setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface IWishlistType {
+  boardId: number
+  title: string
+  memberName: string
+  categoryName: string
+  districtName: string
+  registerDate: string
+  startTime: string
+  endTime: string
+  imageUrl: string
+  transactionStatus: string
+  price: number
+  viewCount: number
+  wishCount: number
 }
