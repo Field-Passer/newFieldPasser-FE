@@ -34,6 +34,8 @@ const UserEdit = () => {
   const [userNickName, onChangeUserNickName, userNickNameError, setUserNickName] = useInput(nickNameValidator, '')
   const [userPhone, onChangeUserPhone, userPhoneError, setUserPhone] = useInput(userPhoneValidator, '')
 
+  console.log(userEmailError)
+
   // 회원 정보 불러오기
   useEffect(() => {
     const getUserValue = async () => {

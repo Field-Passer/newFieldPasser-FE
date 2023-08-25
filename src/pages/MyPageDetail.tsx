@@ -20,6 +20,8 @@ const MyPageDetail = () => {
   const menuLists = ['양도', '좋아요', '댓글']
   const [wishlists, setWishlists] = useState([])
 
+  console.log(page, setPage, totalPage)
+
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
       return <Board data={posts} message="글이 없습니다." />

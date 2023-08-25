@@ -1,6 +1,5 @@
 import { minutes, times } from '@src/constants/options'
 import { COLORS } from '@src/globalStyles'
-import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
 type Props = {
@@ -10,6 +9,7 @@ type Props = {
 }
 
 const TimeSelector = (props: Props) => {
+  console.log(props)
   return (
     <TimeContainer>
       <div className="inner">
