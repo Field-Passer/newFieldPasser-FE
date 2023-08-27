@@ -2,6 +2,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import { getMyReply } from '@src/api/authApi'
+import ReactPaginate from 'react-paginate'
 
 interface IProps {
   screen: string
@@ -9,13 +10,20 @@ interface IProps {
 
 const CommentLists = ({ screen }: IProps) => {
   const [comments, setComments] = useState<CommentTypes[]>([])
+  const [totalPage, setTotalPage] = useState<number>(1)
+
+  const fetchData = async (page = 1) => {
+    const response = await getMyReply(page)
+    setComments(response?.data)
+    setTotalPage(response?.totalPages)
+  }
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await getMyReply(1)
-      setComments(response?.data)
-    }
-    fetchData()
+    fetchData(1)
   }, [])
+
+  const handlePage = (event: { selected: number }) => {
+    fetchData(event.selected + 1)
+  }
   return (
     <Container screen={screen}>
       {comments.length ? (
@@ -38,6 +46,9 @@ const CommentLists = ({ screen }: IProps) => {
       ) : (
         <NoComment>댓글이 없습니다.</NoComment>
       )}
+      <Paginate screen={screen}>
+        <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={totalPage} className="paginate" />
+      </Paginate>
     </Container>
   )
 }
@@ -85,4 +96,25 @@ const NoComment = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px;
+`
+
+const Paginate = styled.div<StyleProps>`
+  .paginate {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    gap: 10px;
+    color: ${COLORS.gray30};
+    font-size: ${({ screen }) => (screen === 'pc' ? '20px' : '14px')};
+    .previous {
+      color: ${COLORS.green};
+    }
+    .next {
+      color: ${COLORS.green};
+    }
+    .selected {
+      color: ${COLORS.green};
+    }
+  }
 `

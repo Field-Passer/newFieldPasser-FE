@@ -302,7 +302,8 @@ export const getMyPost = async (page: number) => {
       status: response.status,
       message: response.data.message,
       data: response.data.data.content,
-      lastPage: response.data.data.last,
+      totalPages: response.data.data.totalPages,
+      totalElements: response.data.data.totalElements,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
@@ -323,7 +324,8 @@ export const getWishlist = async (page: number) => {
       status: response.status,
       message: response.data.message,
       data: response.data.data.content,
-      lastPage: response.data.data.last,
+      totalPages: response.data.data.totalPages,
+      totalElements: response.data.data.totalElements,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
@@ -344,7 +346,8 @@ export const getMyReply = async (page: number) => {
       status: response.status,
       message: response.data.message,
       data: response.data.data.content,
-      element: response.data.data.numberOfElements,
+      totalPages: response.data.data.totalPages,
+      totalElements: response.data.data.totalElements,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {

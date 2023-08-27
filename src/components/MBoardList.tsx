@@ -31,7 +31,6 @@ const MBoardList = ({ post }: Props) => {
             <Harticon size="16" /> {post.wishCount}
           </span>
         </div>
-        <StatusBadge>판매 완료</StatusBadge>
         {post.transactionStatus === '판매 완료' && <StatusBadge>판매 완료</StatusBadge>}
       </DesContainer>
     </ListContainer>
