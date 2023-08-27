@@ -13,7 +13,7 @@ const Join = () => {
     if (userEmail === '' || !rUserEmail.test(userEmail)) return true
   }
   const pwValidator = (userPw: string) => {
-    const rUserPw = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/
+    const rUserPw = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/
     if (userPw === '' || !rUserPw.test(userPw)) return true
   }
   const nameValidator = (userName: string) => {
@@ -95,8 +95,8 @@ const Join = () => {
 
           <div className="input_wrap_inner">
             <label>비밀번호</label>
-            <input type="password" name="userPw" onChange={onChangeUserPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={userPw} required />
-            <p className="error_message">{userPwError && '8 ~ 10자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
+            <input type="password" name="userPw" onChange={onChangeUserPw} placeholder="영문, 숫자, 특수문자 포함 8~16자 사이" value={userPw} required />
+            <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
@@ -105,7 +105,7 @@ const Join = () => {
               type="password"
               name="userPw"
               onChange={onChangeUserConfirmPw}
-              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+              placeholder="영문, 숫자, 특수문자 포함 8~16자 사이"
               value={userConfirmPw}
               required
             />
