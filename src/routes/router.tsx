@@ -20,6 +20,7 @@ import Ask from '@src/pages/Ask'
 import AskDetail from '@src/pages/AskDetail'
 import AskAnswerForm from '@src/pages/AskAnswerForm'
 import PrivateRoute from './PrivateRoute'
+import SocialLoginRedirect from '@src/components/SocialLoginRedirect'
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,7 @@ const router = createBrowserRouter([
       { path: PATH.ASK, element: <Ask /> },
       { path: PATH.ASK_DETAIL, element: <AskDetail /> },
       { path: PATH.ASK_ANSWER_FORM, element: <AskAnswerForm /> },
+      { path: PATH.SOCIAL_REDIRECT, element: <SocialLoginRedirect /> },
     ],
   },
 ])
