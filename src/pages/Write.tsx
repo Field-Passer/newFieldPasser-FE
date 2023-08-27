@@ -129,18 +129,18 @@ const Write = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
-    const selectedStart = target[6] as HTMLInputElement
-    const selectedEnd = target[7] as HTMLInputElement
 
-    if (selectedStart.value === selectedEnd.value) {
+    if (selectedStartTime === selectedEndTime) {
       alert('시작 시간과 끝나는 시간이 동일합니다. 예약 일시를 정확히 선택해주세요.')
       return false
     }
 
-    let start = ''
-    let end = ''
+    if (!selectedStartTime || !selectedEndTime) {
+      alert('시작 시간과 끝나는 시간을 모두 선택해주세요.')
+      return false
+    }
 
-    for (let i = 0; i < 9; i += 1) {
+    for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
       if (item.name === 'file') {
         if (item.files && !item.files.length) {
@@ -150,16 +150,15 @@ const Write = () => {
         }
       } else if (item.name === 'price') {
         formData.append('price', item.value.replace(/,/g, ''))
-      } else if (item.name === 'start') {
-        start += selectedDate && selectedDate.toISOString().slice(0, 10)
-        start += 'T' + item.value + ':00'
-      } else if (item.name === 'end') {
-        end += selectedDate && selectedDate.toISOString().slice(0, 10)
-        end += 'T' + item.value + ':00'
       } else if (item.name) {
         formData.append(item.name, item.value)
       }
     }
+
+    let date = selectedDate?.toISOString().slice(0, 10)
+    let start = date + 'T' + selectedStartTime + ':00'
+    let end = date + 'T' + selectedStartTime + ':00'
+
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
     if (+start.slice(11, 13) > +end.slice(11, 13)) {
       const newDate = +end.slice(8, 10) + 1 + 'T'
@@ -295,7 +294,11 @@ const Write = () => {
           </section>
           <section>
             <div>지역</div>
-            <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
+            <select
+              name="districtName"
+              onChange={(event) => handleChangeSelect(event, 'district')}
+              value={selectedDistrict}
+            >
               {districtOptions.map((item) => {
                 return (
                   <option value={item} key={item}>
@@ -305,7 +308,11 @@ const Write = () => {
               })}
             </select>
             <div>종목</div>
-            <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
+            <select
+              name="categoryName"
+              onChange={(event) => handleChangeSelect(event, 'category')}
+              value={selectedCategory}
+            >
               {categoryOptions.map((item, index) => {
                 if (index)
                   return (
@@ -338,80 +345,99 @@ const Write = () => {
               </div>
               <div className="time">
                 <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={startTimeSelectorOpen}
+                    setTimeSelectorOpen={setStartTimeSelectorOpen}
+                    isTimeChange={isStartChange}
+                    setIsTimeChange={setIsStartChange}
+                    setSelectedTime={setSelectedStartTime}
+                  />
+                </div>
+                {/* <div className="time-inner">
                   <div
-                    className={isStartChange ? 'selected' : 'view-time'}
+                    className={isStartChange ? 'selected view-time' : 'view-time'}
                     onClick={() => {
                       setStartTimeSelectorOpen(!startTimeSelectorOpen)
                       setEndTimeSelectorOpen(false)
                     }}
                   >
                     {isStartChange ? (
-                      <div>오전 -- : --</div>
-                    ) : (
                       <>
-                        <div>오후</div>
+                        <div>{timeZone}</div>
                         <div>
-                          <span>10</span> : <span>30</span>
+                          <span>{hour}</span> : <span>{minute}</span>
                         </div>
                       </>
+                    ) : (
+                      <div className="default-time">
+                        <span>오전</span>
+                        <span>-- : --</span>
+                      </div>
                     )}
                     <ClockIcon color={isStartChange ? '#fff' : '#aaa'} />
                   </div>
                   {startTimeSelectorOpen ? (
-                    <TimeSelector setIsTimeChange={setIsStartChange} setSelectedTime={setSelectedStartTime} setIsTimeSelectorOpen={setStartTimeSelectorOpen} />
+                    <TimeSelector
+                      timeZone={timeZone}
+                      setTimeZone={setTimeZone}
+                      hour={hour}
+                      setHour={setHour}
+                      minute={minute}
+                      setMinute={setMinute}
+                      setIsTimeChange={setIsStartChange}
+                      setSelectedTime={setSelectedStartTime}
+                      setIsTimeSelectorOpen={setStartTimeSelectorOpen}
+                    />
                   ) : null}
-                </div>
+                </div> */}
                 <span>부터</span>
                 <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={endTimeSelectorOpen}
+                    setTimeSelectorOpen={setEndTimeSelectorOpen}
+                    isTimeChange={isEndChange}
+                    setIsTimeChange={setIsEndChange}
+                    setSelectedTime={setSelectedEndTime}
+                  />
+                </div>
+                {/* <div className="time-inner">
                   <div
-                    className={isEndChange ? 'selected' : 'view-time'}
+                    className={isEndChange ? 'selected view-time' : 'view-time'}
                     onClick={() => {
                       setEndTimeSelectorOpen(!endTimeSelectorOpen)
                       setStartTimeSelectorOpen(false)
                     }}
                   >
-                    {isEndChange ? (
-                      <div>오전 -- : --</div>
-                    ) : (
+                    {!isEndChange ? (
                       <>
-                        <div>오후</div>
+                        <div>{timeZone}</div>
                         <div>
-                          <span>10</span> : <span>30</span>
+                          <span>{selectedStartTime.slice(0, 2)}</span> : <span>{selectedStartTime.slice(2)}</span>
                         </div>
                       </>
+                    ) : (
+                      <div className="default-time">
+                        <span>오전</span>
+                        <span>-- : --</span>
+                      </div>
                     )}
                     <ClockIcon color={isEndChange ? '#fff' : '#aaa'} />
                   </div>
                   {endTimeSelectorOpen ? (
-                    <TimeSelector setIsTimeChange={setIsEndChange} setSelectedTime={setSelectedEndTime} setIsTimeSelectorOpen={setEndTimeSelectorOpen} />
+                    <TimeSelector
+                      timeZone={timeZone}
+                      setTimeZone={setTimeZone}
+                      hour={hour}
+                      setHour={setHour}
+                      minute={minute}
+                      setMinute={setMinute}
+                      setIsTimeChange={setIsEndChange}
+                      setSelectedTime={setSelectedEndTime}
+                      setIsTimeSelectorOpen={setEndTimeSelectorOpen}
+                    />
                   ) : null}
-                </div>
+                </div> */}
                 <span>까지</span>
-
-                {/* <input
-                  type="time"
-                  name="start"
-                  defaultValue={isStartChange ? selectedStartTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsStartChange(true)
-                    setSelectedStartTime(event.target.value)
-                  }}
-                  className={isStartChange ? 'selected' : ''}
-                />
-                <span>부터</span>
-                <input
-                  type="time"
-                  name="end"
-                  defaultValue={isEndChange ? selectedEndTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsEndChange(true)
-                    setSelectedEndTime(event.target.value)
-                  }}
-                  className={isEndChange ? 'selected' : ''}
-                /> 
-                <span>까지</span>*/}
               </div>
             </MobileReservation>
           </section>
@@ -439,7 +465,9 @@ const Write = () => {
             handleSubmit(event)
           }}
         >
-          <div className="page-title">{location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}</div>
+          <div className="page-title">
+            {location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}
+          </div>
           <PcDetail>
             <section className="half-section">
               <h2>사진 추가</h2>
@@ -518,7 +546,11 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">지역</div>
-                <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
+                <select
+                  name="districtName"
+                  onChange={(event) => handleChangeSelect(event, 'district')}
+                  value={selectedDistrict}
+                >
                   {districtOptions.map((item) => {
                     return (
                       <option value={item} key={item}>
@@ -530,7 +562,11 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">종목</div>
-                <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
+                <select
+                  name="categoryName"
+                  onChange={(event) => handleChangeSelect(event, 'category')}
+                  value={selectedCategory}
+                >
                   {categoryOptions.map((item, index) => {
                     if (index)
                       return (
@@ -1027,6 +1063,12 @@ const MobileReservation = styled.div`
       position: relative;
     }
 
+    /* 
+    .default-time {
+      display: flex;
+      gap: 10px;
+    }
+
     .view-time {
       position: relative;
       width: 128px;
@@ -1045,28 +1087,10 @@ const MobileReservation = styled.div`
       }
     }
 
-    input {
-      width: 128px;
-      cursor: pointer;
-
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock.png') no-repeat 98% 50%;
-        opacity: 1;
-        display: block;
-        width: 10px;
-        height: 10px;
-        cursor: pointer;
-      }
-    }
-
     .selected {
       background-color: ${COLORS.gray30};
       color: white;
-
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock-fff.png') no-repeat 98% 50%;
-      }
-    }
+    } */
   }
 `
 const PcReservation = styled.div`

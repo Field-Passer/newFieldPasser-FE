@@ -174,7 +174,9 @@ interface IOverlayProps {
 }
 
 interface ITimeSelectorProps {
+  isTimeChange: boolean
   setIsTimeChange: React.Dispatch<React.SetStateAction<boolean>>
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>
-  setIsTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
+  timeSelectorOpen: boolean
+  setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
