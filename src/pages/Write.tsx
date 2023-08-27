@@ -353,43 +353,6 @@ const Write = () => {
                     setSelectedTime={setSelectedStartTime}
                   />
                 </div>
-                {/* <div className="time-inner">
-                  <div
-                    className={isStartChange ? 'selected view-time' : 'view-time'}
-                    onClick={() => {
-                      setStartTimeSelectorOpen(!startTimeSelectorOpen)
-                      setEndTimeSelectorOpen(false)
-                    }}
-                  >
-                    {isStartChange ? (
-                      <>
-                        <div>{timeZone}</div>
-                        <div>
-                          <span>{hour}</span> : <span>{minute}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="default-time">
-                        <span>오전</span>
-                        <span>-- : --</span>
-                      </div>
-                    )}
-                    <ClockIcon color={isStartChange ? '#fff' : '#aaa'} />
-                  </div>
-                  {startTimeSelectorOpen ? (
-                    <TimeSelector
-                      timeZone={timeZone}
-                      setTimeZone={setTimeZone}
-                      hour={hour}
-                      setHour={setHour}
-                      minute={minute}
-                      setMinute={setMinute}
-                      setIsTimeChange={setIsStartChange}
-                      setSelectedTime={setSelectedStartTime}
-                      setIsTimeSelectorOpen={setStartTimeSelectorOpen}
-                    />
-                  ) : null}
-                </div> */}
                 <span>부터</span>
                 <div className="time-inner">
                   <TimeSelector
@@ -400,43 +363,6 @@ const Write = () => {
                     setSelectedTime={setSelectedEndTime}
                   />
                 </div>
-                {/* <div className="time-inner">
-                  <div
-                    className={isEndChange ? 'selected view-time' : 'view-time'}
-                    onClick={() => {
-                      setEndTimeSelectorOpen(!endTimeSelectorOpen)
-                      setStartTimeSelectorOpen(false)
-                    }}
-                  >
-                    {!isEndChange ? (
-                      <>
-                        <div>{timeZone}</div>
-                        <div>
-                          <span>{selectedStartTime.slice(0, 2)}</span> : <span>{selectedStartTime.slice(2)}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="default-time">
-                        <span>오전</span>
-                        <span>-- : --</span>
-                      </div>
-                    )}
-                    <ClockIcon color={isEndChange ? '#fff' : '#aaa'} />
-                  </div>
-                  {endTimeSelectorOpen ? (
-                    <TimeSelector
-                      timeZone={timeZone}
-                      setTimeZone={setTimeZone}
-                      hour={hour}
-                      setHour={setHour}
-                      minute={minute}
-                      setMinute={setMinute}
-                      setIsTimeChange={setIsEndChange}
-                      setSelectedTime={setSelectedEndTime}
-                      setIsTimeSelectorOpen={setEndTimeSelectorOpen}
-                    />
-                  ) : null}
-                </div> */}
                 <span>까지</span>
               </div>
             </MobileReservation>
@@ -602,31 +528,27 @@ const Write = () => {
               </div>
               <div className="time">
                 <div>시작</div>
-                <input
-                  type="time"
-                  name="start"
-                  defaultValue={isStartChange ? selectedStartTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsStartChange(true)
-                    setSelectedStartTime(event.target.value)
-                  }}
-                  className={isStartChange ? 'selected' : ''}
-                />
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={endTimeSelectorOpen}
+                    setTimeSelectorOpen={setEndTimeSelectorOpen}
+                    isTimeChange={isEndChange}
+                    setIsTimeChange={setIsEndChange}
+                    setSelectedTime={setSelectedEndTime}
+                  />
+                </div>
                 <div>부터</div>
                 <span>~</span>
                 <div>종료</div>
-                <input
-                  type="time"
-                  name="end"
-                  defaultValue={isEndChange ? selectedEndTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsEndChange(true)
-                    setSelectedEndTime(event.target.value)
-                  }}
-                  className={isEndChange ? 'selected' : ''}
-                />
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={endTimeSelectorOpen}
+                    setTimeSelectorOpen={setEndTimeSelectorOpen}
+                    isTimeChange={isEndChange}
+                    setIsTimeChange={setIsEndChange}
+                    setSelectedTime={setSelectedEndTime}
+                  />
+                </div>
                 <span>까지</span>
               </div>
             </PcReservation>
@@ -1062,35 +984,6 @@ const MobileReservation = styled.div`
     .time-inner {
       position: relative;
     }
-
-    /* 
-    .default-time {
-      display: flex;
-      gap: 10px;
-    }
-
-    .view-time {
-      position: relative;
-      width: 128px;
-      cursor: pointer;
-      display: flex;
-      gap: 8px;
-      border: 1px solid ${COLORS.gray20};
-      border-radius: 8px;
-      padding: 0 10px;
-      box-sizing: border-box;
-
-      svg {
-        position: absolute;
-        right: 10px;
-        top: 13px;
-      }
-    }
-
-    .selected {
-      background-color: ${COLORS.gray30};
-      color: white;
-    } */
   }
 `
 const PcReservation = styled.div`
@@ -1130,7 +1023,11 @@ const PcReservation = styled.div`
     gap: 16px;
     line-height: 40px;
 
-    .view-time {
+    .time-inner {
+      position: relative;
+    }
+
+    /* .view-time {
       width: 100px;
       position: relative;
       font-size: ${FONT.pc};
@@ -1172,7 +1069,7 @@ const PcReservation = styled.div`
       &::-webkit-calendar-picker-indicator {
         background: url('/clock-fff.png') no-repeat 98% 50%;
       }
-    }
+    } */
   }
 `
 

@@ -3,6 +3,26 @@ import { COLORS } from '@src/globalStyles'
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { ClockIcon } from '@src/constants/icons'
+import { useMediaQuery } from 'react-responsive'
+
+//상위요소에서 스타일 지정 방법
+// .time-selector-view { // &selected
+//   .time-zone { // 오전/오후
+
+//   }
+//   .hour-and-minute {
+//     .hour {
+
+//     }
+//     .minute {
+
+//     }
+//   }
+
+//   .defult-time {
+
+//   }
+// }
 
 const TimeSelector = ({
   isTimeChange,
@@ -11,7 +31,9 @@ const TimeSelector = ({
   timeSelectorOpen,
   setTimeSelectorOpen,
 }: ITimeSelectorProps) => {
-  const [isAllSelected, setIsAllSelected] = useState<boolean>(false)
+  const isMobile = useMediaQuery({
+    query: '(max-width: 833px)',
+  })
   const [timeZone, setTimeZone] = useState<string>('오전')
   const [hour, setHour] = useState<string>('')
   const [minute, setMinute] = useState<string>('')
@@ -29,16 +51,16 @@ const TimeSelector = ({
     <>
       <ViewTimeContainer>
         <div
-          className={isTimeChange ? 'selected view-time' : 'view-time'}
+          className={isTimeChange ? 'selected time-selector-view' : 'time-selector-view'}
           onClick={() => {
             setTimeSelectorOpen(!timeSelectorOpen)
           }}
         >
           {isTimeChange ? (
             <>
-              <div>{timeZone}</div>
-              <div>
-                <span>{hour}</span> : <span>{minute}</span>
+              <div className="time-zone">{timeZone}</div>
+              <div className="hour-and-minute">
+                <span className="hour">{hour}</span> : <span className="minute">{minute}</span>
               </div>
             </>
           ) : (
@@ -47,14 +69,14 @@ const TimeSelector = ({
               <span>-- : --</span>
             </div>
           )}
-          <ClockIcon color={isTimeChange ? '#fff' : '#aaa'} />
+          {isMobile ? <ClockIcon color={isTimeChange ? '#fff' : '#aaa'} /> : null}
         </div>
       </ViewTimeContainer>
 
       {timeSelectorOpen ? (
         <SelectorContainer>
           <div className="inner">
-            <div className="timezone">
+            <div className="selector-timezone">
               <Option onClick={() => setTimeZone('오전')} className={timeZone === '오전' ? 'chosen' : ''}>
                 오전
               </Option>
@@ -62,7 +84,7 @@ const TimeSelector = ({
                 오후
               </Option>
             </div>
-            <div className="hour">
+            <div className="selector-hour">
               {times.map((item) => {
                 return (
                   <Option key={item} onClick={() => setHour(item)} className={hour === item ? 'chosen' : ''}>
@@ -71,7 +93,7 @@ const TimeSelector = ({
                 )
               })}
             </div>
-            <div className="minute">
+            <div className="selector-minute">
               {minutes.map((item) => {
                 return (
                   <Option key={item} onClick={() => setMinute(item)} className={minute === item ? 'chosen' : ''}>
@@ -95,7 +117,7 @@ const ViewTimeContainer = styled.div`
     gap: 10px;
   }
 
-  .view-time {
+  .time-selector-view {
     position: relative;
     width: 128px;
     cursor: pointer;
@@ -141,16 +163,16 @@ const SelectorContainer = styled.div`
     padding: 10px;
   }
 
-  .timezone,
-  .hour,
-  .minute {
+  .selector-timezone,
+  .selector-hour,
+  .selector-minute {
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
 
-  .hour,
-  .minute {
+  .selector-hour,
+  .selector-minute {
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
