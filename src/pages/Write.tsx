@@ -8,7 +8,8 @@ import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
-// import TimeSelector from '@src/components/TimeSelector'
+import TimeSelector from '@src/components/TimeSelector'
+import { ClockIcon } from '@src/constants/icons'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -22,7 +23,6 @@ const Write = () => {
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [priceValue, setPriceValue] = useState<string>('')
-  // const [isTimeChange, setIsTimeChange] = useState(false)
   const imgRef = useRef<HTMLInputElement>(null)
   const [selectedStartTime, setSelectedStartTime] = useState<string>('')
   const [selectedEndTime, setSelectedEndTime] = useState<string>('')
@@ -32,6 +32,9 @@ const Write = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
   const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
+
+  const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
+  const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
@@ -179,7 +182,7 @@ const Write = () => {
           if (writeRes === 200) {
             window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
           } else {
-            throw new Error('정상적으로 완료되지 않았습니다. 다시 시도해주세요.')
+            throw new Error()
           }
         } catch (err) {
           console.log(err)
@@ -334,7 +337,58 @@ const Write = () => {
                 />
               </div>
               <div className="time">
-                <input
+                <div className="time-inner">
+                  <div
+                    className={isStartChange ? 'selected' : 'view-time'}
+                    onClick={() => {
+                      setStartTimeSelectorOpen(!startTimeSelectorOpen)
+                      setEndTimeSelectorOpen(false)
+                    }}
+                  >
+                    {isStartChange ? (
+                      <div>오전 -- : --</div>
+                    ) : (
+                      <>
+                        <div>오후</div>
+                        <div>
+                          <span>10</span> : <span>30</span>
+                        </div>
+                      </>
+                    )}
+                    <ClockIcon color={isStartChange ? '#fff' : '#aaa'} />
+                  </div>
+                  {startTimeSelectorOpen ? (
+                    <TimeSelector setIsTimeChange={setIsStartChange} setSelectedTime={setSelectedStartTime} setIsTimeSelectorOpen={setStartTimeSelectorOpen} />
+                  ) : null}
+                </div>
+                <span>부터</span>
+                <div className="time-inner">
+                  <div
+                    className={isEndChange ? 'selected' : 'view-time'}
+                    onClick={() => {
+                      setEndTimeSelectorOpen(!endTimeSelectorOpen)
+                      setStartTimeSelectorOpen(false)
+                    }}
+                  >
+                    {isEndChange ? (
+                      <div>오전 -- : --</div>
+                    ) : (
+                      <>
+                        <div>오후</div>
+                        <div>
+                          <span>10</span> : <span>30</span>
+                        </div>
+                      </>
+                    )}
+                    <ClockIcon color={isEndChange ? '#fff' : '#aaa'} />
+                  </div>
+                  {endTimeSelectorOpen ? (
+                    <TimeSelector setIsTimeChange={setIsEndChange} setSelectedTime={setSelectedEndTime} setIsTimeSelectorOpen={setEndTimeSelectorOpen} />
+                  ) : null}
+                </div>
+                <span>까지</span>
+
+                {/* <input
                   type="time"
                   name="start"
                   defaultValue={isStartChange ? selectedStartTime : ''}
@@ -356,8 +410,8 @@ const Write = () => {
                     setSelectedEndTime(event.target.value)
                   }}
                   className={isEndChange ? 'selected' : ''}
-                />
-                <span>까지</span>
+                /> 
+                <span>까지</span>*/}
               </div>
             </MobileReservation>
           </section>
@@ -365,7 +419,7 @@ const Write = () => {
             <div>본문내용</div>
             <div>
               <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
                 required
                 minLength={5}
                 name="content"
@@ -545,7 +599,7 @@ const Write = () => {
             <h2>본문내용</h2>
             <div>
               <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
                 required
                 minLength={5}
                 name="content"
@@ -559,7 +613,6 @@ const Write = () => {
           </button>
         </PcForm>
       )}
-      {/* <TimeSelector /> */}
     </Container>
   )
 }
@@ -967,7 +1020,30 @@ const MobileReservation = styled.div`
   .time {
     display: flex;
     justify-content: space-between;
-    line-height: 32px;
+    height: 40px;
+    line-height: 40px;
+
+    .time-inner {
+      position: relative;
+    }
+
+    .view-time {
+      position: relative;
+      width: 128px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
+
+      svg {
+        position: absolute;
+        right: 10px;
+        top: 13px;
+      }
+    }
 
     input {
       width: 128px;
@@ -1029,6 +1105,17 @@ const PcReservation = styled.div`
     display: flex;
     gap: 16px;
     line-height: 40px;
+
+    .view-time {
+      width: 100px;
+      position: relative;
+      font-size: ${FONT.pc};
+      color: ${COLORS.gray40};
+      text-align: center;
+      border: none;
+      border-bottom: 1px solid ${COLORS.gray20};
+      cursor: pointer;
+    }
 
     input {
       width: 100px;

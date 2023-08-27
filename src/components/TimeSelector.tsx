@@ -1,15 +1,22 @@
 import { minutes, times } from '@src/constants/options'
 import { COLORS } from '@src/globalStyles'
+import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
-type Props = {
-  timeZone: string
-  selectedTime: string
-  selectedMinute: string
-}
+const TimeSelector = ({ setSelectedTime, setIsTimeSelectorOpen }: ITimeSelectorProps) => {
+  const [timeZone, setTimeZone] = useState<string>('')
+  //selectedStartTime으로 바꾸기
+  const [selectedTimeHook, setSelectedTimeHook] = useState<string>('')
+  const [selectedMinuteHook, setSelectedMinuteHook] = useState<string>('')
+  const [isAllSelected, setIsAllSelected] = useState<boolean>(false)
 
-const TimeSelector = (props: Props) => {
-  console.log(props)
+  useEffect(() => {
+    if (isAllSelected) {
+      setIsTimeSelectorOpen(false)
+    }
+  }, [isAllSelected])
+
+  //세개 다 선택되거나 셀렉터 바깥쪽을 클릭하면 타임셀렉터 닫기
   return (
     <TimeContainer>
       <div className="inner">
@@ -17,7 +24,7 @@ const TimeSelector = (props: Props) => {
           <Option>오전</Option>
           <Option>오후</Option>
         </div>
-        <div className="time">
+        <div className="hour">
           {times.map((item) => {
             return <Option key={item}>{item}</Option>
           })}
@@ -33,13 +40,16 @@ const TimeSelector = (props: Props) => {
 }
 
 const TimeContainer = styled.div`
-  width: 190px;
+  width: 160px;
   height: 250px;
-  /* position: absolute; */
-  top: 0;
+  z-index: 10;
+  position: absolute;
+  top: 43px;
+  left: 0;
   background-color: white;
   border: 1px solid ${COLORS.gray20};
   border-radius: 10px;
+  line-height: 10px;
 
   .inner {
     height: 100%;
@@ -52,14 +62,14 @@ const TimeContainer = styled.div`
   }
 
   .timezone,
-  .time,
+  .hour,
   .minute {
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
 
-  .time,
+  .hour,
   .minute {
     overflow-y: scroll;
 
@@ -72,7 +82,7 @@ const TimeContainer = styled.div`
 const Option = styled.div`
   font-size: 15px;
   width: 30px;
-  padding: 10px;
+  padding: 10px 5px;
   text-align: center;
   cursor: pointer;
 
