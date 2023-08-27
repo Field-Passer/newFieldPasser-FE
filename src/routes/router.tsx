@@ -22,6 +22,7 @@ import AskAnswerForm from '@src/pages/AskAnswerForm'
 import PrivateRoute from './PrivateRoute'
 import BoradBlind from '@src/pages/BoradBlind'
 import Profile from '@src/pages/Profile'
+import SocialLoginRedirect from '@src/components/SocialLoginRedirect'
 
 const router = createBrowserRouter([
   {
@@ -90,6 +91,7 @@ const router = createBrowserRouter([
       { path: PATH.ASK_ANSWER_FORM, element: <AskAnswerForm /> },
       { path: PATH.BOARD_BLIND, element: <BoradBlind /> },
       { path: PATH.PROFILE, element: <Profile /> },
+      { path: PATH.SOCIAL_REDIRECT, element: <SocialLoginRedirect /> },
     ],
   },
 ])
