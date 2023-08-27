@@ -62,7 +62,7 @@ const SearchForm = () => {
     startDateChange: false,
     endDateChange: false,
   })
-
+  console.log(checkState)
   // current state value change fn
   type Value = string | string[] | Date
   const valueStateChangeFn = (key: string, value: Value) => {
@@ -155,6 +155,7 @@ const SearchForm = () => {
     })
     checkValueStateChangeFn('timeChange', false)
     checkValueStateChangeFn('startDateChange', false)
+    checkValueStateChangeFn('endDateChange', false)
     checkValueStateChangeFn('districtOpen', false)
 
     const input = textInputEl.current as HTMLInputElement
@@ -214,7 +215,7 @@ const SearchForm = () => {
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
-              <DateForm datechange={checkState.startDateChange.toString()}>
+              <DateForm startdatechange={checkState.startDateChange.toString()} enddatechange={checkState.endDateChange.toString()}>
                 <p className={checkState.startDateChange ? 'focused' : ''}>날짜</p>
                 <CalendarIcon color={checkState.startDateChange ? COLORS.green : '#AAA'} />
                 <div>
@@ -582,7 +583,7 @@ const StadiumForm = styled.div`
   }
 `
 
-const DateForm = styled.div<{ datechange: string }>`
+const DateForm = styled.div<{ startdatechange: string, enddatechange: string }>`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -640,16 +641,25 @@ const DateForm = styled.div<{ datechange: string }>`
   }
 
   .react-datepicker-ignore-onclickoutside,
-  input[type='text'] {
+  input[type='text']{
     padding: 8px 12px;
-    border: 1px solid ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray20)};
     border-radius: 10px;
     font-size: 13px;
-    color: ${(props) => (props.datechange === 'true' ? '#fff' : COLORS.gray40)};
     width: 61px;
-    background: ${(props) => (props.datechange === 'true' ? COLORS.green : '#fff')};
     cursor: pointer;
+    border: 1px solid ${(props) => (props.enddatechange === 'true' ? '#fff' : COLORS.gray20)};
+    color: ${(props) => (props.enddatechange === 'true' ? '#fff' : COLORS.gray40)};
+    background: ${(props) => (props.enddatechange === 'true' ? COLORS.green : '#fff')};
   }
+
+  .react-datepicker-wrapper:first-child{
+    input[type='text']{
+      border: 1px solid ${(props) => (props.startdatechange === 'true' ? '#fff' : COLORS.gray20)};
+      color: ${(props) => (props.startdatechange === 'true' ? '#fff' : COLORS.gray40)};
+      background: ${(props) => (props.startdatechange === 'true' ? COLORS.green : '#fff')};
+    }
+  }
+
 
   input:focus {
     cursor: pointer;
