@@ -11,44 +11,52 @@ const BoardList = () => {
   const [ref, inView] = useInView()
   const [page, setPage] = useState(1)
   const [lastPage, setLastPage] = useState(false)
-
   const [isLoading, setIsLoading] = useState(false)
-
   const searchValue = useSelector((state: RootState) => {
     return {
       title: state.searchVlaue.title,
-      startTime: state.searchVlaue.startDate.substr(0, 10) + 'T' + state.searchVlaue.startTime + ':00',
-      endTime: state.searchVlaue.endDate.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
+      startTime: state.searchVlaue.startDate.substring(0, 10) + 'T' + state.searchVlaue.startTime + ':00',
+      endTime: state.searchVlaue.endDate.substring(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
       district: state.searchVlaue.district,
       category: state.searchVlaue.category === '전체' ? '' : state.searchVlaue.category,
-      startDate: state.searchVlaue.startTime,
+      startDate: state.searchVlaue.startDate,
       endDate: state.searchVlaue.endDate,
+      chkDate: state.searchVlaue.chkDate
     }
   })
 
-  const [title, startDate, endDate, district, category] = useSelector((state: RootState) => {
-    return [state.searchVlaue.title, state.searchVlaue.startDate, state.searchVlaue.endDate, state.searchVlaue.district, state.searchVlaue.category]
+  const [title, startDate, endDate, district, category, startTime, endTime, chkDate] = useSelector((state: RootState) => {
+    return [state.searchVlaue.title, state.searchVlaue.startDate, state.searchVlaue.endDate, state.searchVlaue.district, state.searchVlaue.category, state.searchVlaue.startTime, state.searchVlaue.endTime, state.searchVlaue.chkDate]
   })
 
   const getPostList = useCallback(async () => {
-    try {
-      setIsLoading(true)
+    setIsLoading(true)
+    const postData = await getSearchPostList(searchValue, page)
+    setPostList((prevState) => [...prevState, ...postData.content])
 
-      const postData = await getSearchPostList(searchValue, page)
-      if (page === 1) setPostList(postData.content)
-      else setPostList((prevState) => [...prevState, ...postData.content])
+    if (postData.last) setLastPage(true)
+    else if (!postData.last) setLastPage(false)
+    setIsLoading(false)
+  }, [page])
 
-      if (postData.last) setLastPage(true)
-      else if (!postData.last) setLastPage(false)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [page, title, startDate, endDate, district, category])
+  const changePostList = async () => {
+    const postData = await getSearchPostList(searchValue, 1)
+    setPostList(postData.content)
+
+    if (postData.last) setLastPage(true)
+    else if (!postData.last) setLastPage(false)
+  }
 
   useEffect(() => {
-    getPostList()
+    setPage(1)
+    setLastPage(false)
+    changePostList()
+  }, [title, startDate, endDate, district, category, startTime, endTime, chkDate]);
+
+  useEffect(() => {
+    if (page !== 1) {
+      getPostList()
+    }
   }, [getPostList])
 
   useEffect(() => {
@@ -59,7 +67,7 @@ const BoardList = () => {
     if (inView && !isLoading && !lastPage) {
       setPage((prev) => prev + 1)
     }
-  }, [inView, isLoading])
+  }, [inView, isLoading, lastPage])
 
   return (
     <>

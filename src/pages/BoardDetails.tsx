@@ -1,4 +1,4 @@
-import { delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
+import { addTransactionStatus, delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
 import { BigHart, Harticon, MoreIcon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
@@ -18,7 +18,6 @@ const BoardDetails = () => {
   const [moreBtnChk, setMoreBtnChk] = useState(false)
   const [likeState, setLikeState] = useState(detailData?.likeBoard)
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
-
   const getDetailData = async () => {
     try {
       const postDetailData = await getPostDetail(Number(boardId.boardId), authenticated)
@@ -109,7 +108,7 @@ const BoardDetails = () => {
               </Mobile>
               <div>
                 <p>
-                  <span className="user_name">{detailData.memberName}</span>
+                  <span className="user_name">{detailData.memberName} {detailData.memberId}</span>
                   <span className="view">조회수 {detailData.viewCount}</span>
                   <span className="like">
                     <Harticon size="14" /> {detailData.wishCount}
@@ -129,7 +128,7 @@ const BoardDetails = () => {
                 {moreBtnChk && (
                   <ul className="more_menu">
                     <li>
-                      <button>양도 완료하기</button>
+                      <button onClick={() => window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData.boardId)}>양도 완료하기</button>
                     </li>
                     <li>
                       <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData.boardId)}>삭제</button>
