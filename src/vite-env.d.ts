@@ -79,6 +79,7 @@ interface SearchValueTypes {
   endTime: string
   district: string[]
   category: string
+  chkDate: boolean
   [prop: string]: any
 }
 
@@ -87,8 +88,8 @@ interface ValueStateType {
   districtValue: string[]
   startTimeValue: string
   endTimeValue: string
-  startDate: Date
-  endDate: Date
+  startDate: string
+  endDate: string
   searchTextValue: string
   [prop: string]: any
 }
