@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
 
 interface Props {
-  data: POST_TYPE[]
+  data: POST_TYPE[] | IWishlistType[]
   message: string
 }
 

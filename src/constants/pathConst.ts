@@ -1,6 +1,6 @@
 const PATH = {
   HOME: '/',
-  BOARD_DETAILS: '/board_details/:boardId',
+  BOARD_DETAILS: '/board-details/:boardId',
   WRITE: '/write',
   EDIT: '/edit/:postId',
   BOARD_LIST: '/board-list',

@@ -171,3 +171,19 @@ interface IOverlayProps {
   modalOpen?: boolean
   setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
+
+interface IWishlistType {
+  boardId: number
+  title: string
+  memberName: string
+  categoryName: string
+  districtName: string
+  registerDate: string
+  startTime: string
+  endTime: string
+  imageUrl: string
+  transactionStatus: string
+  price: number
+  viewCount: number
+  wishCount: number
+}
