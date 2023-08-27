@@ -20,6 +20,8 @@ import Ask from '@src/pages/Ask'
 import AskDetail from '@src/pages/AskDetail'
 import AskAnswerForm from '@src/pages/AskAnswerForm'
 import PrivateRoute from './PrivateRoute'
+import BoradBlind from '@src/pages/BoradBlind'
+import Profile from '@src/pages/Profile'
 
 const router = createBrowserRouter([
   {
@@ -86,6 +88,8 @@ const router = createBrowserRouter([
       { path: PATH.ASK, element: <Ask /> },
       { path: PATH.ASK_DETAIL, element: <AskDetail /> },
       { path: PATH.ASK_ANSWER_FORM, element: <AskAnswerForm /> },
+      { path: PATH.BOARD_BLIND, element: <BoradBlind /> },
+      { path: PATH.PROFILE, element: <Profile /> },
     ],
   },
 ])

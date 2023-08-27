@@ -26,11 +26,11 @@ const CommentLists = ({ screen }: IProps) => {
             <Des screen={screen}>
               <div>
                 <img src="/calendar.svg" alt="달력" />
-                <span>{comment.commentUpDate}</span>
+                <span>{comment.commentUpDate.slice(0, 10)}</span>
               </div>
               <div>
                 <img src="/chat_bubble.svg" alt="댓글" />
-                <span>{comment.commentId}</span>
+                <span>{comment.children.length}</span>
               </div>
             </Des>
           </CommentBox>
