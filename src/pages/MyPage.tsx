@@ -25,7 +25,6 @@ const MyPage = () => {
   const [postNum, setPostNum] = useState(0)
   const [wishNum, setWishNum] = useState(0)
   const [replyNum, setReplyNum] = useState(0)
-  console.log(setPostNum, setWishNum)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -44,11 +43,13 @@ const MyPage = () => {
       dispatch(SET_WISHLIST(postResponse?.data))
       const replyResponse = await getMyReply(1)
       setMyReply(replyResponse?.data)
-      setReplyNum(replyResponse?.element)
+      setPostNum(postResponse?.totalElements)
+      setWishNum(wishlistResponse?.totalElements)
+      setReplyNum(replyResponse?.totalElements)
     }
     fetchData()
   }, [])
-
+  console.log(postNum, wishNum, replyNum)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
