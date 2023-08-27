@@ -28,9 +28,10 @@ const SocialLoginRedirect = () => {
       setRefreshToken(refreshToken)
       alert('리다이렉트 페이지 확인')
       console.log('로그인함', new Date())
-      return navigate('/')
+      // return navigate('/')
     }
     socialLogin()
+    navigate('/', { replace: true })
   })
 
   return <div>로그인 중...</div>
