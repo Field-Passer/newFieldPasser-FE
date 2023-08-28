@@ -31,7 +31,6 @@ const BoardComment = (props: PropsType) => {
       commentAdd: state.commentData.commentAdd,
     }
   })
-  console.log(commentData.commentAdd)
 
   const getCommnetData = useCallback(
     async (boardId: number, page: number, loginVal: boolean) => {
@@ -64,7 +63,6 @@ const BoardComment = (props: PropsType) => {
 
   useEffect(() => {
     const outClickFn = (e: MouseEvent) => {
-      console.log(e.currentTarget)
       const moreBtn = document.querySelector('.comment-more-btn')
       if (e.currentTarget !== moreBtn) return dispatch(setCommentOptions({ commentBox: -1 }))
       return
@@ -165,18 +163,22 @@ const BoardComment = (props: PropsType) => {
                           {dateFormat(item.commentUpDate, 'comment')}
                         </span>
                       </p>
-                      <button
-                        className="comment-more-btn"
-                        ref={commentMoreBtn}
-                        onClick={(e: React.MouseEvent<HTMLElement>) => {
-                          commentData.commentBox === child.commentId
-                            ? dispatch(setCommentOptions({ commentBox: -1 }))
-                            : dispatch(setCommentOptions({ commentBox: child.commentId }))
-                          e.stopPropagation()
-                        }}
-                      >
-                        <MoreIcon color="#D9D9D9" />
-                      </button>
+                      {
+                        child.myComment && (
+                          <button
+                            className="comment-more-btn"
+                            ref={commentMoreBtn}
+                            onClick={(e: React.MouseEvent<HTMLElement>) => {
+                              commentData.commentBox === child.commentId
+                                ? dispatch(setCommentOptions({ commentBox: -1 }))
+                                : dispatch(setCommentOptions({ commentBox: child.commentId }))
+                              e.stopPropagation()
+                            }}
+                          >
+                            <MoreIcon color="#D9D9D9" />
+                          </button>
+                        )
+                      }
                     </div>
 
                     {commentData.commentBox === child.commentId && (

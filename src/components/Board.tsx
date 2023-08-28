@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
 
 interface Props {
-  data: POST_TYPE[]
+  data: POST_TYPE[] | IWishlistType[]
   message: string
 }
 
@@ -18,8 +18,8 @@ const Board = ({ data, message }: Props) => {
       <BoardContainer>
         {data && data.length > 0 ? (
           <ul>
-            {data.map((list) => (
-              <PostListBox key={list.boardId} blind={list.transactionStatus} onClick={() => navigate(`/board_details/${list.boardId}`)}>
+            {data.map((list, idx) => (
+              <PostListBox key={idx} blind={list.transactionStatus} onClick={() => navigate(`/board-details/${list.boardId}`)}>
                 <div className="imgae_wrap">
                   <img
                     src={list.imageUrl ? list.imageUrl : randomImages(list.categoryName, list.boardId)}

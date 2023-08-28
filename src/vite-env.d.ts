@@ -79,6 +79,7 @@ interface SearchValueTypes {
   endTime: string
   district: string[]
   category: string
+  chkDate: boolean
   [prop: string]: any
 }
 
@@ -87,8 +88,8 @@ interface ValueStateType {
   districtValue: string[]
   startTimeValue: string
   endTimeValue: string
-  startDate: Date
-  endDate: Date
+  startDate: string
+  endDate: string
   searchTextValue: string
   [prop: string]: any
 }
@@ -171,6 +172,22 @@ interface IOverlayProps {
   setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
   modalOpen?: boolean
   setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface IWishlistType {
+  boardId: number
+  title: string
+  memberName: string
+  categoryName: string
+  districtName: string
+  registerDate: string
+  startTime: string
+  endTime: string
+  imageUrl: string
+  transactionStatus: string
+  price: number
+  viewCount: number
+  wishCount: number
 }
 
 interface ITimeSelectorProps {

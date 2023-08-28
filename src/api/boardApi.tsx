@@ -1,18 +1,20 @@
 import { publicApi, privateApi } from './Instance'
 
+// state.searchVlaue.endDate.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
+
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
-  if (values.startTime.slice(0, 10) === values.endTime.slice(0, 10)) {
+  if (!values.chkDate) {
     values.startTime = ''
     values.endTime = ''
   }
 
   return await publicApi
     .get(
-      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${
-        values.endTime
+      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${values.endTime
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
+      console.log(res.data)
       return res.data.data
     })
     .catch((err) => {
@@ -25,6 +27,7 @@ export const getPostDetail = async (userId: number, loginVal: boolean) => {
 
   return await Instance.get(`/detail/${userId}`)
     .then((res) => {
+      console.log(res.data.data)
       return res.data.data
     })
     .catch((err) => {
@@ -119,6 +122,17 @@ export const addComment = async (commentId: number, content: string) => {
     })
     .then(() => {
       alert('수정되었습니다.')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const addTransactionStatus = async (commentId: number) => {
+  return await privateApi
+    .put(`/board/sold-out/${commentId}`)
+    .then(() => {
+      alert('변경 되었습니다.')
     })
     .catch((err) => {
       console.log(err)

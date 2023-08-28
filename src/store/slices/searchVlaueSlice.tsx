@@ -8,6 +8,7 @@ interface MyState {
   endTime: string
   district: string[]
   category: string
+  chkDate: boolean
 }
 
 const initialState: MyState = {
@@ -18,6 +19,7 @@ const initialState: MyState = {
   endTime: '',
   district: [],
   category: '',
+  chkDate: false
 }
 
 const searchValueSlice = createSlice({
@@ -32,6 +34,7 @@ const searchValueSlice = createSlice({
       state.endTime = action.payload.endTime
       state.district = action.payload.district
       state.category = action.payload.category
+      state.chkDate = action.payload.chkDate
     },
   },
 })

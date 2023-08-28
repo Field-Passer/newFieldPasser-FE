@@ -1,6 +1,6 @@
 const PATH = {
   HOME: '/',
-  BOARD_DETAILS: '/board_details/:boardId',
+  BOARD_DETAILS: '/board-details/:boardId',
   WRITE: '/write',
   EDIT: '/edit/:postId',
   BOARD_LIST: '/board-list',
@@ -18,6 +18,7 @@ const PATH = {
   ASK_ANSWER_FORM: '/ask/answer-form',
   PROFILE: '/profile/:user',
   BOARD_BLIND: '/board-list/blind',
+  SOCIAL_REDIRECT: '/social-redirect',
 }
 
 export default PATH

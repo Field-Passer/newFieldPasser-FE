@@ -38,18 +38,18 @@ const MyPage = () => {
     const fetchData = async () => {
       const postResponse = await getMyPost(1)
       setMyPost(postResponse?.data)
-      setPostNum(postResponse?.element)
       const wishlistResponse = await getWishlist(1)
       setWishlist(wishlistResponse?.data)
-      setWishNum(wishlistResponse?.element)
       dispatch(SET_WISHLIST(postResponse?.data))
       const replyResponse = await getMyReply(1)
       setMyReply(replyResponse?.data)
-      setReplyNum(replyResponse?.element)
+      setPostNum(postResponse?.totalElements)
+      setWishNum(wishlistResponse?.totalElements)
+      setReplyNum(replyResponse?.totalElements)
     }
     fetchData()
   }, [])
-
+  console.log(postNum, wishNum, replyNum)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
