@@ -27,11 +27,22 @@ const MyPageDetail = () => {
       return (
         <>
           <PostContainer>
-            {posts?.length ? posts.map((post) => <MBoardList key={post.boardId} post={post} />) : <NoData>작성한 게시물이 없습니다.</NoData>}
+            {posts?.length ? (
+              posts.map((post) => <MBoardList key={post.boardId} post={post} />)
+            ) : (
+              <NoData>작성한 게시물이 없습니다.</NoData>
+            )}
           </PostContainer>
           {posts?.length > 0 && (
             <Paginate screen="mobile">
-              <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={postTotalPage} className="paginate" />
+              <ReactPaginate
+                previousLabel="<"
+                nextLabel=">"
+                onPageChange={handlePage}
+                breakLabel="..."
+                pageCount={postTotalPage}
+                className="paginate"
+              />
             </Paginate>
           )}
         </>
@@ -40,11 +51,22 @@ const MyPageDetail = () => {
       return (
         <>
           <PostContainer>
-            {wishlists?.length ? wishlists.map((post) => <MBoardList key={post.boardId} post={post} />) : <NoData>게시물이 없습니다.</NoData>}
+            {wishlists?.length ? (
+              wishlists.map((post) => <MBoardList key={post.boardId} post={post} />)
+            ) : (
+              <NoData>게시물이 없습니다.</NoData>
+            )}
           </PostContainer>
           {wishlists?.length > 0 && (
             <Paginate screen="mobile">
-              <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={wishTotalPage} className="paginate" />
+              <ReactPaginate
+                previousLabel="<"
+                nextLabel=">"
+                onPageChange={handlePage}
+                breakLabel="..."
+                pageCount={wishTotalPage}
+                className="paginate"
+              />
             </Paginate>
           )}
         </>
@@ -61,7 +83,14 @@ const MyPageDetail = () => {
           <Board data={posts} message="작성한 게시글이 없습니다." />
           {posts?.length > 0 && (
             <Paginate screen="pc">
-              <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={postTotalPage} className="paginate" />
+              <ReactPaginate
+                previousLabel="<"
+                nextLabel=">"
+                onPageChange={handlePage}
+                breakLabel="..."
+                pageCount={postTotalPage}
+                className="paginate"
+              />
             </Paginate>
           )}
         </>
@@ -72,7 +101,14 @@ const MyPageDetail = () => {
           <Board data={wishlists} message="게시물이 없습니다." />{' '}
           {wishlists?.length > 0 && (
             <Paginate screen="pc">
-              <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={wishTotalPage} className="paginate" />
+              <ReactPaginate
+                previousLabel="<"
+                nextLabel=">"
+                onPageChange={handlePage}
+                breakLabel="..."
+                pageCount={wishTotalPage}
+                className="paginate"
+              />
             </Paginate>
           )}
         </>

@@ -61,7 +61,8 @@ const Join = () => {
   const joinHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
-    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError) return alert('양식을 다시 확인해주세요.')
+    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError)
+      return alert('양식을 다시 확인해주세요.')
     const status = await join({
       userEmail,
       userPw,
@@ -85,7 +86,14 @@ const Join = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일</label>
-            <input type="email" name="userEmail" onChange={onChangeUserEmail} placeholder="field-passer@naver.com" value={userEmail} required />
+            <input
+              type="email"
+              name="userEmail"
+              onChange={onChangeUserEmail}
+              placeholder="field-passer@naver.com"
+              value={userEmail}
+              required
+            />
             <button type="button" onClick={checkEmailHandler}>
               이메일 중복확인
             </button>
@@ -95,7 +103,14 @@ const Join = () => {
 
           <div className="input_wrap_inner">
             <label>비밀번호</label>
-            <input type="password" name="userPw" onChange={onChangeUserPw} placeholder="영문, 숫자, 특수문자 포함 8~16자 사이" value={userPw} required />
+            <input
+              type="password"
+              name="userPw"
+              onChange={onChangeUserPw}
+              placeholder="영문, 숫자, 특수문자 포함 8~16자 사이"
+              value={userPw}
+              required
+            />
             <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
           </div>
 
@@ -115,13 +130,27 @@ const Join = () => {
 
           <div className="input_wrap_inner">
             <label>이름</label>
-            <input type="text" name="userName" onChange={onChangeUserName} placeholder="김필드" maxLength={5} required />
+            <input
+              type="text"
+              name="userName"
+              onChange={onChangeUserName}
+              placeholder="김필드"
+              maxLength={5}
+              required
+            />
             <p className="error_message">{userNameError && '이름은 다섯글자를 넘을 수 없습니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
             <label>닉네임</label>
-            <input type="text" name="userNickName" onChange={onChangeUserNickName} placeholder="김필드패서" maxLength={12} required />
+            <input
+              type="text"
+              name="userNickName"
+              onChange={onChangeUserNickName}
+              placeholder="김필드패서"
+              maxLength={12}
+              required
+            />
             <p className="error_message">{userNickNameError && '닉네임은 열두글자를 넘을 수 없습니다.'}</p>
           </div>
 

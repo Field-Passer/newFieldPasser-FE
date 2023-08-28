@@ -141,7 +141,12 @@ export const PlusIcon = (props: propsTypes) => {
 export const CloseIcon = (props: propsTypes) => {
   return (
     <svg width={props.size} height={props.size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 1L1 15M1 1L15 15" stroke={props.color ? props.color : '#3A3A3A'} strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M15 1L1 15M1 1L15 15"
+        stroke={props.color ? props.color : '#3A3A3A'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -150,7 +155,13 @@ export const DownwardArrowIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
       <g clipPath="url(#clip0_578_6254)">
-        <path d="M3.33398 6.00002L8.00065 10.6667L12.6673 6.00002" stroke="#5FCA7B" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M3.33398 6.00002L8.00065 10.6667L12.6673 6.00002"
+          stroke="#5FCA7B"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
       <defs>
         <clipPath id="clip0_578_6254">
@@ -188,7 +199,13 @@ export const UpLoadIcon = () => {
   return (
     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12.25" r="12" fill="#5FCA7B" />
-      <path d="M12 18V6M12 6L9 9.56757M12 6L15 9.56757" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M12 18V6M12 6L9 9.56757M12 6L15 9.56757"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -222,8 +239,8 @@ export const BalloonIcon = () => {
 export const CloseButton = () => {
   return (
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1L19 19" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M19 1L1 19" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M1 1L19 19" stroke="black" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M19 1L1 19" stroke="black" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }

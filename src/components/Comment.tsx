@@ -37,7 +37,7 @@ const BoardComment = (props: PropsType) => {
       try {
         const CommentData = await getComment(boardId, page, loginVal)
 
-        let total = []
+        const total = []
         for (let i = 1; i <= CommentData.totalPages; i++) {
           total.push(i)
         }
@@ -84,10 +84,13 @@ const BoardComment = (props: PropsType) => {
         {comments.map((item: CommentTypes, key: number) => (
           <li key={key} className="comment-box">
             <p>
-              {item.memberNickname} {item.memberId} {item.commentRegisterDate.substring(0, 20) !== item.commentUpDate.substring(0, 20) ? '(수정됨)' : null}
+              {item.memberNickname} {item.memberId}{' '}
+              {item.commentRegisterDate.substring(0, 20) !== item.commentUpDate.substring(0, 20) ? '(수정됨)' : null}
             </p>
             {commentData.commentAdd !== item.commentId ? (
-              <p style={item.deleteCheck ? { color: '#999' } : {}}>{item.deleteCheck ? '삭제된 댓글입니다.' : item.commentContent}</p>
+              <p style={item.deleteCheck ? { color: '#999' } : {}}>
+                {item.deleteCheck ? '삭제된 댓글입니다.' : item.commentContent}
+              </p>
             ) : (
               <InputBox type="add">
                 <BoardCommentInput
@@ -141,7 +144,9 @@ const BoardComment = (props: PropsType) => {
                   <ChildComment key={idx}>
                     <p>
                       {child.memberNickname} {child.memberId}{' '}
-                      {child.commentRegisterDate.substring(0, 20) !== child.commentUpDate.substring(0, 20) ? '(수정됨)' : null}
+                      {child.commentRegisterDate.substring(0, 20) !== child.commentUpDate.substring(0, 20)
+                        ? '(수정됨)'
+                        : null}
                     </p>
                     {commentData.commentAdd !== child.commentId ? (
                       <p>{child.commentContent}</p>
@@ -163,22 +168,20 @@ const BoardComment = (props: PropsType) => {
                           {dateFormat(item.commentUpDate, 'comment')}
                         </span>
                       </p>
-                      {
-                        child.myComment && (
-                          <button
-                            className="comment-more-btn"
-                            ref={commentMoreBtn}
-                            onClick={(e: React.MouseEvent<HTMLElement>) => {
-                              commentData.commentBox === child.commentId
-                                ? dispatch(setCommentOptions({ commentBox: -1 }))
-                                : dispatch(setCommentOptions({ commentBox: child.commentId }))
-                              e.stopPropagation()
-                            }}
-                          >
-                            <MoreIcon color="#D9D9D9" />
-                          </button>
-                        )
-                      }
+                      {child.myComment && (
+                        <button
+                          className="comment-more-btn"
+                          ref={commentMoreBtn}
+                          onClick={(e: React.MouseEvent<HTMLElement>) => {
+                            commentData.commentBox === child.commentId
+                              ? dispatch(setCommentOptions({ commentBox: -1 }))
+                              : dispatch(setCommentOptions({ commentBox: child.commentId }))
+                            e.stopPropagation()
+                          }}
+                        >
+                          <MoreIcon color="#D9D9D9" />
+                        </button>
+                      )}
                     </div>
 
                     {commentData.commentBox === child.commentId && (

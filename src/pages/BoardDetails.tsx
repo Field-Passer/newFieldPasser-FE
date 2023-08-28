@@ -74,7 +74,11 @@ const BoardDetails = () => {
               <ContentBox>
                 <div className="image_box">
                   <img
-                    src={detailData.imageUrl ? detailData.imageUrl : randomImages(detailData.categoryName || '', detailData.boardId || 0)}
+                    src={
+                      detailData.imageUrl
+                        ? detailData.imageUrl
+                        : randomImages(detailData.categoryName || '', detailData.boardId || 0)
+                    }
                     onError={(e) => handleImgError(e, detailData.categoryName || '', detailData.boardId || 0)}
                     alt=""
                   />
@@ -108,7 +112,9 @@ const BoardDetails = () => {
               </Mobile>
               <div>
                 <p>
-                  <span className="user_name">{detailData.memberName} {detailData.memberId}</span>
+                  <span className="user_name">
+                    {detailData.memberName} {detailData.memberId}
+                  </span>
                   <span className="view">조회수 {detailData.viewCount}</span>
                   <span className="like">
                     <Harticon size="14" /> {detailData.wishCount}
@@ -128,13 +134,24 @@ const BoardDetails = () => {
                 {moreBtnChk && (
                   <ul className="more_menu">
                     <li>
-                      <button onClick={() => window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData.boardId)}>양도 완료하기</button>
+                      <button
+                        onClick={() =>
+                          window.confirm('양도 완료 상태로 변경하시겠습니까?') &&
+                          addTransactionStatus(detailData.boardId)
+                        }
+                      >
+                        양도 완료하기
+                      </button>
                     </li>
                     <li>
-                      <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData.boardId)}>삭제</button>
+                      <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData.boardId)}>
+                        삭제
+                      </button>
                     </li>
                     <li>
-                      <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button>
+                      <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>
+                        수정
+                      </button>
                     </li>
                   </ul>
                 )}
@@ -144,7 +161,11 @@ const BoardDetails = () => {
               <PC>
                 <div className="image_box">
                   <img
-                    src={detailData.imageUrl ? detailData.imageUrl : randomImages(detailData.categoryName || '', detailData.boardId || 0)}
+                    src={
+                      detailData.imageUrl
+                        ? detailData.imageUrl
+                        : randomImages(detailData.categoryName || '', detailData.boardId || 0)
+                    }
                     onError={(e) => handleImgError(e, detailData.categoryName || '', detailData.boardId || 0)}
                     alt=""
                   />

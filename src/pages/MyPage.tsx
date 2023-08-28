@@ -87,10 +87,18 @@ const MyPage = () => {
                   <PCBoardCard title="양도" posts={myPost} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 0 })} />
                 </li>
                 <li>
-                  <PCBoardCard title="좋아요" posts={wishlist} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 1 })} />
+                  <PCBoardCard
+                    title="좋아요"
+                    posts={wishlist}
+                    onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 1 })}
+                  />
                 </li>
                 <li>
-                  <PCBoardCard title="댓글" posts={myReply} onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 2 })} />
+                  <PCBoardCard
+                    title="댓글"
+                    posts={myReply}
+                    onClick={() => navigate(PATH.MYPAGE_DETAIL, { state: 2 })}
+                  />
                 </li>
               </ul>
             </PCBoardContainer>

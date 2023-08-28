@@ -116,6 +116,7 @@ const Write = () => {
       )}
     </div>
   ))
+  CustomDateInput.displayName = 'CustomDateInput'
 
   const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
     if (type === 'district') {
@@ -154,8 +155,8 @@ const Write = () => {
       }
     }
 
-    let date = selectedDate?.toISOString().slice(0, 10)
-    let start = date + 'T' + selectedStartTime + ':00'
+    const date = selectedDate?.toISOString().slice(0, 10)
+    const start = date + 'T' + selectedStartTime + ':00'
     let end = date + 'T' + selectedEndTime + ':00'
 
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
@@ -168,7 +169,7 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    let entries = formData.entries()
+    const entries = formData.entries()
     for (const pair of entries) {
       console.log(pair[0] + ', ' + pair[1])
     }

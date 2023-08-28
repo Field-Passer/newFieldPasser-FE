@@ -80,24 +80,52 @@ const UserEdit = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일(변경 불가)</label>
-            <input type="email" name="userEmail" onChange={onChangeUserEmail} value={userEmail || ''} placeholder="field-passer@naver.com" disabled />
+            <input
+              type="email"
+              name="userEmail"
+              onChange={onChangeUserEmail}
+              value={userEmail || ''}
+              placeholder="field-passer@naver.com"
+              disabled
+            />
           </div>
 
           <div className="input_wrap_inner">
             <label>이름</label>
-            <input type="text" name="userName" onChange={onChangeUserName} value={userName || ''} placeholder="김필드" maxLength={5} />
+            <input
+              type="text"
+              name="userName"
+              onChange={onChangeUserName}
+              value={userName || ''}
+              placeholder="김필드"
+              maxLength={5}
+            />
             <p className="error_message">{userNameError && '이름은 다섯글자를 넘을 수 없습니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
             <label>닉네임</label>
-            <input type="text" name="userNickName" onChange={onChangeUserNickName} value={userNickName} placeholder="김필드패서" maxLength={12} />
+            <input
+              type="text"
+              name="userNickName"
+              onChange={onChangeUserNickName}
+              value={userNickName}
+              placeholder="김필드패서"
+              maxLength={12}
+            />
             <p className="error_message">{userNickNameError && '닉네임은 열두글자를 넘을 수 없습니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
             <label>전화번호</label>
-            <input type="text" name="userPhone" onChange={onChangeUserPhone} value={userPhone} placeholder="010-1234-5678" maxLength={13} />
+            <input
+              type="text"
+              name="userPhone"
+              onChange={onChangeUserPhone}
+              value={userPhone}
+              placeholder="010-1234-5678"
+              maxLength={13}
+            />
             <p className="error_message">{userPhoneError && '전화번호를 정확히 입력해주세요.'}</p>
           </div>
         </div>

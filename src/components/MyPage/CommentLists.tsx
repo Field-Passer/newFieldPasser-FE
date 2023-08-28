@@ -47,7 +47,14 @@ const CommentLists = ({ screen }: IProps) => {
         <NoComment>댓글이 없습니다.</NoComment>
       )}
       <Paginate screen={screen}>
-        <ReactPaginate previousLabel="<" nextLabel=">" onPageChange={handlePage} breakLabel="..." pageCount={totalPage} className="paginate" />
+        <ReactPaginate
+          previousLabel="<"
+          nextLabel=">"
+          onPageChange={handlePage}
+          breakLabel="..."
+          pageCount={totalPage}
+          className="paginate"
+        />
       </Paginate>
     </Container>
   )

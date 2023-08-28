@@ -10,7 +10,8 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
 
   return await publicApi
     .get(
-      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${values.endTime
+      `/search/${page}?title=${values.title}&categoryName=${values.category}&startTime=${values.startTime}&endTime=${
+        values.endTime
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {

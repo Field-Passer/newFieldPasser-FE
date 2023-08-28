@@ -174,6 +174,15 @@ interface IOverlayProps {
   setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+interface ITimeSelectorProps {
+  isTimeChange: boolean
+  setIsTimeChange: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedTime: React.Dispatch<React.SetStateAction<string>>
+  timeSelectorOpen: boolean
+  setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
+  timeTempForEdit?: string
+}
+
 interface IWishlistType {
   boardId: number
   title: string
@@ -188,13 +197,4 @@ interface IWishlistType {
   price: number
   viewCount: number
   wishCount: number
-}
-
-interface ITimeSelectorProps {
-  isTimeChange: boolean
-  setIsTimeChange: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedTime: React.Dispatch<React.SetStateAction<string>>
-  timeSelectorOpen: boolean
-  setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
-  timeTempForEdit?: string
 }

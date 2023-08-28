@@ -43,13 +43,27 @@ const Ask = () => {
             {userInfo.role === '관리자' ? (
               adminQuestions.length ? (
                 adminQuestions.map((list) => (
-                  <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" info={list} />
+                  <OneOneOne
+                    key={list.questionId}
+                    title={list.questionTitle}
+                    comment={list.questionContent}
+                    screen="pc"
+                    info={list}
+                  />
                 ))
               ) : (
                 <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
               )
             ) : questions.length ? (
-              questions.map((list) => <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="pc" info={list} />)
+              questions.map((list) => (
+                <OneOneOne
+                  key={list.questionId}
+                  title={list.questionTitle}
+                  comment={list.questionContent}
+                  screen="pc"
+                  info={list}
+                />
+              ))
             ) : (
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}
@@ -66,13 +80,27 @@ const Ask = () => {
             {userInfo.role === '관리자' ? (
               adminQuestions.length ? (
                 adminQuestions.map((list) => (
-                  <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" info={list} />
+                  <OneOneOne
+                    key={list.questionId}
+                    title={list.questionTitle}
+                    comment={list.questionContent}
+                    screen="mobile"
+                    info={list}
+                  />
                 ))
               ) : (
                 <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
               )
             ) : questions.length ? (
-              questions.map((list) => <OneOneOne key={list.questionId} title={list.questionTitle} comment={list.questionContent} screen="mobile" info={list} />)
+              questions.map((list) => (
+                <OneOneOne
+                  key={list.questionId}
+                  title={list.questionTitle}
+                  comment={list.questionContent}
+                  screen="mobile"
+                  info={list}
+                />
+              ))
             ) : (
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}

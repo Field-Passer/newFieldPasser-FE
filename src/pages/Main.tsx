@@ -49,7 +49,7 @@ const Main = () => {
     district: [selectedDistrict === '지역' ? '' : selectedDistrict],
     category: category,
     date: '',
-    chkDate: false
+    chkDate: false,
   }
 
   useEffect(() => {
