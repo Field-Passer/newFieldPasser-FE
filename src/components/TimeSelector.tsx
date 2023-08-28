@@ -27,7 +27,6 @@ const TimeSelector = ({
     }
   }, [timeZone, hour, minute])
 
-  //세개 다 선택되거나 셀렉터 바깥쪽을 클릭하면 타임셀렉터 닫기
   return (
     <>
       <ViewTimeContainer>
