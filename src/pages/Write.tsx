@@ -50,8 +50,6 @@ const Write = () => {
       setSelectedDate(new Date(dataForEdit.startTime))
       setIsStartChange(true)
       setIsEndChange(true)
-      // setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
-      // setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
       setWrittenTitle(dataForEdit.title)
       setWrittenContent(dataForEdit.content)
       setSelectedDistrict(dataForEdit.districtName)
@@ -100,7 +98,7 @@ const Write = () => {
     value: ''
     onClick: () => void
   }
-  //<HTMLDivElement, { value: any; onClick: any }>
+
   const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
       {isMobile ? (
@@ -162,7 +160,7 @@ const Write = () => {
 
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
     if (+start.slice(11, 13) > +end.slice(11, 13)) {
-      const newDate = +end.slice(8, 10) + 1 + 'T'
+      const newDate = (+end.slice(8, 10) + 1 + '').padStart(2, '0') + 'T'
       end = end.replace(/[0-9]+[0-9]+T/, newDate)
     }
 
@@ -201,7 +199,7 @@ const Write = () => {
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
             alert('게시글 수정이 완료되었습니다.')
-            navigate(`/board_details/${dataForEdit?.boardId}`)
+            navigate(`/board-details/${dataForEdit?.boardId}`)
           }
         } catch (err) {
           console.log(err)
