@@ -25,6 +25,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Modal
+        isConfirm={false}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         content={['잘못된 로그인 정보입니다.', '아이디 또는 비밀번호를 다시 입력해주세요.']}
