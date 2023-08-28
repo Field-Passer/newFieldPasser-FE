@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { ClockIcon } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
+import { useLocation } from 'react-router'
 
 const TimeSelector = ({
   isTimeChange,
@@ -11,19 +12,41 @@ const TimeSelector = ({
   setSelectedTime,
   timeSelectorOpen,
   setTimeSelectorOpen,
+  timeTempForEdit,
 }: ITimeSelectorProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const location = useLocation()
   const [timeZone, setTimeZone] = useState<string>('오전')
   const [hour, setHour] = useState<string>('--')
   const [minute, setMinute] = useState<string>('--')
 
   useEffect(() => {
+    if (location.pathname.includes('edit') && timeTempForEdit) {
+      const selectedHour: string = timeTempForEdit.slice(0, 2)
+      const selectedMinute: string = timeTempForEdit.slice(-2)
+
+      if (selectedHour === '00') {
+        setTimeZone('오전')
+        setHour('12')
+      }
+      Number(selectedHour) >= 12 ? setTimeZone('오후') : setTimeZone('오전')
+      Number(selectedHour) > 12 ? setHour((+selectedHour - 12 + '').padStart(2, '0')) : setHour(selectedHour + '')
+      setMinute(selectedMinute)
+    }
+  }, [timeTempForEdit])
+
+  useEffect(() => {
     if (hour !== '--' && minute !== '--') {
       setTimeSelectorOpen(false)
       setIsTimeChange(true)
-      timeZone === '오후' ? setSelectedTime(hour + 12 + ':' + minute) : setSelectedTime(hour + ':' + minute)
+
+      timeZone === '오후' && hour !== '12' && +hour + 12 <= 23
+        ? setSelectedTime(+hour + 12 + ':' + minute)
+        : setSelectedTime(hour + ':' + minute)
+
+      timeZone === '오전' && hour === '12' && setSelectedTime('00:' + minute)
     }
   }, [timeZone, hour, minute])
 

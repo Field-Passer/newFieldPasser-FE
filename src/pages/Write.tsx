@@ -31,14 +31,14 @@ const Write = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
   const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
-
   const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
   const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
+  const [startTimeTemp, setStartTimeTemp] = useState<string>('')
+  const [endTimeTemp, setEndTimeTemp] = useState<string>('')
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
       setDataForEdit(location.state.data)
-      setSelectedStartTime(location.state.data.startTime.slice(11, 16))
     }
   }, [])
 
@@ -49,13 +49,15 @@ const Write = () => {
       setIsDateChange(true)
       setSelectedDate(new Date(dataForEdit.startTime))
       setIsStartChange(true)
-      setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
       setIsEndChange(true)
-      setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
+      // setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
+      // setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
       setWrittenTitle(dataForEdit.title)
       setWrittenContent(dataForEdit.content)
       setSelectedDistrict(dataForEdit.districtName)
       setSelectedCategory(dataForEdit.categoryName)
+      setStartTimeTemp(dataForEdit.startTime.slice(11, 16))
+      setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
     }
   }, [dataForEdit])
 
@@ -156,7 +158,7 @@ const Write = () => {
 
     let date = selectedDate?.toISOString().slice(0, 10)
     let start = date + 'T' + selectedStartTime + ':00'
-    let end = date + 'T' + selectedStartTime + ':00'
+    let end = date + 'T' + selectedEndTime + ':00'
 
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
     if (+start.slice(11, 13) > +end.slice(11, 13)) {
@@ -350,6 +352,7 @@ const Write = () => {
                     isTimeChange={isStartChange}
                     setIsTimeChange={setIsStartChange}
                     setSelectedTime={setSelectedStartTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
                   />
                 </div>
                 <span>부터</span>
@@ -360,6 +363,7 @@ const Write = () => {
                     isTimeChange={isEndChange}
                     setIsTimeChange={setIsEndChange}
                     setSelectedTime={setSelectedEndTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
                   />
                 </div>
                 <span>까지</span>
@@ -534,6 +538,7 @@ const Write = () => {
                     isTimeChange={isStartChange}
                     setIsTimeChange={setIsStartChange}
                     setSelectedTime={setSelectedStartTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
                   />
                 </div>
                 <span className="text-gray">부터</span>
@@ -544,6 +549,7 @@ const Write = () => {
                     isTimeChange={isEndChange}
                     setIsTimeChange={setIsEndChange}
                     setSelectedTime={setSelectedEndTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
                   />
                 </div>
                 <span className="text-gray">까지</span>
@@ -936,10 +942,6 @@ const MobileReservation = styled.div`
   flex-direction: column;
   gap: 10px;
   color: ${COLORS.gray40};
-
-  input {
-    color: ${COLORS.gray40};
-  }
 
   .date {
     position: relative;
