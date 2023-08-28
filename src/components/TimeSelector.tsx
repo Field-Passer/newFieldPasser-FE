@@ -5,25 +5,6 @@ import { styled } from 'styled-components'
 import { ClockIcon } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
 
-//상위요소에서 스타일 지정 방법
-// .time-selector-view { // &selected
-//   .time-zone { // 오전/오후
-
-//   }
-//   .hour-and-minute {
-//     .hour {
-
-//     }
-//     .minute {
-
-//     }
-//   }
-
-//   .defult-time {
-
-//   }
-// }
-
 const TimeSelector = ({
   isTimeChange,
   setIsTimeChange,
