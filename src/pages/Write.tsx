@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
-import { ClockIcon } from '@src/constants/icons'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -521,13 +520,23 @@ const Write = () => {
                     setIsDateChange(true)
                   }}
                   className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
+                  customInput={<CustomDateInput value={''} onClick={() => ''} />}
                   minDate={new Date()}
                   required
                 />
               </div>
               <div className="time">
-                <div>시작</div>
+                <div>시간</div>
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={startTimeSelectorOpen}
+                    setTimeSelectorOpen={setStartTimeSelectorOpen}
+                    isTimeChange={isStartChange}
+                    setIsTimeChange={setIsStartChange}
+                    setSelectedTime={setSelectedStartTime}
+                  />
+                </div>
+                <span className="text-gray">부터</span>
                 <div className="time-inner">
                   <TimeSelector
                     timeSelectorOpen={endTimeSelectorOpen}
@@ -537,19 +546,7 @@ const Write = () => {
                     setSelectedTime={setSelectedEndTime}
                   />
                 </div>
-                <div>부터</div>
-                <span>~</span>
-                <div>종료</div>
-                <div className="time-inner">
-                  <TimeSelector
-                    timeSelectorOpen={endTimeSelectorOpen}
-                    setTimeSelectorOpen={setEndTimeSelectorOpen}
-                    isTimeChange={isEndChange}
-                    setIsTimeChange={setIsEndChange}
-                    setSelectedTime={setSelectedEndTime}
-                  />
-                </div>
-                <span>까지</span>
+                <span className="text-gray">까지</span>
               </div>
             </PcReservation>
           </section>
@@ -984,6 +981,29 @@ const MobileReservation = styled.div`
     .time-inner {
       position: relative;
     }
+
+    .time-selector-view {
+      position: relative;
+      width: 128px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
+
+      svg {
+        position: absolute;
+        right: 10px;
+        top: 13px;
+      }
+    }
+
+    .time-selector-selected {
+      background-color: ${COLORS.gray30};
+      color: white;
+    }
   }
 `
 const PcReservation = styled.div`
@@ -1023,53 +1043,28 @@ const PcReservation = styled.div`
     gap: 16px;
     line-height: 40px;
 
+    .text-gray {
+      color: ${COLORS.gray40};
+    }
+
     .time-inner {
       position: relative;
-    }
-
-    /* .view-time {
-      width: 100px;
-      position: relative;
-      font-size: ${FONT.pc};
       color: ${COLORS.gray40};
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid ${COLORS.gray20};
-      cursor: pointer;
     }
 
-    input {
-      width: 100px;
-      position: relative;
-      font-size: ${FONT.pc};
-      color: ${COLORS.gray40};
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid ${COLORS.gray20};
+    .time-selector-view {
+      width: 110px;
       cursor: pointer;
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-calendar-picker-indicator {
-        display: none;
-        appearance: none;
-      }
-
-      &::-webkit-calendar-picker-indicator {
-        padding-left: 80px;
-        opacity: 0;
-        position: absolute;
-        display: flex;
-        cursor: pointer;
-      }
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid ${COLORS.gray20};
+      padding: 0 10px;
+      box-sizing: border-box;
     }
 
-    .selected {
+    .time-selector-selected {
       color: ${COLORS.font};
-
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock-fff.png') no-repeat 98% 50%;
-      }
-    } */
+    }
   }
 `
 
