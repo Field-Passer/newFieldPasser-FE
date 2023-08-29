@@ -24,10 +24,6 @@ module.exports = {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }], //should add ".ts" if typescript project
     quotes: ['error', 'single', { avoidEscape: true }],
     indent: 'off',
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
-  }
+    settings: 'off',
+  },
 }

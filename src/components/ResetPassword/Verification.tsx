@@ -72,8 +72,20 @@ const Verification = ({ setStep }: propsType) => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>이메일</label>
-            <input type="email" name="userEmail" onChange={onChangeUserEmail} placeholder="field-passer@naver.com" value={userEmail} required />
-            <button type="button" onClick={verifyMailHandler} className="btn_verifyNum" disabled={userEmailError || personalVerify}>
+            <input
+              type="email"
+              name="userEmail"
+              onChange={onChangeUserEmail}
+              placeholder="field-passer@naver.com"
+              value={userEmail}
+              required
+            />
+            <button
+              type="button"
+              onClick={verifyMailHandler}
+              className="btn_verifyNum"
+              disabled={userEmailError || personalVerify}
+            >
               요청
             </button>
             <p className="error_message">{userEmailError && '올바른 이메일 형식이 아닙니다.'}</p>

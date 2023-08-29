@@ -19,7 +19,7 @@ const initialState: MyState = {
   endTime: '',
   district: [],
   category: '',
-  chkDate: false
+  chkDate: false,
 }
 
 const searchValueSlice = createSlice({

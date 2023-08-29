@@ -141,7 +141,12 @@ export const PlusIcon = (props: propsTypes) => {
 export const CloseIcon = (props: propsTypes) => {
   return (
     <svg width={props.size} height={props.size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 1L1 15M1 1L15 15" stroke={props.color ? props.color : '#3A3A3A'} strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M15 1L1 15M1 1L15 15"
+        stroke={props.color ? props.color : '#3A3A3A'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -150,7 +155,13 @@ export const DownwardArrowIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
       <g clipPath="url(#clip0_578_6254)">
-        <path d="M3.33398 6.00002L8.00065 10.6667L12.6673 6.00002" stroke="#5FCA7B" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M3.33398 6.00002L8.00065 10.6667L12.6673 6.00002"
+          stroke="#5FCA7B"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
       <defs>
         <clipPath id="clip0_578_6254">
@@ -188,7 +199,13 @@ export const UpLoadIcon = () => {
   return (
     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12.25" r="12" fill="#5FCA7B" />
-      <path d="M12 18V6M12 6L9 9.56757M12 6L15 9.56757" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M12 18V6M12 6L9 9.56757M12 6L15 9.56757"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -222,8 +239,19 @@ export const BalloonIcon = () => {
 export const CloseButton = () => {
   return (
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1L19 19" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M19 1L1 19" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M1 1L19 19" stroke="black" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M19 1L1 19" stroke="black" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export const ClockIcon = (props: propsTypes) => {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M7 0C3.13359 0 0 3.13359 0 7C0 10.8664 3.13359 14 7 14C10.8664 14 14 10.8664 14 7C14 3.13359 10.8664 0 7 0ZM7 12.8324C3.77891 12.8324 1.16758 10.2211 1.16758 7C1.16758 3.77891 3.77891 1.16758 7 1.16758C10.2211 1.16758 12.8324 3.77891 12.8324 7C12.8324 10.2211 10.2211 12.8324 7 12.8324ZM7.58242 2.33242H6.41484V7L9.03984 9.625L9.91484 8.75L7.58242 6.41758V2.33242Z"
+        fill={props.color}
+      />
     </svg>
   )
 }

@@ -38,7 +38,11 @@ const Profile = () => {
             <RoleButton screen="mobile">관리자 등록</RoleButton>
           </TopStyle>
           <PostContainer>
-            {posts?.length ? posts.map((post) => <MBoardList key={post.boardId} post={post} />) : <div>작성한 게시물이 없습니다.</div>}
+            {posts?.length ? (
+              posts.map((post) => <MBoardList key={post.boardId} post={post} />)
+            ) : (
+              <div>작성한 게시물이 없습니다.</div>
+            )}
           </PostContainer>
         </div>
       )}

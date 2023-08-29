@@ -24,7 +24,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (type === 'help') {
-      let data = {
+      const data = {
         questionTitle: title,
         questionContent: content,
         questionCategory: 'TRANSACTION',
@@ -39,7 +39,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
         alert('오류가 발생하였습니다.')
       }
     } else if (type === 'ask') {
-      let data = {
+      const data = {
         answerTitle: title,
         answerContent: content,
       }
@@ -66,7 +66,12 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
             </FormDetailStyle>
             <FormDetailStyle screen="pc">
               <h2>내용</h2>
-              <textarea cols={30} rows={10} value={content} onChange={(event) => setContent(event.target.value)}></textarea>
+              <textarea
+                cols={30}
+                rows={10}
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+              ></textarea>
             </FormDetailStyle>
             <ButtonStyle screen="pc" type="submit">
               문의 등록
@@ -83,7 +88,12 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
             </FormDetailStyle>
             <FormDetailStyle screen="mobile">
               <h2>내용</h2>
-              <textarea cols={30} rows={10} value={content} onChange={(event) => setContent(event.target.value)}></textarea>
+              <textarea
+                cols={30}
+                rows={10}
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+              ></textarea>
             </FormDetailStyle>
             <ButtonStyle screen="mobile" type="submit">
               문의 등록

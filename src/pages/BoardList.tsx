@@ -21,13 +21,24 @@ const BoardList = () => {
       category: state.searchVlaue.category === '전체' ? '' : state.searchVlaue.category,
       startDate: state.searchVlaue.startDate,
       endDate: state.searchVlaue.endDate,
-      chkDate: state.searchVlaue.chkDate
+      chkDate: state.searchVlaue.chkDate,
     }
   })
 
-  const [title, startDate, endDate, district, category, startTime, endTime, chkDate] = useSelector((state: RootState) => {
-    return [state.searchVlaue.title, state.searchVlaue.startDate, state.searchVlaue.endDate, state.searchVlaue.district, state.searchVlaue.category, state.searchVlaue.startTime, state.searchVlaue.endTime, state.searchVlaue.chkDate]
-  })
+  const [title, startDate, endDate, district, category, startTime, endTime, chkDate] = useSelector(
+    (state: RootState) => {
+      return [
+        state.searchVlaue.title,
+        state.searchVlaue.startDate,
+        state.searchVlaue.endDate,
+        state.searchVlaue.district,
+        state.searchVlaue.category,
+        state.searchVlaue.startTime,
+        state.searchVlaue.endTime,
+        state.searchVlaue.chkDate,
+      ]
+    }
+  )
 
   const getPostList = useCallback(async () => {
     setIsLoading(true)
@@ -51,7 +62,7 @@ const BoardList = () => {
     setPage(1)
     setLastPage(false)
     changePostList()
-  }, [title, startDate, endDate, district, category, startTime, endTime, chkDate]);
+  }, [title, startDate, endDate, district, category, startTime, endTime, chkDate])
 
   useEffect(() => {
     if (page !== 1) {

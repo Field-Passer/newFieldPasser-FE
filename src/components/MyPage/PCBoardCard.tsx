@@ -15,7 +15,13 @@ const PCBoardCard = ({ title, posts, onClick }: Props) => {
         <span>{title}</span>
         <PlusIcon color={COLORS.gray40} />
       </Title>
-      <Text>{posts?.length ? posts.slice(0, 3).map((post, idx) => <span key={idx}>{post.title}</span>) : <span>게시글이 없습니다.</span>}</Text>
+      <Text>
+        {posts?.length ? (
+          posts.slice(0, 3).map((post, idx) => <span key={idx}>{post.title}</span>)
+        ) : (
+          <span>게시글이 없습니다.</span>
+        )}
+      </Text>
     </Container>
   )
 }

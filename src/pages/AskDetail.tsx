@@ -55,7 +55,9 @@ const AskDetail = () => {
               <div className="answerTitle">
                 <span>A. 답변 전입니다.</span>
                 <span>{''}</span>
-                {userInfo.role === '관리자' && <button onClick={() => navigate(PATH.ASK_ANSWER_FORM, { state: questionId })}>답변</button>}
+                {userInfo.role === '관리자' && (
+                  <button onClick={() => navigate(PATH.ASK_ANSWER_FORM, { state: questionId })}>답변</button>
+                )}
               </div>
               <div className="answerContent">답변 전입니다.</div>
             </AnswerContent>

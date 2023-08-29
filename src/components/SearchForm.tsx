@@ -67,7 +67,7 @@ const SearchForm = () => {
   type Value = string | string[] | Date
   const valueStateChangeFn = (key: string, value: Value) => {
     return setValueState((state) => {
-      let newState = { ...state }
+      const newState = { ...state }
       newState[key] = value
       return newState
     })
@@ -76,7 +76,7 @@ const SearchForm = () => {
   // check value change fn
   const checkValueStateChangeFn = (key: string, value: boolean) => {
     return setCheckState((state) => {
-      let newState = { ...state }
+      const newState = { ...state }
       newState[key] = value
       return newState
     })
@@ -91,7 +91,7 @@ const SearchForm = () => {
     endTime: valueState.endTimeValue,
     district: valueState.districtValue,
     category: valueState.categoryValue,
-    chkDate: checkState.startDateChange
+    chkDate: checkState.startDateChange,
   }
 
   // searchbox click function *
@@ -122,7 +122,7 @@ const SearchForm = () => {
       checkValueStateChangeFn('districtSelect', true)
       return valueStateChangeFn('districtValue', [...valueState.districtValue, value])
     } else {
-      let districtArray = [...valueState.districtValue]
+      const districtArray = [...valueState.districtValue]
       districtArray.splice(idx, 1)
 
       if (districtArray.length === 0) checkValueStateChangeFn('districtSelect', false)
@@ -215,7 +215,10 @@ const SearchForm = () => {
               <SearchIcon size="16px" color={COLORS.font} />
             </StadiumForm>
             <FlexContainer>
-              <DateForm startdatechange={checkState.startDateChange.toString()} enddatechange={checkState.endDateChange.toString()}>
+              <DateForm
+                startdatechange={checkState.startDateChange.toString()}
+                enddatechange={checkState.endDateChange.toString()}
+              >
                 <p className={checkState.startDateChange ? 'focused' : ''}>날짜</p>
                 <CalendarIcon color={checkState.startDateChange ? COLORS.green : '#AAA'} />
                 <div>
@@ -275,7 +278,11 @@ const SearchForm = () => {
             </FlexContainer>
             <DistrictForm>
               <button
-                onClick={() => (checkState.districtOpen ? checkValueStateChangeFn('districtOpen', false) : checkValueStateChangeFn('districtOpen', true))}
+                onClick={() =>
+                  checkState.districtOpen
+                    ? checkValueStateChangeFn('districtOpen', false)
+                    : checkValueStateChangeFn('districtOpen', true)
+                }
               >
                 <p className={checkState.districtOpen ? 'focused' : ''}>지역을 선택해주세요</p>
               </button>
@@ -287,7 +294,8 @@ const SearchForm = () => {
                         className={valueState.districtValue.length === 0 ? 'selected' : ''}
                         onClick={() => {
                           districtValueFn('전체')
-                        }}>
+                        }}
+                      >
                         전체
                       </button>
                     </li>
@@ -311,7 +319,9 @@ const SearchForm = () => {
               <p className={valueState.categoryValue !== '전체' ? 'focused' : ''}>종목을 선택해주세요</p>
               <ul
                 onClick={() => {
-                  checkState.categoryOpen ? checkValueStateChangeFn('categoryOpen', false) : checkValueStateChangeFn('categoryOpen', true)
+                  checkState.categoryOpen
+                    ? checkValueStateChangeFn('categoryOpen', false)
+                    : checkValueStateChangeFn('categoryOpen', true)
                 }}
               >
                 <p>{valueState.categoryValue}</p>
@@ -338,7 +348,13 @@ const SearchForm = () => {
             <SearchCorver onClick={() => searchBoxOpenFn()} path={urlPathname}>
               <SearchIcon size="24" />
               <div>
-                <p>{selectVal.title ? selectVal.title : urlPathname === '/' ? '어떤 구장을 찾으세요?' : '검색어를 입력해 주세요'}</p>
+                <p>
+                  {selectVal.title
+                    ? selectVal.title
+                    : urlPathname === '/'
+                    ? '어떤 구장을 찾으세요?'
+                    : '검색어를 입력해 주세요'}
+                </p>
                 {urlPathname === '/' && (
                   <p>
                     <span>어디든지</span>
@@ -369,7 +385,9 @@ const SearchForm = () => {
                         checkValueStateChangeFn('startDateChange', false)
                       }}
                     >
-                      {selectVal.startDate.slice(5, 10).replace('-', '.') + '~' + selectVal.endDate.slice(5, 10).replace('-', '.')}
+                      {selectVal.startDate.slice(5, 10).replace('-', '.') +
+                        '~' +
+                        selectVal.endDate.slice(5, 10).replace('-', '.')}
                       <CloseIcon size="12" color="#fff" />
                     </button>
                   </li>
@@ -400,7 +418,7 @@ const SearchForm = () => {
                   <li key={idx}>
                     <button
                       onClick={() => {
-                        let districtArray = [...valueState.districtValue]
+                        const districtArray = [...valueState.districtValue]
                         districtArray.splice(idx, 1)
                         dispatchSearchKewordValue('district', 'districtValue', [...districtArray])
                       }}
@@ -443,7 +461,7 @@ const Container = styled.div<{ searchboxopen: string; path: string }>`
 
   * {
     box-sizing: border-box;
-    color:${COLORS.font}
+    color: ${COLORS.font};
   }
 
   .focused {
@@ -583,7 +601,7 @@ const StadiumForm = styled.div`
   }
 `
 
-const DateForm = styled.div<{ startdatechange: string, enddatechange: string }>`
+const DateForm = styled.div<{ startdatechange: string; enddatechange: string }>`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -641,7 +659,7 @@ const DateForm = styled.div<{ startdatechange: string, enddatechange: string }>`
   }
 
   .react-datepicker-ignore-onclickoutside,
-  input[type='text']{
+  input[type='text'] {
     padding: 8px 12px;
     border-radius: 10px;
     font-size: 13px;
@@ -652,14 +670,13 @@ const DateForm = styled.div<{ startdatechange: string, enddatechange: string }>`
     background: ${(props) => (props.enddatechange === 'true' ? COLORS.green : '#fff')};
   }
 
-  .react-datepicker-wrapper:first-child{
-    input[type='text']{
+  .react-datepicker-wrapper:first-child {
+    input[type='text'] {
       border: 1px solid ${(props) => (props.startdatechange === 'true' ? '#fff' : COLORS.gray20)};
       color: ${(props) => (props.startdatechange === 'true' ? '#fff' : COLORS.gray40)};
       background: ${(props) => (props.startdatechange === 'true' ? COLORS.green : '#fff')};
     }
   }
-
 
   input:focus {
     cursor: pointer;

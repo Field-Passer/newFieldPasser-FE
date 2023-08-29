@@ -3,6 +3,7 @@ import { styled } from 'styled-components'
 import { LuInfo } from 'react-icons/lu'
 import { CloseButton } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
+
 const Modal = ({ modalOpen, setModalOpen, content }: IModalProps) => {
   // 필요한 props 및 기능
   // confirm기능 추가할 경우 navigate

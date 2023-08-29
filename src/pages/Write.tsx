@@ -8,7 +8,7 @@ import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
-// import TimeSelector from '@src/components/TimeSelector'
+import TimeSelector from '@src/components/TimeSelector'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -22,7 +22,6 @@ const Write = () => {
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [priceValue, setPriceValue] = useState<string>('')
-  // const [isTimeChange, setIsTimeChange] = useState(false)
   const imgRef = useRef<HTMLInputElement>(null)
   const [selectedStartTime, setSelectedStartTime] = useState<string>('')
   const [selectedEndTime, setSelectedEndTime] = useState<string>('')
@@ -32,11 +31,14 @@ const Write = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
   const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
+  const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
+  const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
+  const [startTimeTemp, setStartTimeTemp] = useState<string>('')
+  const [endTimeTemp, setEndTimeTemp] = useState<string>('')
 
   useEffect(() => {
     if (location.pathname.includes('edit')) {
       setDataForEdit(location.state.data)
-      setSelectedStartTime(location.state.data.startTime.slice(11, 16))
     }
   }, [])
 
@@ -47,13 +49,13 @@ const Write = () => {
       setIsDateChange(true)
       setSelectedDate(new Date(dataForEdit.startTime))
       setIsStartChange(true)
-      setSelectedStartTime(dataForEdit.startTime.slice(11, 16))
       setIsEndChange(true)
-      setSelectedEndTime(dataForEdit.endTime.slice(11, 16))
       setWrittenTitle(dataForEdit.title)
       setWrittenContent(dataForEdit.content)
       setSelectedDistrict(dataForEdit.districtName)
       setSelectedCategory(dataForEdit.categoryName)
+      setStartTimeTemp(dataForEdit.startTime.slice(11, 16))
+      setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
     }
   }, [dataForEdit])
 
@@ -96,7 +98,7 @@ const Write = () => {
     value: ''
     onClick: () => void
   }
-  //<HTMLDivElement, { value: any; onClick: any }>
+
   const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
       {isMobile ? (
@@ -114,6 +116,7 @@ const Write = () => {
       )}
     </div>
   ))
+  CustomDateInput.displayName = 'CustomDateInput'
 
   const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
     if (type === 'district') {
@@ -126,18 +129,18 @@ const Write = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
     const target = event.target as HTMLFormElement
-    const selectedStart = target[6] as HTMLInputElement
-    const selectedEnd = target[7] as HTMLInputElement
 
-    if (selectedStart.value === selectedEnd.value) {
+    if (selectedStartTime === selectedEndTime) {
       alert('시작 시간과 끝나는 시간이 동일합니다. 예약 일시를 정확히 선택해주세요.')
       return false
     }
 
-    let start = ''
-    let end = ''
+    if (!selectedStartTime || !selectedEndTime) {
+      alert('시작 시간과 끝나는 시간을 모두 선택해주세요.')
+      return false
+    }
 
-    for (let i = 0; i < 9; i += 1) {
+    for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
       if (item.name === 'file') {
         if (item.files && !item.files.length) {
@@ -147,19 +150,18 @@ const Write = () => {
         }
       } else if (item.name === 'price') {
         formData.append('price', item.value.replace(/,/g, ''))
-      } else if (item.name === 'start') {
-        start += selectedDate && selectedDate.toISOString().slice(0, 10)
-        start += 'T' + item.value + ':00'
-      } else if (item.name === 'end') {
-        end += selectedDate && selectedDate.toISOString().slice(0, 10)
-        end += 'T' + item.value + ':00'
       } else if (item.name) {
         formData.append(item.name, item.value)
       }
     }
+
+    const date = selectedDate?.toISOString().slice(0, 10)
+    const start = date + 'T' + selectedStartTime + ':00'
+    let end = date + 'T' + selectedEndTime + ':00'
+
     // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
     if (+start.slice(11, 13) > +end.slice(11, 13)) {
-      const newDate = +end.slice(8, 10) + 1 + 'T'
+      const newDate = (+end.slice(8, 10) + 1 + '').padStart(2, '0') + 'T'
       end = end.replace(/[0-9]+[0-9]+T/, newDate)
     }
 
@@ -167,7 +169,7 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    let entries = formData.entries()
+    const entries = formData.entries()
     for (const pair of entries) {
       console.log(pair[0] + ', ' + pair[1])
     }
@@ -179,7 +181,7 @@ const Write = () => {
           if (writeRes === 200) {
             window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
           } else {
-            throw new Error('정상적으로 완료되지 않았습니다. 다시 시도해주세요.')
+            throw new Error()
           }
         } catch (err) {
           console.log(err)
@@ -198,7 +200,7 @@ const Write = () => {
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
             alert('게시글 수정이 완료되었습니다.')
-            navigate(`/board_details/${dataForEdit?.boardId}`)
+            navigate(`/board-details/${dataForEdit?.boardId}`)
           }
         } catch (err) {
           console.log(err)
@@ -292,7 +294,11 @@ const Write = () => {
           </section>
           <section>
             <div>지역</div>
-            <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
+            <select
+              name="districtName"
+              onChange={(event) => handleChangeSelect(event, 'district')}
+              value={selectedDistrict}
+            >
               {districtOptions.map((item) => {
                 return (
                   <option value={item} key={item}>
@@ -302,7 +308,11 @@ const Write = () => {
               })}
             </select>
             <div>종목</div>
-            <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
+            <select
+              name="categoryName"
+              onChange={(event) => handleChangeSelect(event, 'category')}
+              value={selectedCategory}
+            >
               {categoryOptions.map((item, index) => {
                 if (index)
                   return (
@@ -334,29 +344,27 @@ const Write = () => {
                 />
               </div>
               <div className="time">
-                <input
-                  type="time"
-                  name="start"
-                  defaultValue={isStartChange ? selectedStartTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsStartChange(true)
-                    setSelectedStartTime(event.target.value)
-                  }}
-                  className={isStartChange ? 'selected' : ''}
-                />
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={startTimeSelectorOpen}
+                    setTimeSelectorOpen={setStartTimeSelectorOpen}
+                    isTimeChange={isStartChange}
+                    setIsTimeChange={setIsStartChange}
+                    setSelectedTime={setSelectedStartTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
+                  />
+                </div>
                 <span>부터</span>
-                <input
-                  type="time"
-                  name="end"
-                  defaultValue={isEndChange ? selectedEndTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsEndChange(true)
-                    setSelectedEndTime(event.target.value)
-                  }}
-                  className={isEndChange ? 'selected' : ''}
-                />
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={endTimeSelectorOpen}
+                    setTimeSelectorOpen={setEndTimeSelectorOpen}
+                    isTimeChange={isEndChange}
+                    setIsTimeChange={setIsEndChange}
+                    setSelectedTime={setSelectedEndTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
+                  />
+                </div>
                 <span>까지</span>
               </div>
             </MobileReservation>
@@ -365,7 +373,7 @@ const Write = () => {
             <div>본문내용</div>
             <div>
               <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
                 required
                 minLength={5}
                 name="content"
@@ -385,7 +393,9 @@ const Write = () => {
             handleSubmit(event)
           }}
         >
-          <div className="page-title">{location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}</div>
+          <div className="page-title">
+            {location.pathname === '/write' ? <h1>게시물 등록</h1> : <h1>게시물 수정</h1>}
+          </div>
           <PcDetail>
             <section className="half-section">
               <h2>사진 추가</h2>
@@ -464,7 +474,11 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">지역</div>
-                <select name="districtName" onChange={(event) => handleChangeSelect(event, 'district')} value={selectedDistrict}>
+                <select
+                  name="districtName"
+                  onChange={(event) => handleChangeSelect(event, 'district')}
+                  value={selectedDistrict}
+                >
                   {districtOptions.map((item) => {
                     return (
                       <option value={item} key={item}>
@@ -476,7 +490,11 @@ const Write = () => {
               </div>
               <div className="row-box">
                 <div className="box-title">종목</div>
-                <select name="categoryName" onChange={(event) => handleChangeSelect(event, 'category')} value={selectedCategory}>
+                <select
+                  name="categoryName"
+                  onChange={(event) => handleChangeSelect(event, 'category')}
+                  value={selectedCategory}
+                >
                   {categoryOptions.map((item, index) => {
                     if (index)
                       return (
@@ -505,39 +523,35 @@ const Write = () => {
                     setIsDateChange(true)
                   }}
                   className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
+                  customInput={<CustomDateInput value={''} onClick={() => ''} />}
                   minDate={new Date()}
                   required
                 />
               </div>
               <div className="time">
-                <div>시작</div>
-                <input
-                  type="time"
-                  name="start"
-                  defaultValue={isStartChange ? selectedStartTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsStartChange(true)
-                    setSelectedStartTime(event.target.value)
-                  }}
-                  className={isStartChange ? 'selected' : ''}
-                />
-                <div>부터</div>
-                <span>~</span>
-                <div>종료</div>
-                <input
-                  type="time"
-                  name="end"
-                  defaultValue={isEndChange ? selectedEndTime : ''}
-                  required
-                  onChange={(event) => {
-                    setIsEndChange(true)
-                    setSelectedEndTime(event.target.value)
-                  }}
-                  className={isEndChange ? 'selected' : ''}
-                />
-                <span>까지</span>
+                <div>시간</div>
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={startTimeSelectorOpen}
+                    setTimeSelectorOpen={setStartTimeSelectorOpen}
+                    isTimeChange={isStartChange}
+                    setIsTimeChange={setIsStartChange}
+                    setSelectedTime={setSelectedStartTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
+                  />
+                </div>
+                <span className="text-gray">부터</span>
+                <div className="time-inner">
+                  <TimeSelector
+                    timeSelectorOpen={endTimeSelectorOpen}
+                    setTimeSelectorOpen={setEndTimeSelectorOpen}
+                    isTimeChange={isEndChange}
+                    setIsTimeChange={setIsEndChange}
+                    setSelectedTime={setSelectedEndTime}
+                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
+                  />
+                </div>
+                <span className="text-gray">까지</span>
               </div>
             </PcReservation>
           </section>
@@ -545,7 +559,7 @@ const Write = () => {
             <h2>본문내용</h2>
             <div>
               <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 입력해주세요."
+                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
                 required
                 minLength={5}
                 name="content"
@@ -559,7 +573,6 @@ const Write = () => {
           </button>
         </PcForm>
       )}
-      {/* <TimeSelector /> */}
     </Container>
   )
 }
@@ -929,10 +942,6 @@ const MobileReservation = styled.div`
   gap: 10px;
   color: ${COLORS.gray40};
 
-  input {
-    color: ${COLORS.gray40};
-  }
-
   .date {
     position: relative;
     line-height: 30px;
@@ -967,29 +976,34 @@ const MobileReservation = styled.div`
   .time {
     display: flex;
     justify-content: space-between;
-    line-height: 32px;
+    height: 40px;
+    line-height: 40px;
 
-    input {
+    .time-inner {
+      position: relative;
+    }
+
+    .time-selector-view {
+      position: relative;
       width: 128px;
       cursor: pointer;
+      display: flex;
+      gap: 8px;
+      border: 1px solid ${COLORS.gray20};
+      border-radius: 8px;
+      padding: 0 10px;
+      box-sizing: border-box;
 
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock.png') no-repeat 98% 50%;
-        opacity: 1;
-        display: block;
-        width: 10px;
-        height: 10px;
-        cursor: pointer;
+      svg {
+        position: absolute;
+        right: 10px;
+        top: 13px;
       }
     }
 
-    .selected {
+    .time-selector-selected {
       background-color: ${COLORS.gray30};
       color: white;
-
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock-fff.png') no-repeat 98% 50%;
-      }
     }
   }
 `
@@ -1030,37 +1044,27 @@ const PcReservation = styled.div`
     gap: 16px;
     line-height: 40px;
 
-    input {
-      width: 100px;
-      position: relative;
-      font-size: ${FONT.pc};
+    .text-gray {
       color: ${COLORS.gray40};
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid ${COLORS.gray20};
-      cursor: pointer;
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-calendar-picker-indicator {
-        display: none;
-        appearance: none;
-      }
-
-      &::-webkit-calendar-picker-indicator {
-        padding-left: 80px;
-        opacity: 0;
-        position: absolute;
-        display: flex;
-        cursor: pointer;
-      }
     }
 
-    .selected {
-      color: ${COLORS.font};
+    .time-inner {
+      position: relative;
+      color: ${COLORS.gray40};
+    }
 
-      &::-webkit-calendar-picker-indicator {
-        background: url('/clock-fff.png') no-repeat 98% 50%;
-      }
+    .time-selector-view {
+      width: 110px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid ${COLORS.gray20};
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    .time-selector-selected {
+      color: ${COLORS.font};
     }
   }
 `

@@ -164,12 +164,23 @@ interface IModalProps {
   modalOpen: boolean
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   content: string[]
+  isConfirm: boolean
+  navigateAfterConfirm?: string
 }
 interface IOverlayProps {
   sideOpen?: boolean
   setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
   modalOpen?: boolean
   setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+interface ITimeSelectorProps {
+  isTimeChange: boolean
+  setIsTimeChange: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedTime: React.Dispatch<React.SetStateAction<string>>
+  timeSelectorOpen: boolean
+  setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
+  timeTempForEdit?: string
 }
 
 interface IWishlistType {

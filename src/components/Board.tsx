@@ -19,7 +19,11 @@ const Board = ({ data, message }: Props) => {
         {data && data.length > 0 ? (
           <ul>
             {data.map((list, idx) => (
-              <PostListBox key={idx} blind={list.transactionStatus} onClick={() => navigate(`/board-details/${list.boardId}`)}>
+              <PostListBox
+                key={idx}
+                blind={list.transactionStatus}
+                onClick={() => navigate(`/board-details/${list.boardId}`)}
+              >
                 <div className="imgae_wrap">
                   <img
                     src={list.imageUrl ? list.imageUrl : randomImages(list.categoryName, list.boardId)}

@@ -2,7 +2,14 @@ import { districtOptions, sortOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { useCallback, useEffect, useState } from 'react'
-import { BadmintonIcon, BasketballIcon, DownwardArrowIcon, FutsalIcon, SoccerIcon, TennisIcon } from '@src/constants/icons'
+import {
+  BadmintonIcon,
+  BasketballIcon,
+  DownwardArrowIcon,
+  FutsalIcon,
+  SoccerIcon,
+  TennisIcon,
+} from '@src/constants/icons'
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
@@ -42,7 +49,7 @@ const Main = () => {
     district: [selectedDistrict === '지역' ? '' : selectedDistrict],
     category: category,
     date: '',
-    chkDate: false
+    chkDate: false,
   }
 
   useEffect(() => {

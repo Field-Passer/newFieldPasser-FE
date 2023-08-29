@@ -41,7 +41,14 @@ const ResetPw = () => {
         <div className="input_wrap">
           <div className="input_wrap_inner">
             <label>새롭게 사용할 비밀번호를 입력해주세요</label>
-            <input type="password" name="newPw" onChange={onChangeNewPw} placeholder="영문, 숫자, 특수문자 포함 8자 이상" value={newPw} required />
+            <input
+              type="password"
+              name="newPw"
+              onChange={onChangeNewPw}
+              placeholder="영문, 숫자, 특수문자 포함 8자 이상"
+              value={newPw}
+              required
+            />
             <p className="error_message">{newPwError && '8 ~ 10자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
           </div>
 
