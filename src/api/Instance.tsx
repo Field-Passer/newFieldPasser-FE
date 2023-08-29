@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 import CheckAuthorization from '@src/components/CheckAuthorization'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
@@ -22,9 +22,16 @@ export const privateApi = axios.create({
   baseURL: BASE_URL,
 })
 
+// interface AuthorizationResponse extends InternalAxiosRequestConfig<D> {
+//   // 여기에 해당 함수가 반환하는 데이터 타입을 정의해줘야 합니다.
+//   // 예: token: string, userId: number, ...
+//   // void
+//   Promise: () => void
+// }
+
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config): Promise<any> {
+  async function (config): Promise<InternalAxiosRequestConfig | any> {
     const atExpire = store.getState().accessToken.expireTime
     const curTime = new Date().getTime()
 
@@ -33,14 +40,18 @@ privateApi.interceptors.request.use(
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      return console.log('at시간 만료로 스토리지 리셋')
+      window.location.replace('/login')
+      console.log('at시간 만료로 스토리지 리셋')
+      return Promise.resolve()
     }
 
-    const state = await CheckAuthorization(config)
-    if (state === 'Failed') {
-      return console.log('CheckAuthorization === Failed.')
+    const newConfig = await CheckAuthorization(config)
+    if (newConfig === 'Failed') {
+      window.location.replace('/login')
+      console.log('CheckAuthorization === Failed.')
+      return Promise.resolve()
     }
-    return state
+    return newConfig
   },
   function (error) {
     return Promise.reject(error)
