@@ -89,7 +89,7 @@ export async function postRefereshToken() {
       },
     })
     return {
-      code: response.status,
+      status: response.status,
       tokens: response.data.data,
     }
   } catch (error) {

@@ -142,9 +142,10 @@ const MyPageDetail = () => {
   }
 
   useEffect(() => {
-    state && setActiveMenu(state)
+    ;(state === 0 || state === 1 || state === 2) && setActiveMenu(state)
     postData()
     wishlistData()
+    console.log(state)
   }, [state])
 
   const isPC = useMediaQuery({

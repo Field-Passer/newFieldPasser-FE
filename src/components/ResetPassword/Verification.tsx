@@ -111,7 +111,7 @@ const Verification = ({ setStep }: propsType) => {
         </div>
 
         <button className="btn_verify" onClick={verifyNumHandler} disabled={verifyLoading}>
-          요청하기
+          인증하기
         </button>
       </Form>
     </>
