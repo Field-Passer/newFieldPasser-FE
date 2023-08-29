@@ -6,10 +6,6 @@ import { InternalAxiosRequestConfig } from 'axios'
 
 const { dispatch } = store
 
-// interface AxiosInterceptorConfigType {
-//   headers: { [x: string]: string }
-// }
-
 const CheckAuthorization = async (config: InternalAxiosRequestConfig) => {
   const refresh_token = getCookieToken()
   const access_token = localStorage.getItem('accessToken')

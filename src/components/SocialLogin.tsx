@@ -5,13 +5,8 @@ import { COLORS } from '@src/globalStyles'
 // import { Link } from 'react-router-dom'
 
 const SocialLogin = () => {
-  //const navigate = useNavigate()
-  // const NAVER_URI = 'https://field-passer.store/oauth2/authorization/naver'
-  // const GOOGLE_URI = 'https://field-passer.store/oauth2/authorization/google'
-
   const socialLoginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // if (!(e.target instanceof HTMLDivElement)) return
     const LINK = `https://field-passer.store/oauth2/authorization/${e.currentTarget.dataset.name}`
     window.location.assign(LINK)
   }

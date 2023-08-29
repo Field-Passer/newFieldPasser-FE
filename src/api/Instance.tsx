@@ -22,13 +22,6 @@ export const privateApi = axios.create({
   baseURL: BASE_URL,
 })
 
-// interface AuthorizationResponse extends InternalAxiosRequestConfig<D> {
-//   // 여기에 해당 함수가 반환하는 데이터 타입을 정의해줘야 합니다.
-//   // 예: token: string, userId: number, ...
-//   // void
-//   Promise: () => void
-// }
-
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
   async function (config): Promise<InternalAxiosRequestConfig | any> {
