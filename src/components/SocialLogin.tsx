@@ -2,23 +2,30 @@
 // import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 
 const SocialLogin = () => {
-  // const navigate = useNavigate()
-  const GOOGLE_URI = 'https://field-passer.store/oauth2/authorization/google'
-  const NAVER_URI = 'https://field-passer.store/oauth2/authorization/naver'
+  //const navigate = useNavigate()
+  // const NAVER_URI = 'https://field-passer.store/oauth2/authorization/naver'
+  // const GOOGLE_URI = 'https://field-passer.store/oauth2/authorization/google'
+
+  const socialLoginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    // if (!(e.target instanceof HTMLDivElement)) return
+    const LINK = `https://field-passer.store/oauth2/authorization/${e.currentTarget.dataset.name}`
+    window.location.assign(LINK)
+  }
 
   return (
     <SocialLoginWrap>
-      <Link to={NAVER_URI} className="btn_naverLogin">
+      <button type="button" className="btn_naverLogin" onClick={socialLoginHandler} data-name="naver">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512" version="1.1">
           <path fill="#ffffff" d="M9 32V480H181.366V255.862L331.358 480H504V32H331.358V255.862L181.366 32H9Z" />
         </svg>
         <span>네이버로 계속하기</span>
-      </Link>
+      </button>
 
-      <Link to={GOOGLE_URI} className="btn_googleLogin">
+      <button type="button" className="btn_googleLogin" onClick={socialLoginHandler} data-name="google">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
@@ -46,7 +53,7 @@ const SocialLogin = () => {
           />
         </svg>
         <span>구글로 계속하기</span>
-      </Link>
+      </button>
     </SocialLoginWrap>
   )
 }
@@ -56,7 +63,7 @@ const SocialLoginWrap = styled.div`
   flex-direction: column;
   gap: 10px;
   text-align: center;
-  > a {
+  > button {
     /* button { */
     display: flex;
     justify-content: center;
@@ -72,6 +79,7 @@ const SocialLoginWrap = styled.div`
     span {
       flex-grow: 1;
       margin-left: -14px;
+      pointer-events: none;
     }
   }
   .btn_naverLogin {
