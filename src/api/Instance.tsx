@@ -24,7 +24,7 @@ export const privateApi = axios.create({
 
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config): Promise<InternalAxiosRequestConfig> {
+  async function (config): Promise<InternalAxiosRequestConfig | any> {
     const atExpire = store.getState().accessToken.expireTime
     const curTime = new Date().getTime()
 
