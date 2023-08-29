@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
+import axios, { InternalAxiosRequestConfig } from 'axios'
 import CheckAuthorization from '@src/components/CheckAuthorization'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
@@ -24,7 +24,7 @@ export const privateApi = axios.create({
 
 // 토큰이 필요한 api 요청의 request 인터셉터
 privateApi.interceptors.request.use(
-  async function (config): Promise<InternalAxiosRequestConfig | any> {
+  async function (config): Promise<InternalAxiosRequestConfig> {
     const atExpire = store.getState().accessToken.expireTime
     const curTime = new Date().getTime()
 
