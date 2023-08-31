@@ -919,9 +919,7 @@ const TimeForm = styled.div<{ timeopen: string }>`
       height: 100%;
       border: none;
       left: 0;
-      -webkit-appearance: textfield;
-      -moz-appearance: textfield;
-      appearance: textfield;
+      opacity: 0;
     }
 
     input:first-child {
