@@ -183,7 +183,7 @@ const BoardDetails = () => {
   )
 }
 const Container = styled.div`
-  max-width: calc(var(--screen-pc) + 40px);
+  max-width: 834px;
   margin: 32px auto 0;
   * {
     box-sizing: border-box;
@@ -344,6 +344,7 @@ const TitleBox = styled.div`
 
 const ContentBox = styled.div`
   display: flex;
+  flex-direction: column;
   padding: 0 20px;
   gap: 20px;
 
@@ -365,7 +366,7 @@ const ContentBox = styled.div`
   }
 
   .image_box {
-    width: 50%;
+    width: 100%;
     margin-bottom: 48px;
 
     img {
@@ -375,22 +376,14 @@ const ContentBox = styled.div`
   }
 
   .content_text {
-    width: 50%;
-    min-height: 200px;
+    width: 100%;
+    min-height: 300px;
     font-size: 16px;
     line-height: 1.6;
     word-wrap: break-word;
-  }
 
-  @media ${({ theme }) => theme.device.tablet} {
-    display: block;
-
-    .image_box {
-      width: 100%;
-    }
-
-    .content_text {
-      width: 100%;
+    @media ${({ theme }) => theme.device.tablet} {
+      min-height: 150px;
     }
   }
 `

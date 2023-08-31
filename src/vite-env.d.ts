@@ -23,6 +23,7 @@ interface IResponseType {
     accessToken: string
     refreshToken: string
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any
 }
 
@@ -80,6 +81,7 @@ interface SearchValueTypes {
   district: string[]
   category: string
   chkDate: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any
 }
 
@@ -91,6 +93,7 @@ interface ValueStateType {
   startDate: string
   endDate: string
   searchTextValue: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any
 }
 
@@ -101,6 +104,7 @@ interface CheckValueStateType {
   timeChange: boolean
   startDateChange: boolean
   endDateChange: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any
 }
 

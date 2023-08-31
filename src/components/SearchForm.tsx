@@ -182,6 +182,7 @@ const SearchForm = () => {
   }
 
   // search keyWord btn function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dispatchSearchKewordValue = (type: string, key: any, value: any) => {
     valueStateChangeFn(key, value)
     dispatchValue[type] = value
