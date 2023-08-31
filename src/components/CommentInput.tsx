@@ -18,7 +18,7 @@ type PropsType = {
 const BoardCommentInput = (props: PropsType) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const commentValue = useRef<HTMLInputElement>(null)
+  const commentValue = useRef<HTMLTextAreaElement>(null)
 
   const getCommnetData = async (boardId: number, page: number, loginVal: boolean) => {
     try {
@@ -41,8 +41,7 @@ const BoardCommentInput = (props: PropsType) => {
 
   return (
     <InputEl>
-      <input
-        type="text"
+      <textarea
         onFocus={(e) => {
           if (!props.loginVal) {
             alert('로그인 회원만 댓글 작성 가능합니다.')
@@ -65,13 +64,15 @@ const BoardCommentInput = (props: PropsType) => {
         ref={commentValue}
         placeholder={props.loginVal ? '댓글을 입력해주세요.' : '로그인 후 이용 가능합니다.'}
         defaultValue={props.commentContent ? props.commentContent : ''}
+        maxLength={200}
+        rows={1}
       />
       {props.type === 'add' ? (
         <div>
           <button
             className="add_comment_btn"
             onClick={() => {
-              const comment = commentValue.current as HTMLInputElement
+              const comment = commentValue.current as HTMLTextAreaElement
               if (comment.value.replace(/ /g, '') !== '') {
                 addCommentFn()
               } else {
@@ -88,7 +89,7 @@ const BoardCommentInput = (props: PropsType) => {
       ) : (
         <button
           onClick={() => {
-            const comment = commentValue.current as HTMLInputElement
+            const comment = commentValue.current as HTMLTextAreaElement
             if (comment.value.replace(/ /g, '') !== '') {
               postComment(props.boardId, comment.value, props.commentId)
               dispatch(setCommentInput({ commentNum: -1 }))
@@ -108,14 +109,18 @@ const BoardCommentInput = (props: PropsType) => {
 
 const InputEl = styled.div`
   width: 100%;
-  height: 100%;
+  height: 40px;
 
-  input {
+  textarea {
     width: 100%;
-    height: 100%;
+    height: 40px;
     border: 1px solid #d9d9d9;
     border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     padding-left: 15px;
+    padding-right: 50px;
+    resize: none;
   }
 
   & > button,

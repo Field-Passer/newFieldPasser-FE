@@ -114,6 +114,23 @@ const GlobalStyles = createGlobalStyle`
     overflow: hidden
   }
 
+  input[type='text'],
+  input[type='password'],
+  input[type='submit'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='email'],
+  input[type='button'],
+  input[type='reset'],
+  input[type='time'] {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border-radius:0;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    outline:0;
+  }
 
 `
 export const COLORS = {

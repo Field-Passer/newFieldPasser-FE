@@ -26,6 +26,7 @@ export const randomImages = (category: string, imgNum: number) => {
     축구장: string
     테니스장: string
     풋살장: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [prop: string]: any
   }
 
