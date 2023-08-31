@@ -57,6 +57,8 @@ const Header = ({ setSideOpen }: PropsType) => {
     alert('로그인 후 이용 가능합니다.')
   }
 
+  const userRole = useSelector((state: RootState) => state.userInfo.role)
+
   return (
     <>
       <Mobile>
@@ -77,6 +79,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <img src="/logo.png" alt="필드패서" />
             </Link>
             <div className="menu">
+              {authenticated && userRole === '관리자' && <Link to={PATH.BOARD_BLIND}>게시글 관리</Link>}
               <Link to="/help">고객센터</Link>
               {authenticated && <Link to={PATH.MYPAGE}>마이페이지</Link>}
               {!authenticated && <Link to={PATH.JOIN}>회원가입</Link>}
