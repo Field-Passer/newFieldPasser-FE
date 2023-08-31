@@ -182,6 +182,7 @@ const SearchForm = () => {
   }
 
   // search keyWord btn function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dispatchSearchKewordValue = (type: string, key: any, value: any) => {
     valueStateChangeFn(key, value)
     dispatchValue[type] = value
@@ -918,9 +919,7 @@ const TimeForm = styled.div<{ timeopen: string }>`
       height: 100%;
       border: none;
       left: 0;
-      -webkit-appearance: textfield;
-      -moz-appearance: textfield;
-      appearance: textfield;
+      opacity: 0;
     }
 
     input:first-child {

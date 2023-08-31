@@ -140,6 +140,7 @@ const BoardComment = (props: PropsType) => {
             )}
             {item.children && (
               <ul>
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {item.children.map((child: any, idx: number) => (
                   <ChildComment key={idx}>
                     <p>
@@ -225,7 +226,6 @@ const InputBox = styled.div<{ type: string }>`
   border: ${(props) => (props.type === 'parent' ? '1px solid #d9d9d9' : 'none')};
   border-right: 0;
   border-left: 0;
-  height: 72px;
   position: relative;
 
   @media ${({ theme }) => theme.device.tablet} {
