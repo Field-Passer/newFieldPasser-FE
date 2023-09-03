@@ -42,7 +42,11 @@ const Login = () => {
       dispatch(SET_TOKEN(tokens.accessToken))
       setRefreshToken(tokens.refreshToken)
       console.log('로그인함', new Date())
-      return navigate('/')
+      window.onpopstate = () => {
+        console.log('뒤로가기 클릭')
+        return navigate('/')
+      }
+      return navigate('/', { replace: true })
     } else {
       alert('아이디와 비밀번호를 다시 확인해주세요.')
     }
