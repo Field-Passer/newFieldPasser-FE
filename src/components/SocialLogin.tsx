@@ -1,5 +1,5 @@
 // import React from 'react'
-// import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
 // import { Link } from 'react-router-dom'
@@ -8,7 +8,7 @@ const SocialLogin = () => {
   const socialLoginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     const LINK = `https://field-passer.store/oauth2/authorization/${e.currentTarget.dataset.name}`
-    window.location.assign(LINK)
+    window.location.replace(LINK)
   }
 
   return (

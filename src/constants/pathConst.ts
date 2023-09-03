@@ -18,7 +18,7 @@ const PATH = {
   ASK_ANSWER_FORM: '/ask/answer-form',
   PROFILE: '/profile/:user',
   BOARD_BLIND: '/board-list/blind',
-  SOCIAL_REDIRECT: '/social-redirect',
+  SOCIAL_REDIRECT: '/social-redirect/*',
 }
 
 export default PATH
