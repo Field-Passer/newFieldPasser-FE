@@ -85,6 +85,11 @@ interface SearchValueTypes {
   [prop: string]: any
 }
 
+interface IMainListPayload {
+  district: string
+  category: string
+}
+
 interface ValueStateType {
   categoryValue: string
   districtValue: string[]
