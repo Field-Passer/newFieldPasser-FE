@@ -80,21 +80,16 @@ const Main = () => {
     try {
       setIsLoading(true)
       const postData = await getSearchPostList(searchValue, page)
-      if (page === 1) setPostList(postData.content)
-      else setPostList((prevState) => [...prevState, ...postData.content])
+      console.log(postData)
+      setPostList((prevList) => [...prevList, ...postData.content])
 
-      if (postData.last) setLastPage(true)
-      else if (!postData.last) setLastPage(false)
+      postData.last ? setLastPage(true) : setLastPage(false)
     } catch (error) {
       alert(error)
     } finally {
       setIsLoading(false)
     }
-  }, [page, category, selectedDistrict])
-
-  useEffect(() => {
-    getPostList()
-  }, [getPostList])
+  }, [page])
 
   useEffect(() => {
     getPostList()
@@ -106,7 +101,13 @@ const Main = () => {
       console.log('페이지추가')
       setPage((prev) => prev + 1)
     }
-  }, [inView, isLoading])
+  }, [inView, isLoading, lastPage])
+
+  useEffect(() => {
+    if (page !== 1) {
+      getPostList()
+    }
+  }, [getPostList])
 
   const categories: ICategories[] = [
     {

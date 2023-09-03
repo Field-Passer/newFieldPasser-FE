@@ -20,7 +20,7 @@ export const infoSlice = createSlice({
       state.memberPhone = action.payload.memberPhone
     },
     DELETE_INFO: (state) => {
-      console.log(state)
+      // eslint-disable-next-line
       state = initialState
     },
   },
