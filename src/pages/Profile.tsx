@@ -5,13 +5,13 @@ import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import MBoardList from '@src/components/MBoardList'
 import { useState, useEffect } from 'react'
-import { getMyPost } from '@src/api/authApi'
+import { getUserPost } from '@src/api/authApi'
 
 const Profile = () => {
   const [posts, setPosts] = useState<POST_TYPE[]>([])
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getMyPost(1)
+      const response = await getUserPost(1, 'dm@test.com')
       setPosts(response?.data)
     }
     fetchData()

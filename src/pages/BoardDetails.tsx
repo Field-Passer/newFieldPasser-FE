@@ -112,7 +112,7 @@ const BoardDetails = () => {
               </Mobile>
               <div>
                 <p>
-                  <span className="user_name">
+                  <span className="user_name" onClick={() => navigate(`/profile/${detailData.memberId}`)}>
                     {detailData.memberName} {detailData.memberId}
                   </span>
                   <span className="view">조회수 {detailData.viewCount}</span>
@@ -278,6 +278,7 @@ const TitleBox = styled.div`
       width: 100%;
       display: block;
       font-size: 14px;
+      cursor: pointer;
     }
 
     .view,
