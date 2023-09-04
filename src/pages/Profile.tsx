@@ -5,17 +5,49 @@ import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import MBoardList from '@src/components/MBoardList'
 import { useState, useEffect } from 'react'
-import { getMyPost } from '@src/api/authApi'
+import { getUserPost } from '@src/api/authApi'
+import { useLocation } from 'react-router'
+import { useInView } from 'react-intersection-observer'
 
 const Profile = () => {
+  const { state } = useLocation()
+  const { pathname } = useLocation()
+  const memberName = state.memberName
+  const memberId = pathname.slice(9)
+
   const [posts, setPosts] = useState<POST_TYPE[]>([])
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getMyPost(1)
-      setPosts(response?.data)
+
+  const [ref, inView] = useInView()
+  const [page, setPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [lastPage, setLastPage] = useState(false)
+
+  const getPost = async () => {
+    try {
+      setIsLoading(true)
+      const response = await getUserPost(page, memberId)
+      if (page === 1) setPosts(response?.data)
+      else setPosts((prev) => [...prev, ...response?.data])
+
+      if (response?.lastPage) setLastPage(true)
+      else setLastPage(false)
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsLoading(false)
     }
-    fetchData()
-  }, [])
+  }
+
+  useEffect(() => {
+    getPost()
+  }, [page])
+
+  useEffect(() => {
+    if (inView && !lastPage) {
+      setPage((prev) => prev + 1)
+    }
+  }, [inView, lastPage])
+
   const isPC = useMediaQuery({ query: '(min-width: 834px' })
   return (
     <>
@@ -23,17 +55,18 @@ const Profile = () => {
         <Inner>
           <TopStyle screen="pc">
             <div className="title">
-              <span>김필드 1412</span> 님의 게시물
+              <span>{memberName}</span> 님의 게시물
             </div>
             <RoleButton screen="pc">관리자 등록</RoleButton>
           </TopStyle>
-          <Board data={[]} message={'작성한 게시물이 없습니다.'} />
+          <Board data={posts} message={'작성한 게시물이 없습니다.'} />
+          {!isLoading && <div ref={ref}></div>}
         </Inner>
       ) : (
         <div>
           <TopStyle screen="mobile">
             <div className="title">
-              <span>김필드 1412</span> 님의 게시물
+              <span>{memberName}</span> 님의 게시물
             </div>
             <RoleButton screen="mobile">관리자 등록</RoleButton>
           </TopStyle>
@@ -43,6 +76,7 @@ const Profile = () => {
             ) : (
               <div>작성한 게시물이 없습니다.</div>
             )}
+            {!isLoading && <div ref={ref}></div>}
           </PostContainer>
         </div>
       )}
