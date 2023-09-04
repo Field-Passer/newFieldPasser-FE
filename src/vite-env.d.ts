@@ -174,7 +174,7 @@ interface IModalProps {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   content: string[]
   isConfirm: boolean
-  confirmOption?: () => void
+  navigateOption?: string
 }
 interface IOverlayProps {
   sideOpen?: boolean
@@ -205,4 +205,9 @@ interface IWishlistType {
   price: number
   viewCount: number
   wishCount: number
+}
+
+interface CustomDateInputProps {
+  value: ''
+  onClick: () => void
 }

@@ -4,11 +4,14 @@ import { LuInfo } from 'react-icons/lu'
 import { CloseButton } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
 import Overlay from './Overlay'
+import { useNavigate } from 'react-router'
 
-const Modal = ({ modalOpen, setModalOpen, content, isConfirm, confirmOption }: IModalProps) => {
+const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption }: IModalProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+
+  const navigate = useNavigate()
 
   const closeModal = () => {
     setModalOpen(false)
@@ -19,7 +22,12 @@ const Modal = ({ modalOpen, setModalOpen, content, isConfirm, confirmOption }: I
       {modalOpen && (
         <Container>
           {!isMobile && (
-            <PcButton onClick={() => closeModal()}>
+            <PcButton
+              onClick={() => {
+                navigateOption && navigate(navigateOption)
+                closeModal()
+              }}
+            >
               <CloseButton />
             </PcButton>
           )}
@@ -29,13 +37,48 @@ const Modal = ({ modalOpen, setModalOpen, content, isConfirm, confirmOption }: I
               return <span key={text}>{text}</span>
             })}
           </Content>
-          {isMobile && !isConfirm && <MobileButton onClick={() => closeModal()}>닫기</MobileButton>}
-          {isMobile && isConfirm && (
+          {!isMobile && isConfirm && (
             <ConfirmContainer>
-              <ConfirmButton onClick={confirmOption}>확인</ConfirmButton>
               <ConfirmButton
                 onClick={() => {
-                  setModalOpen(false)
+                  navigateOption && navigate(navigateOption)
+                  closeModal()
+                }}
+              >
+                확인
+              </ConfirmButton>
+              <ConfirmButton
+                onClick={() => {
+                  closeModal()
+                }}
+              >
+                취소
+              </ConfirmButton>
+            </ConfirmContainer>
+          )}
+          {isMobile && !isConfirm && (
+            <MobileButton
+              onClick={() => {
+                navigateOption && navigate(navigateOption)
+                closeModal()
+              }}
+            >
+              확인
+            </MobileButton>
+          )}
+          {isMobile && isConfirm && (
+            <ConfirmContainer>
+              <ConfirmButton
+                onClick={() => {
+                  navigateOption && navigate(navigateOption)
+                  closeModal()
+                }}
+              >
+                확인
+              </ConfirmButton>
+              <ConfirmButton
+                onClick={() => {
+                  closeModal()
                 }}
               >
                 취소
@@ -67,6 +110,7 @@ const Container = styled.div`
   justify-content: space-evenly;
   font-weight: 700;
   border: 1px solid ${COLORS.gray20};
+  line-height: 23px;
 
   @media (min-width: 834px) {
     min-width: 500px;
