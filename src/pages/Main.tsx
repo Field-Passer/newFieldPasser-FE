@@ -41,8 +41,6 @@ const Main = () => {
     category: '풋살장',
   })
 
-  console.log('렌더링')
-
   useEffect(() => {
     switch (selectedSortOption) {
       case '인기순':
@@ -67,9 +65,7 @@ const Main = () => {
     try {
       setIsLoading(true)
       const postData = await getMainPostList(payload, page)
-      console.log(postData)
       setPostList((prevList) => [...prevList, ...postData.content])
-
       postData.last ? setLastPage(true) : setLastPage(false)
     } catch (error) {
       alert(error)
@@ -178,7 +174,6 @@ const Main = () => {
         break
     }
   }
-  ;`/banner${Math.floor(Math.random() * 5)}.png`
   return (
     <Container>
       {!isMobile && (

@@ -62,7 +62,6 @@ const SearchForm = () => {
     startDateChange: false,
     endDateChange: false,
   })
-  console.log(checkState)
   // current state value change fn
   type Value = string | string[] | Date
   const valueStateChangeFn = (key: string, value: Value) => {
