@@ -174,13 +174,12 @@ interface IModalProps {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   content: string[]
   isConfirm: boolean
-  navigateAfterConfirm?: string
+  navigateOption?: string
 }
 interface IOverlayProps {
   sideOpen?: boolean
   setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
   modalOpen?: boolean
-  setModalOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface ITimeSelectorProps {
@@ -206,4 +205,9 @@ interface IWishlistType {
   price: number
   viewCount: number
   wishCount: number
+}
+
+interface CustomDateInputProps {
+  value: ''
+  onClick: () => void
 }

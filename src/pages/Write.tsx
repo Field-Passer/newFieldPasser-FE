@@ -5,17 +5,17 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
+import Modal from '@src/components/Modal'
 
 const Write = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
   const location = useLocation()
-  const navigate = useNavigate()
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
@@ -29,18 +29,17 @@ const Write = () => {
   const [writtenContent, setWrittenContent] = useState<string>('')
   const [selectedDistrict, setSelectedDistrict] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [dataForEdit, setDataForEdit] = useState<POST_TYPE>()
+  const [dataForEdit] = useState<POST_TYPE>(location.pathname.includes('edit') && location.state.data)
   const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
   const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
   const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
 
-  useEffect(() => {
-    if (location.pathname.includes('edit')) {
-      setDataForEdit(location.state.data)
-    }
-  }, [])
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
 
   useEffect(() => {
     if (dataForEdit) {
@@ -64,15 +63,14 @@ const Write = () => {
     const fileReader = new FileReader()
 
     if (thisFile && thisFile.size > 10485760) {
-      alert('첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.')
+      setModalOpen(true)
+      setModalText(['첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.'])
       event.target.files = null
       return false
     }
 
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
-      // url element 생성 비동기, state보다 늦게 실행, promise 안 쓰면 동작 안됨
-      // 파일은 삭제버튼 동작을 위해 state에 담아서 전송하기
       fileReader.onload = () => {
         setImgSrc(fileReader.result + '')
         resolve()
@@ -92,11 +90,6 @@ const Write = () => {
     let price = event.target.value
     price = Number(price.replace(/[^0-9]/g, '')).toLocaleString('ko-KR')
     setPriceValue(price)
-  }
-
-  interface CustomDateInputProps {
-    value: ''
-    onClick: () => void
   }
 
   const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
@@ -131,12 +124,14 @@ const Write = () => {
     const target = event.target as HTMLFormElement
 
     if (selectedStartTime === selectedEndTime) {
-      alert('시작 시간과 끝나는 시간이 동일합니다. 예약 일시를 정확히 선택해주세요.')
+      setModalOpen(true)
+      setModalText(['시작 시간과 끝나는 시간이 동일합니다.', '예약 일시를 정확히 선택해주세요.'])
       return false
     }
 
     if (!selectedStartTime || !selectedEndTime) {
-      alert('시작 시간과 끝나는 시간을 모두 선택해주세요.')
+      setModalOpen(true)
+      setModalText(['시작 시간과 끝나는 시간을 모두 선택해주세요.'])
       return false
     }
 
@@ -159,7 +154,6 @@ const Write = () => {
     const start = date + 'T' + selectedStartTime + ':00'
     let end = date + 'T' + selectedEndTime + ':00'
 
-    // 시작시간 오후, 끝나는시간 오전일 경우 날짜+1
     if (+start.slice(11, 13) > +end.slice(11, 13)) {
       const newDate = (+end.slice(8, 10) + 1 + '').padStart(2, '0') + 'T'
       end = end.replace(/[0-9]+[0-9]+T/, newDate)
@@ -169,23 +163,26 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    const entries = formData.entries()
-    for (const pair of entries) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
+    // const entries = formData.entries()
+    // for (const pair of entries) {
+    //   console.log(pair[0] + ', ' + pair[1])
+    // }
 
     switch (location.pathname) {
       case '/write':
         try {
           const writeRes = await requestWrite(formData)
           if (writeRes === 200) {
-            window.confirm('게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?') ? navigate('/') : null
+            setModalOpen(true)
+            setModalText(['게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?'])
+            setModalIsConfirm(true)
+            setModalNavigateOption('/')
           } else {
             throw new Error()
           }
         } catch (err) {
-          console.log(err)
-          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
+          setModalOpen(false)
+          setModalText(['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'])
         }
         break
       default:
@@ -199,12 +196,13 @@ const Write = () => {
           }
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
-            alert('게시글 수정이 완료되었습니다.')
-            navigate(`/board-details/${dataForEdit?.boardId}`)
+            setModalOpen(true)
+            setModalText(['게시글 수정이 완료되었습니다.'])
+            setModalNavigateOption(`/board-details/${dataForEdit?.boardId}`)
           }
         } catch (err) {
-          console.log(err)
-          alert('정상적으로 등록되지 않았습니다. 다시 시도해주세요.')
+          setModalOpen(true)
+          setModalText(['정상적으로 등록되지 않았습니다.', '다시 시도해주세요.'])
         }
         break
     }
@@ -212,6 +210,15 @@ const Write = () => {
 
   return (
     <Container>
+      {modalOpen && (
+        <Modal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          content={modalText}
+          isConfirm={modalIsConfirm}
+          navigateOption={modalNavigateOption}
+        />
+      )}
       {isMobile ? (
         <MobileForm
           onSubmit={(event) => {

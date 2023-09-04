@@ -3,15 +3,15 @@ import { styled } from 'styled-components'
 import { LuInfo } from 'react-icons/lu'
 import { CloseButton } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
+import Overlay from './Overlay'
+import { useNavigate } from 'react-router'
 
-const Modal = ({ modalOpen, setModalOpen, content }: IModalProps) => {
-  // 필요한 props 및 기능
-  // confirm기능 추가할 경우 navigate
-  // overlay
-
+const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption }: IModalProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+
+  const navigate = useNavigate()
 
   const closeModal = () => {
     setModalOpen(false)
@@ -22,7 +22,12 @@ const Modal = ({ modalOpen, setModalOpen, content }: IModalProps) => {
       {modalOpen && (
         <Container>
           {!isMobile && (
-            <PcButton onClick={() => closeModal()}>
+            <PcButton
+              onClick={() => {
+                navigateOption && navigate(navigateOption)
+                closeModal()
+              }}
+            >
               <CloseButton />
             </PcButton>
           )}
@@ -32,9 +37,57 @@ const Modal = ({ modalOpen, setModalOpen, content }: IModalProps) => {
               return <span key={text}>{text}</span>
             })}
           </Content>
-          {isMobile && <MobileButton onClick={() => closeModal()}>닫기</MobileButton>}
+          {!isMobile && isConfirm && (
+            <ConfirmContainer>
+              <ConfirmButton
+                onClick={() => {
+                  navigateOption && navigate(navigateOption)
+                  closeModal()
+                }}
+              >
+                확인
+              </ConfirmButton>
+              <ConfirmButton
+                onClick={() => {
+                  closeModal()
+                }}
+              >
+                취소
+              </ConfirmButton>
+            </ConfirmContainer>
+          )}
+          {isMobile && !isConfirm && (
+            <MobileButton
+              onClick={() => {
+                navigateOption && navigate(navigateOption)
+                closeModal()
+              }}
+            >
+              확인
+            </MobileButton>
+          )}
+          {isMobile && isConfirm && (
+            <ConfirmContainer>
+              <ConfirmButton
+                onClick={() => {
+                  navigateOption && navigate(navigateOption)
+                  closeModal()
+                }}
+              >
+                확인
+              </ConfirmButton>
+              <ConfirmButton
+                onClick={() => {
+                  closeModal()
+                }}
+              >
+                취소
+              </ConfirmButton>
+            </ConfirmContainer>
+          )}
         </Container>
       )}
+      <Overlay modalOpen={modalOpen} />
     </>
   )
 }
@@ -56,6 +109,8 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   font-weight: 700;
+  border: 1px solid ${COLORS.gray20};
+  line-height: 23px;
 
   @media (min-width: 834px) {
     min-width: 500px;
@@ -84,8 +139,9 @@ const Content = styled.div`
   margin: 0 auto;
   text-align: center;
 
-  :first-child {
-    color: ${COLORS.error};
+  span {
+    color: ${COLORS.font};
+    font-size: 16px;
   }
 `
 
@@ -108,6 +164,22 @@ const PcButton = styled.button`
   position: absolute;
   top: 26px;
   right: 26px;
+`
+
+const ConfirmContainer = styled.div`
+  position: relative;
+  width: 90%;
+  height: 45px;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+`
+
+const ConfirmButton = styled.button`
+  font-size: 16px;
+  background-color: ${COLORS.gray20};
+  width: 40%;
+  height: 40px;
 `
 
 export default Modal

@@ -1,7 +1,7 @@
 import { useMediaQuery } from 'react-responsive'
 import { styled } from 'styled-components'
 
-const Overlay = ({ sideOpen, setSideOpen, modalOpen, setModalOpen }: IOverlayProps) => {
+const Overlay = ({ sideOpen, setSideOpen, modalOpen }: IOverlayProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -15,13 +15,7 @@ const Overlay = ({ sideOpen, setSideOpen, modalOpen, setModalOpen }: IOverlayPro
           }}
         ></Container>
       ) : null}
-      {modalOpen ? (
-        <Container
-          onClick={() => {
-            setModalOpen && setModalOpen(false)
-          }}
-        ></Container>
-      ) : null}
+      {modalOpen && <Container></Container>}
     </>
   )
 }
