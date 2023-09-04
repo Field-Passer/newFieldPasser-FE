@@ -15,7 +15,17 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
-      console.log(res.data)
+      return res.data.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const getMainPostList = async (values: IMainListPayload, page = 1) => {
+  return await publicApi
+    .get(`/search/${page}?categoryName=${values.category}&districtNames=${values.district}`)
+    .then((res) => {
       return res.data.data
     })
     .catch((err) => {

@@ -13,7 +13,7 @@ import {
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
-import { getSearchPostList } from '@src/api/boardApi'
+import { getMainPostList } from '@src/api/boardApi'
 import { useInView } from 'react-intersection-observer'
 
 const Main = () => {
@@ -25,13 +25,9 @@ const Main = () => {
   const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
-
   const [postList, setPostList] = useState<POST_TYPE[]>([])
-  const [category, setCategory] = useState<string>('풋살장')
-  const [background, setBackground] = useState<string>('')
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
-  const [selectedDistrict, setSelectedDistrict] = useState('지역')
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
   const [isActive, setIsActive] = useState({
     futsal: true,
@@ -40,21 +36,12 @@ const Main = () => {
     badminton: false,
     tennis: false,
   })
-  const searchValue = {
-    title: '',
-    startTime: '',
-    endTime: '',
-    startDate: '',
-    endDate: '',
-    district: [selectedDistrict === '지역' ? '' : selectedDistrict],
-    category: category,
-    date: '',
-    chkDate: false,
-  }
+  const [payload, setPayload] = useState({
+    district: '',
+    category: '풋살장',
+  })
 
-  useEffect(() => {
-    setBackground(`/banner${Math.floor(Math.random() * 5)}.png`)
-  }, [])
+  console.log('렌더링')
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -79,34 +66,35 @@ const Main = () => {
   const getPostList = useCallback(async () => {
     try {
       setIsLoading(true)
-      const postData = await getSearchPostList(searchValue, page)
-      if (page === 1) setPostList(postData.content)
-      else setPostList((prevState) => [...prevState, ...postData.content])
+      const postData = await getMainPostList(payload, page)
+      console.log(postData)
+      setPostList((prevList) => [...prevList, ...postData.content])
 
-      if (postData.last) setLastPage(true)
-      else if (!postData.last) setLastPage(false)
+      postData.last ? setLastPage(true) : setLastPage(false)
     } catch (error) {
       alert(error)
     } finally {
       setIsLoading(false)
     }
-  }, [page, category, selectedDistrict])
+  }, [page, payload])
 
   useEffect(() => {
-    getPostList()
-  }, [getPostList])
-
-  useEffect(() => {
+    setPostList([])
     getPostList()
     setPage(1)
-  }, [category, selectedDistrict])
+  }, [payload])
 
   useEffect(() => {
-    if (inView && !isLoading && !lastPage) {
-      console.log('페이지추가')
+    if (inView && !lastPage) {
       setPage((prev) => prev + 1)
     }
-  }, [inView, isLoading])
+  }, [inView, lastPage])
+
+  useEffect(() => {
+    if (page !== 1) {
+      getPostList()
+    }
+  }, [getPostList])
 
   const categories: ICategories[] = [
     {
@@ -146,7 +134,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setCategory('풋살장')
+        setPayload({ category: '풋살장', district: payload.district })
         break
       case 'soccer':
         setIsActive({
@@ -156,7 +144,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setCategory('축구장')
+        setPayload({ category: '축구장', district: payload.district })
         break
       case 'basketball':
         setIsActive({
@@ -166,7 +154,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setCategory('농구장')
+        setPayload({ category: '농구장', district: payload.district })
         break
       case 'badminton':
         setIsActive({
@@ -176,7 +164,7 @@ const Main = () => {
           badminton: true,
           tennis: false,
         })
-        setCategory('배드민턴장')
+        setPayload({ category: '배드민턴장', district: payload.district })
         break
       case 'tennis':
         setIsActive({
@@ -186,15 +174,18 @@ const Main = () => {
           badminton: false,
           tennis: true,
         })
-        setCategory('테니스장')
+        setPayload({ category: '테니스장', district: payload.district })
         break
     }
   }
-
+  ;`/banner${Math.floor(Math.random() * 5)}.png`
   return (
     <Container>
       {!isMobile && (
-        <section className="banner-section" style={{ backgroundImage: `url(${background})` }}>
+        <section
+          className="banner-section"
+          style={{ backgroundImage: `url('/banner${Math.floor(Math.random() * 5)}.png')` }}
+        >
           <div className="background"></div>
           <div className="text">
             <div className="big">
@@ -238,7 +229,10 @@ const Main = () => {
                   setIsDistrictOpen(false)
                 }}
               >
-                <div className="default option" onClick={() => setSelectedDistrict('지역')}>
+                <div
+                  className="default option"
+                  onClick={() => setPayload({ district: '', category: payload.category })}
+                >
                   지역
                 </div>
                 {districtOptions.map((item) => {
@@ -247,7 +241,7 @@ const Main = () => {
                       key={item}
                       className="option"
                       onClick={() => {
-                        setSelectedDistrict(item)
+                        setPayload({ district: item, category: payload.category })
                       }}
                     >
                       {item}
@@ -257,12 +251,12 @@ const Main = () => {
               </div>
             ) : (
               <button
-                className={selectedDistrict !== '지역' ? 'select-close selected' : 'select-close'}
+                className={payload.district !== '' ? 'select-close selected' : 'select-close'}
                 onClick={() => {
                   setIsDistrictOpen(true)
                 }}
               >
-                {selectedDistrict}
+                {payload.district ? payload.district : '지역'}
                 <DownwardArrowIcon />
               </button>
             )}
@@ -311,7 +305,7 @@ const Main = () => {
           </div>
         </Options>
         <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
-        <div ref={ref}></div>
+        {!isLoading && <div ref={ref}></div>}
       </ListSection>
     </Container>
   )
