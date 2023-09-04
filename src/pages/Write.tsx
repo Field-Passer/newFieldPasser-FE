@@ -37,7 +37,6 @@ const Write = () => {
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
 
   const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
   const [modalText, setModalText] = useState<string[]>([])
   const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
 
@@ -135,6 +134,12 @@ const Write = () => {
       return false
     }
 
+    if (writtenContent.length < 5) {
+      setModalOpen(true)
+      setModalText(['내용은 5자 이상 입력해주세요.'])
+      return false
+    }
+
     for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
       if (item.name === 'file') {
@@ -163,10 +168,10 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    // const entries = formData.entries()
-    // for (const pair of entries) {
-    //   console.log(pair[0] + ', ' + pair[1])
-    // }
+    const entries = formData.entries()
+    for (const pair of entries) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
 
     switch (location.pathname) {
       case '/write':
@@ -174,8 +179,7 @@ const Write = () => {
           const writeRes = await requestWrite(formData)
           if (writeRes === 200) {
             setModalOpen(true)
-            setModalText(['게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?'])
-            setModalIsConfirm(true)
+            setModalText(['게시글 작성이 완료되었습니다.'])
             setModalNavigateOption('/')
           } else {
             throw new Error()
@@ -215,7 +219,7 @@ const Write = () => {
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
           content={modalText}
-          isConfirm={modalIsConfirm}
+          isConfirm={false}
           navigateOption={modalNavigateOption}
         />
       )}
