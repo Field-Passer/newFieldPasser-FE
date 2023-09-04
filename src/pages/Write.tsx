@@ -10,6 +10,7 @@ import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 import Modal from '@src/components/Modal'
+import { ImageUploadIcon } from '@src/constants/icons'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -244,7 +245,7 @@ const Write = () => {
                   setIsFileEdit(true)
                 }}
               />
-              <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+              <ImageUploadIcon size="48px" />
               <div className="img-text">
                 <span>예약 인증 사진을 올려주세요</span>
                 <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -252,7 +253,7 @@ const Write = () => {
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
               {location.pathname.includes('edit') && !isFileEdit ? (
                 <div className="img-overlay">
-                  <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                  <ImageUploadIcon size="48px" />
                   <div className="img-text">
                     <span>예약 인증 사진을 올려주세요</span>
                     <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -422,7 +423,7 @@ const Write = () => {
                     setIsFileEdit(true)
                   }}
                 />
-                <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                <ImageUploadIcon size="54px" />
                 <div className="img-text">
                   <span>예약 인증 사진을 올려주세요</span>
                   <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -430,7 +431,7 @@ const Write = () => {
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
                 {location.pathname.includes('edit') && !isFileEdit ? (
                   <div className="img-overlay">
-                    <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                    <ImageUploadIcon size="54px" />
                     <div className="img-text">
                       <span>예약 인증 사진을 올려주세요</span>
                       <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -912,11 +913,6 @@ const FileUpload = styled.label`
 
   input {
     display: none;
-  }
-
-  .uploadIcon {
-    width: 40px;
-    height: 40px;
   }
 
   .img-text {
