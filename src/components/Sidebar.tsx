@@ -29,6 +29,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
   const dispatch = useDispatch()
 
   const userName = useSelector((state: RootState) => state.userInfo.memberName)
+  const userRole = useSelector((state: RootState) => state.userInfo.role)
   const refreshToken = getCookieToken()
 
   const logoutHandler = async () => {
@@ -172,6 +173,17 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
           >
             1:1 문의하기
           </div>
+          {userRole === '관리자' && (
+            <div
+              className="block"
+              onClick={() => {
+                closeSidebar()
+                navigate(PATH.BOARD_BLIND)
+              }}
+            >
+              게시글 관리
+            </div>
+          )}
         </MiddleSection>
         {refreshToken && (
           <LastSection>
