@@ -10,6 +10,7 @@ import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 import Modal from '@src/components/Modal'
+import { ImageUploadIcon } from '@src/constants/icons'
 
 const Write = () => {
   const isMobile = useMediaQuery({
@@ -37,7 +38,6 @@ const Write = () => {
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
 
   const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
   const [modalText, setModalText] = useState<string[]>([])
   const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
 
@@ -135,6 +135,12 @@ const Write = () => {
       return false
     }
 
+    if (writtenContent.length < 5) {
+      setModalOpen(true)
+      setModalText(['내용은 5자 이상 입력해주세요.'])
+      return false
+    }
+
     for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
       if (item.name === 'file') {
@@ -163,10 +169,10 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
-    // const entries = formData.entries()
-    // for (const pair of entries) {
-    //   console.log(pair[0] + ', ' + pair[1])
-    // }
+    const entries = formData.entries()
+    for (const pair of entries) {
+      console.log(pair[0] + ', ' + pair[1])
+    }
 
     switch (location.pathname) {
       case '/write':
@@ -174,8 +180,7 @@ const Write = () => {
           const writeRes = await requestWrite(formData)
           if (writeRes === 200) {
             setModalOpen(true)
-            setModalText(['게시글 작성이 완료되었습니다. 메인으로 이동하시겠습니까?'])
-            setModalIsConfirm(true)
+            setModalText(['게시글 작성이 완료되었습니다.'])
             setModalNavigateOption('/')
           } else {
             throw new Error()
@@ -215,7 +220,7 @@ const Write = () => {
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
           content={modalText}
-          isConfirm={modalIsConfirm}
+          isConfirm={false}
           navigateOption={modalNavigateOption}
         />
       )}
@@ -240,7 +245,7 @@ const Write = () => {
                   setIsFileEdit(true)
                 }}
               />
-              <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+              <ImageUploadIcon size="48px" />
               <div className="img-text">
                 <span>예약 인증 사진을 올려주세요</span>
                 <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -248,7 +253,7 @@ const Write = () => {
               {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
               {location.pathname.includes('edit') && !isFileEdit ? (
                 <div className="img-overlay">
-                  <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                  <ImageUploadIcon size="48px" />
                   <div className="img-text">
                     <span>예약 인증 사진을 올려주세요</span>
                     <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -418,7 +423,7 @@ const Write = () => {
                     setIsFileEdit(true)
                   }}
                 />
-                <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                <ImageUploadIcon size="54px" />
                 <div className="img-text">
                   <span>예약 인증 사진을 올려주세요</span>
                   <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -426,7 +431,7 @@ const Write = () => {
                 {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
                 {location.pathname.includes('edit') && !isFileEdit ? (
                   <div className="img-overlay">
-                    <img src="/upload.png" alt="업로드 이미지" className="uploadIcon" />
+                    <ImageUploadIcon size="54px" />
                     <div className="img-text">
                       <span>예약 인증 사진을 올려주세요</span>
                       <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
@@ -908,11 +913,6 @@ const FileUpload = styled.label`
 
   input {
     display: none;
-  }
-
-  .uploadIcon {
-    width: 40px;
-    height: 40px;
   }
 
   .img-text {

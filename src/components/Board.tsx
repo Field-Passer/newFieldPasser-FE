@@ -34,7 +34,9 @@ const Board = ({ data, message }: Props) => {
                 <div className="info_wrap">
                   <p className="title">{list.title}</p>
                   <p className="price">{list.price.toLocaleString()} 원</p>
-                  <p className="date">{dateFormat(list.startTime)}</p>
+                  <p className="date">
+                    {list.districtName} {dateFormat(list.startTime)}
+                  </p>
                   <p className="view_like">
                     <span>조회수</span>
                     <span>{list.viewCount}</span>

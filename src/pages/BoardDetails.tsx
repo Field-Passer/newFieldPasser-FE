@@ -96,15 +96,15 @@ const BoardDetails = () => {
               </div>
               <div>
                 <p className="date">
-                  <PC>예약일</PC> {dateFormat(detailData.startTime || '')}
+                  {detailData.districtName} {dateFormat(detailData.startTime || '')}
                 </p>
                 <PC>
-                  <p className="price">{detailData.price.toLocaleString()}</p>
+                  <p className="price">{detailData.price.toLocaleString()} 원</p>
                 </PC>
               </div>
               <Mobile>
                 <div>
-                  <p className="price">{detailData.price.toLocaleString()}</p>
+                  <p className="price">{detailData.price.toLocaleString()} 원</p>
                   <button onClick={() => likePostFn(detailData.boardId, detailData.likeBoard)}>
                     <BigHart size="20" color={likeState ? '#5FCA7B' : ''} />
                   </button>
