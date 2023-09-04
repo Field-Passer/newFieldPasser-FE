@@ -22,6 +22,17 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
     })
 }
 
+export const getMainPostList = async (values: IMainListPayload, page = 1) => {
+  return await publicApi
+    .get(`/search/${page}?categoryName=${values.category}&districtNames=${values.district}`)
+    .then((res) => {
+      return res.data.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
 export const getPostDetail = async (userId: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
 

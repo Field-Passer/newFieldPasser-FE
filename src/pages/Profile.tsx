@@ -43,11 +43,10 @@ const Profile = () => {
   }, [page])
 
   useEffect(() => {
-    if (inView && !isLoading && !lastPage) {
-      console.log('페이지 추가')
+    if (inView && !lastPage) {
       setPage((prev) => prev + 1)
     }
-  }, [inView, isLoading])
+  }, [inView, lastPage])
 
   const isPC = useMediaQuery({ query: '(min-width: 834px' })
   return (
@@ -61,6 +60,7 @@ const Profile = () => {
             <RoleButton screen="pc">관리자 등록</RoleButton>
           </TopStyle>
           <Board data={posts} message={'작성한 게시물이 없습니다.'} />
+          {!isLoading && <div ref={ref}></div>}
         </Inner>
       ) : (
         <div>
@@ -76,7 +76,7 @@ const Profile = () => {
             ) : (
               <div>작성한 게시물이 없습니다.</div>
             )}
-            <div ref={ref}></div>
+            {!isLoading && <div ref={ref}></div>}
           </PostContainer>
         </div>
       )}
