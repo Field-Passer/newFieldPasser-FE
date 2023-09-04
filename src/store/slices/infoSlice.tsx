@@ -20,8 +20,11 @@ export const infoSlice = createSlice({
       state.memberPhone = action.payload.memberPhone
     },
     DELETE_INFO: (state) => {
-      console.log(state)
-      state = initialState
+      state.memberId = ''
+      state.memberName = ''
+      state.memberNickName = ''
+      state.role = ''
+      state.memberPhone = ''
     },
   },
 })

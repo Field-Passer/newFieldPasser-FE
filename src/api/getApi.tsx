@@ -57,3 +57,16 @@ export const getQuestionAnswer = async (questionId: number) => {
     console.log(error)
   }
 }
+
+// 관리자 블라인드 게시글 조회
+export const getAdminBlind = async (page: number) => {
+  try {
+    const response = await privateApi.get(`admin/board/blind/lookup/${page}`)
+    return {
+      data: response.data.data.content,
+      last: response.data.data.last,
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
