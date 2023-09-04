@@ -112,7 +112,14 @@ const BoardDetails = () => {
               </Mobile>
               <div>
                 <p>
-                  <span className="user_name" onClick={() => navigate(`/profile/${detailData.memberId}`)}>
+                  <span
+                    className="user_name"
+                    onClick={() =>
+                      navigate(`/profile/${detailData.memberId}`, {
+                        state: { memberName: detailData.memberName, memberId: detailData.memberId },
+                      })
+                    }
+                  >
                     {detailData.memberName} {detailData.memberId}
                   </span>
                   <span className="view">조회수 {detailData.viewCount}</span>

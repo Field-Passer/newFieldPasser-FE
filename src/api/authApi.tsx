@@ -361,10 +361,11 @@ export const getMyReply = async (page: number) => {
 // 회원 게시글 조회
 export const getUserPost = async (page: number, memberId: string) => {
   try {
-    const response = await publicApi(`member-inquery/${memberId}/${page}`, { method: 'GET' })
+    const response = await publicApi(`member-inquiry/${memberId}/${page}`, { method: 'GET' })
     return {
       status: response.status,
       data: response.data.data.content,
+      lastPage: response.data.data.last,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {

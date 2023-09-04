@@ -15,7 +15,6 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
       }&districtNames=${values.district.join()}`
     )
     .then((res) => {
-      console.log(res.data)
       return res.data.data
     })
     .catch((err) => {
@@ -28,7 +27,6 @@ export const getPostDetail = async (userId: number, loginVal: boolean) => {
 
   return await Instance.get(`/detail/${userId}`)
     .then((res) => {
-      console.log(res.data.data)
       return res.data.data
     })
     .catch((err) => {
@@ -49,7 +47,6 @@ export const delPost = async (boardId: number | undefined) => {
 
 export const getComment = async (boardId: number, page: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
-  console.log(page)
   return await Instance.get(`comment-lookup/${boardId}/${page}`)
     .then((res) => {
       return res.data.data
@@ -60,7 +57,6 @@ export const getComment = async (boardId: number, page: number, loginVal: boolea
 }
 
 export const postComment = async (boardId: number, comment: string, parentId?: number) => {
-  console.log(parentId)
   return await privateApi
     .post('comment/write', {
       commentContent: comment,
@@ -68,7 +64,6 @@ export const postComment = async (boardId: number, comment: string, parentId?: n
       parentId: parentId,
     })
     .then((res) => {
-      console.log(res)
       return res
     })
     .catch((err) => {
