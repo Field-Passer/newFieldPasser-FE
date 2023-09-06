@@ -26,36 +26,38 @@ const CommentLists = ({ screen }: IProps) => {
   }
   return (
     <Container screen={screen}>
-      {comments.length ? (
-        comments.map((comment) => (
-          <CommentBox key={comment.commentId}>
-            <BoardTitle screen={screen}>{comment.title}</BoardTitle>
-            <Content screen={screen}>{comment.commentContent}</Content>
-            <Des screen={screen}>
-              <div>
-                <img src="/calendar.svg" alt="달력" />
-                <span>{comment.commentUpDate.slice(0, 10)}</span>
-              </div>
-              <div>
-                <img src="/chat_bubble.svg" alt="댓글" />
-                <span>{comment.children.length}</span>
-              </div>
-            </Des>
-          </CommentBox>
-        ))
+      {comments?.length ? (
+        <>
+          {comments?.map((comment) => (
+            <CommentBox key={comment.commentId}>
+              <BoardTitle screen={screen}>{comment.title}</BoardTitle>
+              <Content screen={screen}>{comment.commentContent}</Content>
+              <Des screen={screen}>
+                <div>
+                  <img src="/calendar.svg" alt="달력" />
+                  <span>{comment.commentUpDate.slice(0, 10)}</span>
+                </div>
+                <div>
+                  <img src="/chat_bubble.svg" alt="댓글" />
+                  <span>{comment.children.length}</span>
+                </div>
+              </Des>
+            </CommentBox>
+          ))}
+          <Paginate screen={screen}>
+            <ReactPaginate
+              previousLabel="<"
+              nextLabel=">"
+              onPageChange={handlePage}
+              breakLabel="..."
+              pageCount={totalPage}
+              className="paginate"
+            />
+          </Paginate>
+        </>
       ) : (
         <NoComment>댓글이 없습니다.</NoComment>
       )}
-      <Paginate screen={screen}>
-        <ReactPaginate
-          previousLabel="<"
-          nextLabel=">"
-          onPageChange={handlePage}
-          breakLabel="..."
-          pageCount={totalPage}
-          className="paginate"
-        />
-      </Paginate>
     </Container>
   )
 }

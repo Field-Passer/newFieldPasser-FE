@@ -10,23 +10,61 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import OneOneOne from '@components/OneOnOne'
 import PATH from '@src/constants/pathConst'
+import { useInView } from 'react-intersection-observer'
 
 const Ask = () => {
   const [questions, setQuestions] = useState<QuestionGetTypes[]>([])
-  const [adminQuestions, setAdminQuestions] = useState<QuestionGetTypes[]>([])
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const [ref, inView] = useInView()
+  const [isLoading, setIsLoading] = useState(false)
+  const [lastPage, setLastPage] = useState(false)
+  const [page, setPage] = useState(1)
+
+  const myQuestion = async () => {
+    try {
+      setIsLoading(true)
+      const response = await getQuestion(page)
+      if (page === 1) setQuestions(response.content)
+      else setQuestions((prev) => [...prev, ...response.content])
+
+      if (response.lastPage) setLastPage(true)
+      else setLastPage(false)
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const adminQuestion = async () => {
+    try {
+      setIsLoading(true)
+      const response = await getAdminQuestion(page)
+      if (page === 1) setQuestions(response.content)
+      else setQuestions((prev) => [...prev, ...response.content])
+
+      if (response.lastPage) setLastPage(true)
+      else setLastPage(false)
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await getQuestion(1)
-      setQuestions(response?.data.content)
-      if (userInfo.role === '관리자') {
-        const adminResponse = await getAdminQuestion(1)
-        setAdminQuestions(adminResponse?.data.content)
-      }
+    if (userInfo.role === '관리자') {
+      adminQuestion()
+    } else {
+      myQuestion()
     }
-    fetchData()
-  }, [])
+  }, [page])
+
+  useEffect(() => {
+    if (inView && !lastPage) {
+      setPage((prev) => prev + 1)
+    }
+  }, [inView, lastPage])
 
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
@@ -40,21 +78,7 @@ const Ask = () => {
         <Container>
           <Title screen="pc" name="내 문의 목록" />
           <QuestionContainer screen="pc">
-            {userInfo.role === '관리자' ? (
-              adminQuestions.length ? (
-                adminQuestions.map((list) => (
-                  <OneOneOne
-                    key={list.questionId}
-                    title={list.questionTitle}
-                    comment={list.questionContent}
-                    screen="pc"
-                    info={list}
-                  />
-                ))
-              ) : (
-                <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
-              )
-            ) : questions.length ? (
+            {questions?.length ? (
               questions.map((list) => (
                 <OneOneOne
                   key={list.questionId}
@@ -68,6 +92,7 @@ const Ask = () => {
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}
           </QuestionContainer>
+          {!isLoading && <div ref={ref}></div>}
           <OtherAskStyle>
             <span>원하는 답변이 없다면?</span>
             <button onClick={() => navigate(PATH.HELP_FORM)}>1:1 질문하기</button>
@@ -77,21 +102,7 @@ const Ask = () => {
         <Inner width="100%" padding="16px 0">
           <Title screen="mobile" name="내 문의 목록" />
           <QuestionContainer screen="mobile">
-            {userInfo.role === '관리자' ? (
-              adminQuestions.length ? (
-                adminQuestions.map((list) => (
-                  <OneOneOne
-                    key={list.questionId}
-                    title={list.questionTitle}
-                    comment={list.questionContent}
-                    screen="mobile"
-                    info={list}
-                  />
-                ))
-              ) : (
-                <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
-              )
-            ) : questions.length ? (
+            {questions?.length ? (
               questions.map((list) => (
                 <OneOneOne
                   key={list.questionId}
@@ -105,6 +116,7 @@ const Ask = () => {
               <NoQuestionStyle>문의 내용이 없습니다.</NoQuestionStyle>
             )}
           </QuestionContainer>
+          {!isLoading && <div ref={ref}></div>}
           <MobileOtherAsk>
             <span>원하는 답변이 없다면?</span>
             <button onClick={() => navigate(PATH.HELP_FORM)}>1:1 질문하기</button>

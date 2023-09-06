@@ -8,6 +8,9 @@ import { useState, useEffect } from 'react'
 import { getUserPost } from '@src/api/authApi'
 import { useLocation } from 'react-router'
 import { useInView } from 'react-intersection-observer'
+import { useSelector } from 'react-redux'
+import { RootState } from '@src/store/config'
+// import { promoteUser, demoteUser } from '@src/api/userApi'
 
 const Profile = () => {
   const { state } = useLocation()
@@ -27,6 +30,7 @@ const Profile = () => {
       setIsLoading(true)
       const response = await getUserPost(page, memberId)
       if (page === 1) setPosts(response?.data)
+      // eslint-disable-next-line no-unsafe-optional-chaining
       else setPosts((prev) => [...prev, ...response?.data])
 
       if (response?.lastPage) setLastPage(true)
@@ -49,6 +53,12 @@ const Profile = () => {
   }, [inView, lastPage])
 
   const isPC = useMediaQuery({ query: '(min-width: 834px' })
+
+  const userInfo = useSelector((state: RootState) => state.userInfo)
+
+  // 회원 정보 조회 시 관리자인지 알 수 있는지 확인되어야 함
+  // const advancementFn = async () => {}
+
   return (
     <>
       {isPC ? (
@@ -57,7 +67,7 @@ const Profile = () => {
             <div className="title">
               <span>{memberName}</span> 님의 게시물
             </div>
-            <RoleButton screen="pc">관리자 등록</RoleButton>
+            {userInfo.role === '관리자' && <RoleButton screen="pc">관리자 등록</RoleButton>}
           </TopStyle>
           <Board data={posts} message={'작성한 게시물이 없습니다.'} />
           {!isLoading && <div ref={ref}></div>}
@@ -68,7 +78,7 @@ const Profile = () => {
             <div className="title">
               <span>{memberName}</span> 님의 게시물
             </div>
-            <RoleButton screen="mobile">관리자 등록</RoleButton>
+            {userInfo.role === '관리자' && <RoleButton screen="pc">관리자 등록</RoleButton>}
           </TopStyle>
           <PostContainer>
             {posts?.length ? (

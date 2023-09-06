@@ -96,15 +96,15 @@ const BoardDetails = () => {
               </div>
               <div>
                 <p className="date">
-                  {detailData.districtName} {dateFormat(detailData.startTime || '')}
+                  <PC>예약일</PC> {dateFormat(detailData.startTime || '')}
                 </p>
                 <PC>
-                  <p className="price">{detailData.price.toLocaleString()} 원</p>
+                  <p className="price">{detailData.price.toLocaleString()}</p>
                 </PC>
               </div>
               <Mobile>
                 <div>
-                  <p className="price">{detailData.price.toLocaleString()} 원</p>
+                  <p className="price">{detailData.price.toLocaleString()}</p>
                   <button onClick={() => likePostFn(detailData.boardId, detailData.likeBoard)}>
                     <BigHart size="20" color={likeState ? '#5FCA7B' : ''} />
                   </button>
@@ -189,6 +189,7 @@ const BoardDetails = () => {
     </ThemeProvider>
   )
 }
+
 const Container = styled.div`
   max-width: 834px;
   margin: 32px auto 0;
@@ -200,6 +201,7 @@ const Container = styled.div`
     margin: 0 auto;
   }
 `
+
 const TitleBox = styled.div`
   padding: 0 20px;
   display: flex;
