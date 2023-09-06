@@ -27,7 +27,7 @@ const Ask = () => {
       if (page === 1) setQuestions(response.content)
       else setQuestions((prev) => [...prev, ...response.content])
 
-      if (response.lastPage) setLastPage(true)
+      if (response.last) setLastPage(true)
       else setLastPage(false)
     } catch (error) {
       alert(error)
@@ -43,7 +43,7 @@ const Ask = () => {
       if (page === 1) setQuestions(response.content)
       else setQuestions((prev) => [...prev, ...response.content])
 
-      if (response.lastPage) setLastPage(true)
+      if (response.last) setLastPage(true)
       else setLastPage(false)
     } catch (error) {
       alert(error)
