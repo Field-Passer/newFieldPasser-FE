@@ -1,4 +1,4 @@
-import { addTransactionStatus, delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
+import { addTransactionStatus, blindBoard, delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
 import { BigHart, Harticon, MoreIcon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
@@ -18,6 +18,8 @@ const BoardDetails = () => {
   const [moreBtnChk, setMoreBtnChk] = useState(false)
   const [likeState, setLikeState] = useState(detailData?.likeBoard)
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
+  const userInfo = useSelector((state: RootState) => state.userInfo)
+
   const getDetailData = async () => {
     try {
       const postDetailData = await getPostDetail(Number(boardId.boardId), authenticated)
@@ -47,6 +49,14 @@ const BoardDetails = () => {
     }
   }
 
+  const blindFn = async () => {
+    try {
+      await blindBoard(Number(boardId))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     getDetailData()
   }, [boardId])
@@ -64,6 +74,63 @@ const BoardDetails = () => {
       document.body.removeEventListener('click', outClickFn)
     }
   })
+
+  const moreBtnHandler = (role: string, myBoard: boolean) => {
+    if (role === '관리자' && myBoard) {
+      return (
+        <>
+          <li>
+            <button
+              onClick={() =>
+                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId)
+              }
+            >
+              양도 완료하기
+            </button>
+          </li>
+          <li>
+            <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData?.boardId)}>
+              삭제
+            </button>
+          </li>
+          <li>
+            <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button>
+          </li>
+          <li>
+            <button onClick={() => window.confirm('블라인드 처리하시겠습니까?') && blindFn()}>블라인드</button>
+          </li>
+        </>
+      )
+    } else if (role === '관리자' && !myBoard) {
+      return (
+        <li>
+          <button onClick={() => window.confirm('블라인드 처리하시겠습니까?') && blindFn()}>블라인드</button>
+        </li>
+      )
+    } else if (role !== '관리자' && myBoard) {
+      return (
+        <>
+          <li>
+            <button
+              onClick={() =>
+                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId)
+              }
+            >
+              양도 완료하기
+            </button>
+          </li>
+          <li>
+            <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData?.boardId)}>
+              삭제
+            </button>
+          </li>
+          <li>
+            <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button>
+          </li>
+        </>
+      )
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -127,7 +194,7 @@ const BoardDetails = () => {
                     <Harticon size="14" /> {detailData.wishCount}
                   </span>
                 </p>
-                {detailData.myBoard && (
+                {(detailData.myBoard || userInfo.role === '관리자') && (
                   <button
                     className="more_btn"
                     onClick={(e) => {
@@ -138,30 +205,7 @@ const BoardDetails = () => {
                     <MoreIcon />
                   </button>
                 )}
-                {moreBtnChk && (
-                  <ul className="more_menu">
-                    <li>
-                      <button
-                        onClick={() =>
-                          window.confirm('양도 완료 상태로 변경하시겠습니까?') &&
-                          addTransactionStatus(detailData.boardId)
-                        }
-                      >
-                        양도 완료하기
-                      </button>
-                    </li>
-                    <li>
-                      <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData.boardId)}>
-                        삭제
-                      </button>
-                    </li>
-                    <li>
-                      <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>
-                        수정
-                      </button>
-                    </li>
-                  </ul>
-                )}
+                {moreBtnChk && <ul className="more_menu">{moreBtnHandler(userInfo.role, detailData.myBoard)}</ul>}
               </div>
             </TitleBox>
             <ContentBox>
@@ -321,7 +365,7 @@ const TitleBox = styled.div`
     background: #fff;
     border: 1px solid #ddd;
     width: 120px;
-    height: 120px;
+    /* height: 120px; */
     padding: 20px;
     box-sizing: border-box;
     font-size: 14px;
