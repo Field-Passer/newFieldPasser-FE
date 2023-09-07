@@ -82,7 +82,7 @@ const BoardDetails = () => {
           <li>
             <button
               onClick={() =>
-                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId)
+                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId || 0)
               }
             >
               양도 완료하기
@@ -113,7 +113,7 @@ const BoardDetails = () => {
           <li>
             <button
               onClick={() =>
-                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId)
+                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId || 0)
               }
             >
               양도 완료하기
