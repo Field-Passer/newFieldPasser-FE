@@ -8,7 +8,7 @@ import Overlay from './components/Overlay'
 import { useState, useEffect } from 'react'
 import { cheakOpenBox } from './store/slices/searchChkSlice'
 import { useDispatch } from 'react-redux'
-import useAxiosInterceptor from './hooks/useAxiosInterceptor'
+// import useAxiosInterceptor from './hooks/useAxiosInterceptor'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,7 +20,7 @@ const App = () => {
       dispatch(cheakOpenBox({ openBox: false }))
     }
   }, [location])
-  useAxiosInterceptor()
+  // useAxiosInterceptor()
 
   return (
     <ThemeProvider theme={theme}>
