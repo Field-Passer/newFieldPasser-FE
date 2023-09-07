@@ -7,6 +7,7 @@ import { editUserPw } from '@src/api/authApi'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { useDispatch } from 'react-redux'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
+import { DELETE_INFO } from '@src/store/slices/infoSlice'
 
 const ResetPw = () => {
   const dispatch = useDispatch()
@@ -26,6 +27,7 @@ const ResetPw = () => {
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
+      dispatch(DELETE_INFO())
       alert('비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.')
       navigate('/login')
     }

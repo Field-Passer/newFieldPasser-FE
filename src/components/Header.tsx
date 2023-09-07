@@ -9,9 +9,10 @@ import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getMemberInfo, userLogout } from '@src/api/authApi'
 import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
+import Modal from '@src/components/Modal'
 
 type PropsType = {
   setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -29,6 +30,11 @@ const Header = ({ setSideOpen }: PropsType) => {
 
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
   const refreshToken = getCookieToken()
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,8 +59,10 @@ const Header = ({ setSideOpen }: PropsType) => {
   }
 
   const clickWithoutLogin = () => {
-    navigate(PATH.LOGIN)
-    alert('로그인 후 이용 가능합니다.')
+    setModalOpen(true)
+    setModalIsConfirm(false)
+    setModalText(['로그인 후 이용 가능합니다.'])
+    setModalNavigateOption(PATH.LOGIN)
   }
 
   const userRole = useSelector((state: RootState) => state.userInfo.role)
@@ -97,6 +105,15 @@ const Header = ({ setSideOpen }: PropsType) => {
             </div>
           </Inner>
         </Container>
+      )}
+      {modalOpen && (
+        <Modal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          content={modalText}
+          isConfirm={modalIsConfirm}
+          navigateOption={modalNavigateOption}
+        />
       )}
     </>
   )
