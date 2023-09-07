@@ -39,9 +39,15 @@ privateApi.interceptors.request.use(
     }
 
     const newConfig = await CheckAuthorization(config)
-    if (newConfig === 'Failed') {
+    if (newConfig === 'NoToken') {
       window.location.replace('/login')
-      console.log('CheckAuthorization === Failed.')
+      console.log('CheckAuthorization === NoToken.')
+      alert('토큰이 존재하지 않습니다. 로그인 페이지로 이동합니다.')
+      return Promise.resolve()
+    } else if (newConfig === 'ExpiredToken') {
+      window.location.replace('/login')
+      console.log('CheckAuthorization === ExpiredToken.')
+      alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
       return Promise.resolve()
     }
     return newConfig

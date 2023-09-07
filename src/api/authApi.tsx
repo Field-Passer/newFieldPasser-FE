@@ -213,6 +213,7 @@ export const getUserInfo = async () => {
     const response = await privateApi('/my-page/member-inquiry', {
       method: 'GET',
     })
+    console.log(response)
     return {
       status: response.status,
       memberId: response.data.data.memberId,
