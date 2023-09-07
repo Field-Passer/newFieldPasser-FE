@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // export const TOKEN_TIME_OUT = 10 * 1000 // 10초 // 테스트 할 때만 사용
-export const TOKEN_TIME_OUT = 15 * 60 * 1000 // 15분?
+export const TOKEN_TIME_OUT = 15 * 60 * 1000 // 15분
 
 export const authSlice = createSlice({
   name: 'authToken',

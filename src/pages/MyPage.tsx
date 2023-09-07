@@ -56,7 +56,7 @@ const MyPage = () => {
   })
 
   const logoutHandler = async () => {
-    const { status }: any = await userLogout()
+    const { status } = (await userLogout()) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())

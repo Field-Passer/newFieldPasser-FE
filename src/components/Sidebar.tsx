@@ -3,12 +3,14 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
 import { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { Link, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import PATH from '@src/constants/pathConst'
+import { DELETE_INFO } from '@src/store/slices/infoSlice'
+import Modal from '@src/components/Modal'
 
 const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
   const isMobile = useMediaQuery({
@@ -32,19 +34,29 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
   const userRole = useSelector((state: RootState) => state.userInfo.role)
   const refreshToken = getCookieToken()
 
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
+
   const logoutHandler = async () => {
-    const { status }: any = await userLogout()
+    const { status } = (await userLogout()) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
-      alert('로그아웃 되었습니다.')
-      return navigate(PATH.HOME)
+      dispatch(DELETE_INFO())
+      setModalOpen(true)
+      setModalIsConfirm(true)
+      setModalText(['로그아웃 되었습니다.'])
+      setModalNavigateOption(PATH.HOME)
+      return
     }
   }
 
   const clickWithoutLogin = () => {
-    navigate(PATH.LOGIN)
-    alert('로그인 후 이용 가능합니다.')
+    setModalOpen(true)
+    setModalText(['로그인 후 이용 가능합니다.'])
+    setModalNavigateOption(PATH.LOGIN)
   }
 
   return (
@@ -200,6 +212,15 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
           </LastSection>
         )}
       </SideContainer>
+      {modalOpen && (
+        <Modal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          content={modalText}
+          isConfirm={modalIsConfirm}
+          navigateOption={modalNavigateOption}
+        />
+      )}
     </>
   )
 }
