@@ -10,23 +10,44 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import BoardComment from '@src/components/Comment'
 import { PC, Mobile } from '@src/hooks/useScreenHook'
+import Modal from '@src/components/Modal'
+import PATH from '@src/constants/pathConst'
 
 const BoardDetails = () => {
-  const boardId = useParams()
+  const { boardId } = useParams()
   const navigate = useNavigate()
   const [detailData, setDetailData] = useState<POST_TYPE>()
   const [moreBtnChk, setMoreBtnChk] = useState(false)
   const [likeState, setLikeState] = useState(detailData?.likeBoard)
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  const [modalNavigate, setModalNavigate] = useState<string>('')
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
   const userInfo = useSelector((state: RootState) => state.userInfo)
 
+  const blindFn = async () => {
+    try {
+      await blindBoard(Number(boardId))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const getDetailData = async () => {
     try {
-      const postDetailData = await getPostDetail(Number(boardId.boardId), authenticated)
+      const postDetailData = await getPostDetail(Number(boardId), authenticated)
       setDetailData(postDetailData)
       setLikeState(postDetailData.likeBoard)
     } catch (err) {
       console.log(err)
+      if (userInfo.role === '관리자') {
+        alert('블라인드 된 게시글입니다.')
+        setModalOpen(true)
+        setModalIsConfirm(true)
+        setModalText(['블라인드 처리된 게시글입니다. 블라인드 해제하시겠습니까?'])
+        setModalNavigate(PATH.HOME)
+      }
     }
   }
 
@@ -46,14 +67,6 @@ const BoardDetails = () => {
       console.log(err)
     } finally {
       getDetailData()
-    }
-  }
-
-  const blindFn = async () => {
-    try {
-      await blindBoard(Number(boardId))
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -94,7 +107,7 @@ const BoardDetails = () => {
             </button>
           </li>
           <li>
-            <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button>
+            <button onClick={() => navigate(`/edit/${boardId}`, { state: { data: detailData } })}>수정</button>
           </li>
           <li>
             <button onClick={() => window.confirm('블라인드 처리하시겠습니까?') && blindFn()}>블라인드</button>
@@ -125,7 +138,7 @@ const BoardDetails = () => {
             </button>
           </li>
           <li>
-            <button onClick={() => navigate(`/edit/${boardId.boardId}`, { state: { data: detailData } })}>수정</button>
+            <button onClick={() => navigate(`/edit/${boardId}`, { state: { data: detailData } })}>수정</button>
           </li>
         </>
       )
@@ -230,6 +243,16 @@ const BoardDetails = () => {
           </>
         )}
       </Container>
+      {modalOpen && (
+        <Modal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          content={modalText}
+          isConfirm={modalIsConfirm}
+          navigateOption={modalNavigate}
+          confirmFn={blindFn}
+        ></Modal>
+      )}
     </ThemeProvider>
   )
 }
