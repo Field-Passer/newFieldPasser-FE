@@ -145,7 +145,6 @@ const MyPageDetail = () => {
     ;(state === 0 || state === 1 || state === 2) && setActiveMenu(state)
     postData()
     wishlistData()
-    console.log(state)
   }, [state])
 
   const isPC = useMediaQuery({
@@ -154,6 +153,7 @@ const MyPageDetail = () => {
 
   const handlePage = (event: { selected: number }) => {
     postData(event.selected + 1)
+    wishlistData(event.selected + 1)
   }
 
   return (
