@@ -326,7 +326,7 @@ export const getWishlist = async (page: number) => {
       status: response.status,
       message: response.data.message,
       data: response.data.data.content,
-      totalPages: response.data,
+      totalPages: response.data.data.totalPages,
       totalElements: response.data.data.totalElements,
     }
   } catch (error) {

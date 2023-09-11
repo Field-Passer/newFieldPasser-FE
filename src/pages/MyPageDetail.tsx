@@ -153,6 +153,7 @@ const MyPageDetail = () => {
 
   const handlePage = (event: { selected: number }) => {
     postData(event.selected + 1)
+    wishlistData(event.selected + 1)
   }
 
   return (
