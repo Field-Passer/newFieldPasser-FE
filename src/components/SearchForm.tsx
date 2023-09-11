@@ -62,6 +62,7 @@ const SearchForm = () => {
     startDateChange: false,
     endDateChange: false,
   })
+
   // current state value change fn
   type Value = string | string[] | Date
   const valueStateChangeFn = (key: string, value: Value) => {
@@ -131,7 +132,8 @@ const SearchForm = () => {
 
   // time input change function
   const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    if (valueState.startDate.slice(0, 10) === valueState.endDate.slice(0, 10)) return alert('날짜 먼저 선택해 주세요.')
+    if (valueState.startDate.slice(0, 10) !== valueState.endDate.slice(0, 10))
+      return alert('동일 날짜에만 시간을 지정할 수 있습니다.')
     if (!checkState.timeChange) checkValueStateChangeFn('timeChange', true)
 
     if (type === 'start') {
@@ -348,18 +350,11 @@ const SearchForm = () => {
             <SearchCorver onClick={() => searchBoxOpenFn()} path={urlPathname}>
               <SearchIcon size="24" />
               <div>
-                <p>
-                  {selectVal.title
-                    ? selectVal.title
-                    : urlPathname === '/'
-                    ? '어떤 구장을 찾으세요?'
-                    : '검색어를 입력해 주세요'}
-                </p>
+                <p>{selectVal.title ? selectVal.title : '어떤 구장을 찾으세요?'}</p>
                 {urlPathname === '/' && (
                   <p>
                     <span>어디든지</span>
-                    <span>원하는 시간</span>
-                    <span>가격</span>
+                    <span>원하는 날짜</span>
                   </p>
                 )}
               </div>
