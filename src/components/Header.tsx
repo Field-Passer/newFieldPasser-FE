@@ -7,7 +7,7 @@ import { FiMenu } from 'react-icons/fi'
 import type { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMemberInfo, userLogout } from '@src/api/authApi'
+import { getUserInfo, userLogout } from '@src/api/authApi'
 import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
 import { useEffect, useState } from 'react'
 import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
@@ -39,7 +39,7 @@ const Header = ({ setSideOpen }: PropsType) => {
   useEffect(() => {
     const fetchData = async () => {
       if (refreshToken) {
-        const response = await getMemberInfo()
+        const response = await getUserInfo()
         dispatch(SET_INFO(response?.data))
       } else if (!refreshToken) {
         dispatch(DELETE_INFO())

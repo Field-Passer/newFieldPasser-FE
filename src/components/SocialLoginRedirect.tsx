@@ -1,6 +1,6 @@
 // import React from 'react'
 
-import { getUserInfo } from '@src/api/getApi'
+import { getUserInfo } from '@src/api/authApi'
 import { setRefreshToken } from '@src/storage/Cookie'
 import { SET_TOKEN } from '@src/store/slices/authSlice'
 import { SET_INFO } from '@src/store/slices/infoSlice'
