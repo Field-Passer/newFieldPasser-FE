@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Write from './Write'
-import { getUserInfo } from '@src/api/getApi'
+import { getUserInfo } from '@src/api/authApi'
 import { useLocation, useNavigate } from 'react-router'
 
 const Edit = () => {
@@ -18,7 +18,7 @@ const Edit = () => {
     const checkId = async () => {
       try {
         const idRes = await getUserInfo()
-        if (idRes.memberId) {
+        if (idRes?.memberId) {
           setUserId(idRes.memberId)
         }
       } catch (err) {

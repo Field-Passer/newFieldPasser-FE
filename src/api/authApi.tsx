@@ -213,13 +213,13 @@ export const getUserInfo = async () => {
     const response = await privateApi('/my-page/member-inquiry', {
       method: 'GET',
     })
-    console.log(response)
     return {
       status: response.status,
       memberId: response.data.data.memberId,
       memberName: response.data.data.memberName,
       memberNickName: response.data.data.memberNickName,
       memberPhone: response.data.data.memberPhone,
+      data: response.data.data,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
@@ -264,25 +264,6 @@ export const editUserPw = async ({ newPw }: IUserInfoType) => {
     })
     return {
       status: response.status,
-    }
-  } catch (error) {
-    if (isAxiosError<IResponseErrorType>(error)) {
-      return {
-        status: error.response?.data.state,
-      }
-    }
-  }
-}
-
-// 회원 정보 조회
-export const getMemberInfo = async () => {
-  try {
-    const response = await privateApi('/my-page/member-inquiry', {
-      method: 'GET',
-    })
-    return {
-      status: response.status,
-      data: response.data.data,
     }
   } catch (error) {
     if (isAxiosError<IResponseErrorType>(error)) {
