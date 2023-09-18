@@ -175,6 +175,7 @@ interface IModalProps {
   content: string[]
   isConfirm: boolean
   navigateOption?: string
+  confirmFn?: () => void
 }
 interface IOverlayProps {
   sideOpen?: boolean

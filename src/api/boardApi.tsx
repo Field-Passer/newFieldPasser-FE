@@ -147,12 +147,7 @@ export const addTransactionStatus = async (commentId: number) => {
 }
 
 export const blindBoard = async (boardId: number) => {
-  return await privateApi
-    .put(`/admin/board/blind/${boardId}`)
-    .then(() => {
-      alert('블라인드 처리하였습니다.')
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  return await privateApi.put(`/admin/board/blind/${boardId}`).catch((error) => {
+    console.log(error)
+  })
 }

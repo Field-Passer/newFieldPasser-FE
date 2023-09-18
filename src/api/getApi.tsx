@@ -1,15 +1,5 @@
 import { privateApi } from './Instance'
 
-// 유저 정보 조회
-export const getUserInfo = async () => {
-  try {
-    const res = await privateApi.get('/my-page/member-inquiry')
-    return res.data.data
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 // 관리자 문의글 전체 조회
 export const getAdminQuestion = async (page: number) => {
   return await privateApi
