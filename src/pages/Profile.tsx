@@ -10,7 +10,9 @@ import { useLocation } from 'react-router'
 import { useInView } from 'react-intersection-observer'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
-// import { promoteUser, demoteUser } from '@src/api/userApi'
+import { promoteUser, demoteUser } from '@src/api/userApi'
+import Modal from '@src/components/Modal'
+import PATH from '@src/constants/pathConst'
 
 const Profile = () => {
   const { state } = useLocation()
@@ -18,12 +20,16 @@ const Profile = () => {
   const memberName = state.memberName
   const memberId = pathname.slice(9)
 
-  const [posts, setPosts] = useState<POST_TYPE[]>([])
+  const [posts, setPosts] = useState<POST_TYPE_INFO[]>([])
 
   const [ref, inView] = useInView()
   const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  const [modalNavigate, setModalNavigate] = useState<string>('')
 
   const getPost = async () => {
     try {
@@ -56,8 +62,35 @@ const Profile = () => {
 
   const userInfo = useSelector((state: RootState) => state.userInfo)
 
-  // 회원 정보 조회 시 관리자인지 알 수 있는지 확인되어야 함
-  // const advancementFn = async () => {}
+  // 회원 상태 확인
+  const checkRole = (role: string) => {
+    if (role === 'USER') {
+      return (
+        <RoleButton screen="pc" onClick={() => promoteFn(posts[0].memberRole)}>
+          관리자 등록
+        </RoleButton>
+      )
+    } else {
+      return (
+        <RoleButton screen="pc" onClick={() => promoteFn(posts[0].memberRole)}>
+          관리자 해제
+        </RoleButton>
+      )
+    }
+  }
+
+  // 등급 조정 함수
+  const promoteFn = (role: string) => {
+    setModalOpen(true)
+    setModalIsConfirm(true)
+    if (role === 'USER') {
+      setModalText(['관리자로 승급하시겠습니까?'])
+      setModalNavigate(PATH.HOME)
+    } else {
+      setModalText(['일반회원으로 강등하시겠습니까?'])
+      setModalNavigate(PATH.HOME)
+    }
+  }
 
   return (
     <>
@@ -67,7 +100,7 @@ const Profile = () => {
             <div className="title">
               <span>{memberName}</span> 님의 게시물
             </div>
-            {userInfo.role === '관리자' && <RoleButton screen="pc">관리자 등록</RoleButton>}
+            {userInfo.role === '관리자' && checkRole(posts[0]?.memberRole)}
           </TopStyle>
           <Board data={posts} message={'작성한 게시물이 없습니다.'} />
           {!isLoading && <div ref={ref}></div>}
@@ -78,7 +111,7 @@ const Profile = () => {
             <div className="title">
               <span>{memberName}</span> 님의 게시물
             </div>
-            {userInfo.role === '관리자' && <RoleButton screen="pc">관리자 등록</RoleButton>}
+            {userInfo.role === '관리자' && checkRole(posts[0]?.memberRole)}
           </TopStyle>
           <PostContainer>
             {posts?.length ? (
@@ -89,6 +122,22 @@ const Profile = () => {
             {!isLoading && <div ref={ref}></div>}
           </PostContainer>
         </div>
+      )}
+      {modalOpen && (
+        <Modal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          content={modalText}
+          isConfirm={modalIsConfirm}
+          navigateOption={modalNavigate}
+          confirmFn={() => {
+            if (posts[0].memberRole === 'USER') {
+              promoteUser(memberId)
+            } else {
+              demoteUser(memberId)
+            }
+          }}
+        ></Modal>
       )}
     </>
   )
