@@ -72,6 +72,10 @@ interface POST_TYPE {
   likeBoard: boolean
 }
 
+interface POST_TYPE_INFO extends POST_TYPE {
+  memberRole: string
+}
+
 interface SearchValueTypes {
   title: string
   startDate: string

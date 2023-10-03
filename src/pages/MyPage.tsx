@@ -49,7 +49,6 @@ const MyPage = () => {
     }
     fetchData()
   }, [])
-  console.log(postNum, wishNum, replyNum)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
