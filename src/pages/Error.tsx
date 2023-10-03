@@ -23,8 +23,8 @@ const Error = () => {
 
 const Main = styled.main`
   text-align: center;
-  margin-top: 20px;
   font-size: 26px;
+  margin: 20px auto 0;
 
   img {
     width: 200px;
