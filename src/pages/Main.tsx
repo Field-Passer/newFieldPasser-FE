@@ -1,7 +1,7 @@
 import { districtOptions, sortOptions } from '@src/constants/options'
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BadmintonIcon,
   BasketballIcon,
@@ -13,19 +13,13 @@ import {
 import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
-import { getMainPostList } from '@src/api/boardApi'
-import { useInView } from 'react-intersection-observer'
+import useInfinityScroll from '@src/hooks/useInfinityScroll'
 
 const Main = () => {
   const categoryNames = 'futsal' || 'soccer' || 'basketball' || 'badminton' || 'tennis'
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
-  const [ref, inView] = useInView()
-  const [page, setPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [lastPage, setLastPage] = useState(false)
-  const [postList, setPostList] = useState<POST_TYPE[]>([])
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
@@ -40,6 +34,7 @@ const Main = () => {
     district: '',
     category: '풋살장',
   })
+  const { ref, isLoading, postList, setPostList } = useInfinityScroll(payload)
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -60,42 +55,6 @@ const Main = () => {
         break
     }
   }, [selectedSortOption])
-
-  const getPostList = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const postData = await getMainPostList(payload, page)
-      if (!postData) {
-        setLastPage(true)
-        setPostList([])
-        return setIsLoading(false)
-      }
-      setPostList((prevList) => [...prevList, ...postData.content])
-      postData.last ? setLastPage(true) : setLastPage(false)
-    } catch (error) {
-      alert(error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [page, payload])
-
-  useEffect(() => {
-    setPostList([])
-    getPostList()
-    setPage(1)
-  }, [payload])
-
-  useEffect(() => {
-    if (inView && !lastPage) {
-      setPage((prev) => prev + 1)
-    }
-  }, [inView, lastPage])
-
-  useEffect(() => {
-    if (page !== 1) {
-      getPostList()
-    }
-  }, [getPostList])
 
   const categories: ICategories[] = [
     {
