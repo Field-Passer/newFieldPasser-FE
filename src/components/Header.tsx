@@ -86,7 +86,7 @@ const Header = ({ setSideOpen }: PropsType) => {
         <Container>
           <Inner>
             <Link to="/" className="logo">
-              <img src="/logo.png" alt="필드패서" />
+              <img src="/logo.png" alt="logo" />
             </Link>
             <div className="menu">
               {authenticated && userRole === '관리자' && <Link to={PATH.BOARD_BLIND}>게시글 관리</Link>}
@@ -128,6 +128,11 @@ const MContainer = styled.header`
   position: relative;
   background-color: white;
   border-bottom: 1px solid ${COLORS.gray20};
+
+  .logo {
+    width: 160px;
+    height: 24px;
+  }
 
   .sidebar {
     svg {
