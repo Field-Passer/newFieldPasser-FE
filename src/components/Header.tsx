@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { COLORS } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import { Mobile } from '@src/hooks/useScreenHook'
-import { FiMenu } from 'react-icons/fi'
 import type { RootState } from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
 import Modal from '@src/components/Modal'
+import { HamburgerIcon } from '@src/constants/icons'
 
 type PropsType = {
   setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -71,12 +71,14 @@ const Header = ({ setSideOpen }: PropsType) => {
     <>
       <Mobile>
         <MContainer>
-          <FiMenu
+          <div
+            className="sidebar"
             onClick={() => {
               openSidebar()
             }}
-            className="sidebar"
-          />
+          >
+            <HamburgerIcon />
+          </div>
           <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} />
         </MContainer>
       </Mobile>
@@ -128,12 +130,14 @@ const MContainer = styled.header`
   border-bottom: 1px solid ${COLORS.gray20};
 
   .sidebar {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    top: 12px;
-    left: 16px;
-    cursor: pointer;
+    svg {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      cursor: pointer;
+    }
   }
 
   img {
