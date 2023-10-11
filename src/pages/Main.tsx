@@ -15,6 +15,7 @@ import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
 import { categoryNamesList } from '@src/constants/options'
+import Loading from '@src/components/loading'
 
 const Main = () => {
   const isMobile = useMediaQuery({
@@ -287,6 +288,7 @@ const Main = () => {
         </Options>
         <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
         {!isLoading && <div ref={ref}></div>}
+        {isLoading && <Loading />}
       </ListSection>
     </Container>
   )
