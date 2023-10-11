@@ -1,14 +1,14 @@
 import { getMainPostList } from '@src/api/boardApi'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-const useInfinityScroll = (payload: IMainListPayload, page: number, setPage, setPostList) => {
+const useInfinityScroll = ({ payload, page, setPostList }: IInfinityScrollProps) => {
   const [ref, inView] = useInView()
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
 
   const getPostList = useCallback(
-    async (payload, page) => {
+    async (payload: IMainListPayload, page: number) => {
       try {
         setIsLoading(true)
         const postData = await getMainPostList(payload, page)
@@ -24,7 +24,6 @@ const useInfinityScroll = (payload: IMainListPayload, page: number, setPage, set
         alert(error)
       } finally {
         setIsLoading(false)
-        console.log(isLoading)
       }
     },
     [page, payload]

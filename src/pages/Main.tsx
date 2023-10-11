@@ -36,7 +36,7 @@ const Main = () => {
   })
   const [page, setPage] = useState(1)
   const [postList, setPostList] = useState<POST_TYPE[]>([])
-  const { isLoading, getPostList, lastPage, ref, inView } = useInfinityScroll(payload, page, setPage, setPostList)
+  const { isLoading, getPostList, lastPage, ref, inView } = useInfinityScroll({ payload, page, setPostList })
 
   useEffect(() => {
     setPage(1)
