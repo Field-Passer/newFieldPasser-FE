@@ -14,9 +14,9 @@ import SearchForm from '@src/components/SearchForm'
 import { useMediaQuery } from 'react-responsive'
 import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
+import { categoryNamesList } from '@src/constants/options'
 
 const Main = () => {
-  const categoryNames = 'futsal' || 'soccer' || 'basketball' || 'badminton' || 'tennis'
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -34,7 +34,24 @@ const Main = () => {
     district: '',
     category: '풋살장',
   })
-  const { ref, isLoading, postList, setPostList } = useInfinityScroll(payload)
+  const [page, setPage] = useState(1)
+  const [postList, setPostList] = useState<POST_TYPE[]>([])
+  const { isLoading, getPostList, lastPage, ref, inView } = useInfinityScroll(payload, page, setPage, setPostList)
+
+  useEffect(() => {
+    setPage(1)
+    setPostList([])
+  }, [payload])
+
+  useEffect(() => {
+    getPostList(payload, page)
+  }, [page, payload])
+
+  useEffect(() => {
+    if (inView && !lastPage) {
+      setPage((prev: number) => prev + 1)
+    }
+  }, [inView, lastPage])
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -94,6 +111,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
+        setPage(1)
         setPayload({ category: '풋살장', district: payload.district })
         break
       case 'soccer':
@@ -104,6 +122,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
+        setPage(1)
         setPayload({ category: '축구장', district: payload.district })
         break
       case 'basketball':
@@ -114,6 +133,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
+        setPage(1)
         setPayload({ category: '농구장', district: payload.district })
         break
       case 'badminton':
@@ -124,6 +144,7 @@ const Main = () => {
           badminton: true,
           tennis: false,
         })
+        setPage(1)
         setPayload({ category: '배드민턴장', district: payload.district })
         break
       case 'tennis':
@@ -134,6 +155,7 @@ const Main = () => {
           badminton: false,
           tennis: true,
         })
+        setPage(1)
         setPayload({ category: '테니스장', district: payload.district })
         break
     }
@@ -174,7 +196,7 @@ const Main = () => {
                 }}
               >
                 {item.icon}
-                <span className={isActive[item.category as typeof categoryNames] ? 'green' : ''}>{item.name}</span>
+                <span className={isActive[item.category as typeof categoryNamesList] ? 'green' : ''}>{item.name}</span>
               </div>
             )
           })}
