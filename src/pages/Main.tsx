@@ -32,27 +32,16 @@ const Main = () => {
     tennis: false,
   })
   const [payload, setPayload] = useState({
-    district: '',
-    category: '풋살장',
+    districtName: '',
+    categoryName: '풋살장',
   })
   const [page, setPage] = useState(1)
   const [postList, setPostList] = useState<POST_TYPE[]>([])
-  const { isLoading, getPostList, lastPage, ref, inView } = useInfinityScroll({ payload, page, setPostList })
-
-  useEffect(() => {
-    setPage(1)
-    setPostList([])
-  }, [payload])
+  const { isLoading, getPostList, ref } = useInfinityScroll({ payload, page, setPostList, setPage })
 
   useEffect(() => {
     getPostList(payload, page)
   }, [page, payload])
-
-  useEffect(() => {
-    if (inView && !lastPage) {
-      setPage((prev: number) => prev + 1)
-    }
-  }, [inView, lastPage])
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -112,8 +101,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setPage(1)
-        setPayload({ category: '풋살장', district: payload.district })
+        setPayload({ categoryName: '풋살장', districtName: payload.districtName })
         break
       case 'soccer':
         setIsActive({
@@ -123,8 +111,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setPage(1)
-        setPayload({ category: '축구장', district: payload.district })
+        setPayload({ categoryName: '축구장', districtName: payload.districtName })
         break
       case 'basketball':
         setIsActive({
@@ -134,8 +121,7 @@ const Main = () => {
           badminton: false,
           tennis: false,
         })
-        setPage(1)
-        setPayload({ category: '농구장', district: payload.district })
+        setPayload({ categoryName: '농구장', districtName: payload.districtName })
         break
       case 'badminton':
         setIsActive({
@@ -145,8 +131,7 @@ const Main = () => {
           badminton: true,
           tennis: false,
         })
-        setPage(1)
-        setPayload({ category: '배드민턴장', district: payload.district })
+        setPayload({ categoryName: '배드민턴장', districtName: payload.districtName })
         break
       case 'tennis':
         setIsActive({
@@ -156,8 +141,7 @@ const Main = () => {
           badminton: false,
           tennis: true,
         })
-        setPage(1)
-        setPayload({ category: '테니스장', district: payload.district })
+        setPayload({ categoryName: '테니스장', districtName: payload.districtName })
         break
     }
   }
@@ -213,7 +197,7 @@ const Main = () => {
               >
                 <div
                   className="default option"
-                  onClick={() => setPayload({ district: '', category: payload.category })}
+                  onClick={() => setPayload({ districtName: '', categoryName: payload.categoryName })}
                 >
                   지역
                 </div>
@@ -223,7 +207,7 @@ const Main = () => {
                       key={item}
                       className="option"
                       onClick={() => {
-                        setPayload({ district: item, category: payload.category })
+                        setPayload({ districtName: item, categoryName: payload.categoryName })
                       }}
                     >
                       {item}
@@ -233,12 +217,12 @@ const Main = () => {
               </div>
             ) : (
               <button
-                className={payload.district !== '' ? 'select-close selected' : 'select-close'}
+                className={payload.districtName !== '' ? 'select-close selected' : 'select-close'}
                 onClick={() => {
                   setIsDistrictOpen(true)
                 }}
               >
-                {payload.district ? payload.district : '지역'}
+                {payload.districtName ? payload.districtName : '지역'}
                 <DownwardArrowIcon />
               </button>
             )}

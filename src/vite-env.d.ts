@@ -90,8 +90,8 @@ interface SearchValueTypes {
 }
 
 interface IMainListPayload {
-  district: string
-  category: string
+  districtName: string
+  categoryName: string
 }
 
 interface ValueStateType {
@@ -221,14 +221,5 @@ interface IInfinityScrollProps {
   payload: SearchValueTypes | IMainListPayload
   page: number
   setPostList: React.Dispatch<React.SetStateAction<POST_TYPE[]>>
-  // title: string
-  // startDate: string
-  // endDate: string
-  // startTime: string
-  // endTime: string
-  // district: string[]
-  // category: string
-  // chkDate: boolean
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // [prop: string]: any
+  setPage: React.Dispatch<React.SetStateAction<number>>
 }
