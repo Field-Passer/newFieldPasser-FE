@@ -1,7 +1,7 @@
 import { addTransactionStatus, blindBoard, delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
 import { BigHart, Harticon, MoreIcon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
-import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
+import { dateFormat, handleImgError, randomImages } from '@src/utils/utils'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'

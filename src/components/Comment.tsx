@@ -5,7 +5,7 @@ import BoardCommentInput from './CommentInput'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/config'
 import { BalloonIcon, ClackIcon, MoreIcon } from '@src/constants/icons'
-import { dateFormat } from '@src/hooks/utils'
+import { dateFormat } from '@src/utils/utils'
 import CommentOptions from '../components/CommentOptions'
 import { setCommentAdd, setCommentInput, setCommentOptions } from '@src/store/slices/commentSlice'
 
