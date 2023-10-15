@@ -90,8 +90,8 @@ interface SearchValueTypes {
 }
 
 interface IMainListPayload {
-  district: string
-  category: string
+  districtName: string
+  categoryName: string
 }
 
 interface ValueStateType {
@@ -215,4 +215,11 @@ interface IWishlistType {
 interface CustomDateInputProps {
   value: ''
   onClick: () => void
+}
+
+interface IInfinityScrollProps {
+  payload: SearchValueTypes | IMainListPayload
+  page: number
+  setPostList: React.Dispatch<React.SetStateAction<POST_TYPE[]>>
+  setPage: React.Dispatch<React.SetStateAction<number>>
 }

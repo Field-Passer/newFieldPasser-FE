@@ -1,7 +1,6 @@
 import { COLORS } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import { LuInfo } from 'react-icons/lu'
-import { CloseButton } from '@src/constants/icons'
+import { CloseButton, InfoIcon } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
 import Overlay from './Overlay'
 import { useNavigate } from 'react-router'
@@ -31,7 +30,7 @@ const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption, co
               <CloseButton />
             </PcButton>
           )}
-          <LuInfo className="info" />
+          <InfoIcon />
           <Content>
             {content.map((text) => {
               return <span key={text}>{text}</span>

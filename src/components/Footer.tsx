@@ -1,16 +1,17 @@
+import { GithubIcon } from '@src/constants/icons'
 import PATH from '@src/constants/pathConst'
 import { COLORS } from '@src/globalStyles'
-import { AiFillGithub } from 'react-icons/ai'
 import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear()
   const navigate = useNavigate()
   return (
     <FooterContainer>
       <div className="inner">
         <div className="top">
-          <img src="/logo.png" />
+          <img src="/logo.png" alt="logo" />
           <div className="policy">
             <span onClick={() => navigate(PATH.HELP)}>이용약관</span>
             <span onClick={() => navigate(PATH.HELP)}>운영정책</span>
@@ -22,7 +23,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="link"
         >
-          <AiFillGithub />
+          <GithubIcon />
           Backend Repository
         </a>
         <a
@@ -31,14 +32,14 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="link"
         >
-          <AiFillGithub />
+          <GithubIcon />
           Frontend Repository
         </a>
         <div className="alert">
           필드패서는 통신판매중개자이며 통신판매의 당사자가 아닙니다. 따라서 필드패서는 공간 거래정보 및 거래에 대해
           책임지지 않습니다.
         </div>
-        <span className="copyright">&copy; 2023 FIELD-PASSER. All Rights Reserved.</span>
+        <span className="copyright">&copy; {currentYear} FIELD-PASSER. All Rights Reserved.</span>
       </div>
     </FooterContainer>
   )
