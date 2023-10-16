@@ -84,11 +84,19 @@ const Profile = () => {
     setModalOpen(true)
     setModalIsConfirm(true)
     if (role === 'USER') {
-      setModalText(['관리자로 승급하시겠습니까?'])
-      setModalNavigate(PATH.HOME)
+      try {
+        setModalText(['관리자로 승급하시겠습니까?'])
+        setModalNavigate(PATH.HOME)
+      } catch (error) {
+        setModalText(['오류가 발생하였습니다.'])
+      }
     } else {
-      setModalText(['일반회원으로 강등하시겠습니까?'])
-      setModalNavigate(PATH.HOME)
+      try {
+        setModalText(['일반회원으로 강등하시겠습니까?'])
+        setModalNavigate(PATH.HOME)
+      } catch (error) {
+        setModalText(['오류가 발생하였습니다.'])
+      }
     }
   }
 
