@@ -1,7 +1,5 @@
 import { publicApi, privateApi } from './Instance'
 
-// state.searchVlaue.endDate.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
-
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
   if (!values.chkDate) {
     values.startTime = ''

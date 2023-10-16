@@ -223,3 +223,11 @@ interface IInfinityScrollProps {
   setPostList: React.Dispatch<React.SetStateAction<POST_TYPE[]>>
   setPage: React.Dispatch<React.SetStateAction<number>>
 }
+
+interface IModalPayload {
+  isOpen: boolean
+  isConfirm: boolean
+  content: string[]
+  navigateOption?: string
+  confirmAction?: () => void
+}
