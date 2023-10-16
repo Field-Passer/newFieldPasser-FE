@@ -5,7 +5,6 @@ import { useMediaQuery } from 'react-responsive'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { postQuestion, postAdmintQuestion } from '@src/api/postApi'
-import { useNavigate } from 'react-router'
 import PATH from '@src/constants/pathConst'
 import Modal from '@components/Modal'
 
@@ -23,8 +22,6 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
   })
-
-  const navigate = useNavigate()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
