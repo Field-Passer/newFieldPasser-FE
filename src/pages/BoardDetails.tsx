@@ -42,7 +42,6 @@ const BoardDetails = () => {
     } catch (err) {
       console.log(err)
       if (userInfo.role === '관리자') {
-        alert('블라인드 된 게시글입니다.')
         setModalOpen(true)
         setModalIsConfirm(true)
         setModalText(['블라인드 처리된 게시글입니다. 블라인드 해제하시겠습니까?'])
@@ -110,14 +109,32 @@ const BoardDetails = () => {
             <button onClick={() => navigate(`/edit/${boardId}`, { state: { data: detailData } })}>수정</button>
           </li>
           <li>
-            <button onClick={() => window.confirm('블라인드 처리하시겠습니까?') && blindFn()}>블라인드</button>
+            <button
+              onClick={() => {
+                setModalOpen(true)
+                setModalIsConfirm(true)
+                setModalText(['블라인드 처리하시겠습니까?'])
+                setModalNavigate(PATH.HOME)
+              }}
+            >
+              블라인드
+            </button>
           </li>
         </>
       )
     } else if (role === '관리자' && !myBoard) {
       return (
         <li>
-          <button onClick={() => window.confirm('블라인드 처리하시겠습니까?') && blindFn()}>블라인드</button>
+          <button
+            onClick={() => {
+              setModalOpen(true)
+              setModalIsConfirm(true)
+              setModalText(['블라인드 처리하시겠습니까?'])
+              setModalNavigate(PATH.HOME)
+            }}
+          >
+            블라인드
+          </button>
         </li>
       )
     } else if (role !== '관리자' && myBoard) {

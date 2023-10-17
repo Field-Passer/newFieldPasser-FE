@@ -101,6 +101,7 @@ export const addTransactionStatus = async (commentId: number) => {
   })
 }
 
+// 게시글 블라인드 처리
 export const blindBoard = async (boardId: number) => {
   return await privateApi.put(`/admin/board/blind/${boardId}`)
 }

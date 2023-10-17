@@ -319,24 +319,35 @@ export const getWishlist = async (page: number) => {
 }
 
 // 내가 작성한 댓글 조회
+// export const getMyReply = async (page: number) => {
+//   try {
+//     const response = await privateApi(`/comment/my-inquiry/${page}`, {
+//       method: 'GET',
+//     })
+//     return {
+//       status: response.status,
+//       message: response.data.message,
+//       data: response.data.data.content,
+//       totalPages: response.data.data.totalPages,
+//       totalElements: response.data.data.totalElements,
+//     }
+//   } catch (error) {
+//     if (isAxiosError<IResponseErrorType>(error)) {
+//       return {
+//         status: error.response?.data.state,
+//       }
+//     }
+//   }
+// }
+
 export const getMyReply = async (page: number) => {
-  try {
-    const response = await privateApi(`/comment/my-inquiry/${page}`, {
-      method: 'GET',
-    })
-    return {
-      status: response.status,
-      message: response.data.message,
-      data: response.data.data.content,
-      totalPages: response.data.data.totalPages,
-      totalElements: response.data.data.totalElements,
-    }
-  } catch (error) {
-    if (isAxiosError<IResponseErrorType>(error)) {
-      return {
-        status: error.response?.data.state,
-      }
-    }
+  const response = await privateApi.get(`/comment/my-inquiry/${page}`)
+  return {
+    status: response.status,
+    message: response.data.message,
+    data: response.data.data.content,
+    totalPages: response.data.data.totalPages,
+    totalElements: response.data.data.totalElements,
   }
 }
 

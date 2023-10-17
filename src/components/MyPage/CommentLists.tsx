@@ -13,9 +13,13 @@ const CommentLists = ({ screen }: IProps) => {
   const [totalPage, setTotalPage] = useState<number>(1)
 
   const fetchData = async (page = 1) => {
-    const response = await getMyReply(page)
-    setComments(response?.data)
-    setTotalPage(response?.totalPages)
+    try {
+      const response = await getMyReply(page)
+      setComments(response?.data)
+      setTotalPage(response?.totalPages)
+    } catch (error) {
+      console.log(error)
+    }
   }
   useEffect(() => {
     fetchData(1)
