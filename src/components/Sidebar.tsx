@@ -54,7 +54,7 @@ const Sidebar = () => {
                 <span>{userName}</span>
                 <span>님</span>
               </div>
-              <Link to={PATH.WRITE}>
+              <Link to={PATH.WRITE_POST}>
                 <button
                   onClick={() => {
                     closeSidebar()

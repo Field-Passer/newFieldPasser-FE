@@ -220,6 +220,6 @@ interface IModalPayload {
   isModalOpen: boolean
   isConfirm: boolean
   content: string[]
-  navigateOption?: string
+  navigateOption?: string | number
   confirmAction?: () => void
 }

@@ -2,16 +2,21 @@ import { useEffect, useState } from 'react'
 import Write from './Write'
 import { getUserInfo } from '@src/api/authApi'
 import { useLocation, useNavigate } from 'react-router'
+import useModal from '@src/hooks/useModal'
 
-const Edit = () => {
-  const navigate = useNavigate()
+const EditPost = () => {
   const location = useLocation()
   const [userId, setUserId] = useState('')
   const [isWriter, setIsWriter] = useState(false)
+  const { openModal } = useModal()
 
   const goToBack = () => {
-    alert('본인이 작성한 게시물만 수정 가능합니다.')
-    navigate(-1) //이전페이지로 이동
+    openModal({
+      isModalOpen: true,
+      isConfirm: false,
+      content: ['본인이 작성한 게시물만 수정 가능합니다.'],
+      navigateOption: -1,
+    })
   }
 
   useEffect(() => {
@@ -22,7 +27,12 @@ const Edit = () => {
           setUserId(idRes.memberId)
         }
       } catch (err) {
-        console.log(err)
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['유저 정보를 확인할 수 없습니다. 재로그인 후 다시 시도해주세요.'],
+          navigateOption: -1,
+        })
       }
     }
     checkId()
@@ -37,4 +47,4 @@ const Edit = () => {
   return <>{isWriter && <Write />}</>
 }
 
-export default Edit
+export default EditPost

@@ -13,6 +13,7 @@ import { ImageUploadIcon } from '@src/constants/icons'
 import useModal from '@src/hooks/useModal'
 import PATH from '@src/constants/pathConst'
 
+// props로 data받기
 const Write = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',

@@ -72,7 +72,7 @@ const Header = () => {
               <button
                 onClick={() => {
                   {
-                    authenticated ? navigate(PATH.WRITE) : accessAfterLoginAlert()
+                    authenticated ? navigate(PATH.WRITE_POST) : accessAfterLoginAlert()
                   }
                 }}
               >
