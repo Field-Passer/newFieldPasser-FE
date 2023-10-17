@@ -7,12 +7,16 @@ import Sidebar from './components/Sidebar'
 import Overlay from './components/Overlay'
 import { useState, useEffect } from 'react'
 import { cheakOpenBox } from './store/slices/searchChkSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from './store/config'
+import ModalWithHook from './components/ModalWithHook'
+import OverlayWithHook from './components/OverlayWithHook'
 // import useAxiosInterceptor from './hooks/useAxiosInterceptor'
 
 const App = () => {
   const dispatch = useDispatch()
   const [sideOpen, setSideOpen] = useState<boolean>(false)
+  const { isModalOpen } = useSelector((state: RootState) => state.modal)
   const location = useLocation()
   useEffect(() => {
     if (window.document.body.classList.contains('stop-scrolling')) {
@@ -25,7 +29,9 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
-      <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} />
+      {/* <Overlay sideOpen={sideOpen} setSideOpen={setSideOpen} /> */}
+      <ModalWithHook />
+      <OverlayWithHook />
       <Header setSideOpen={setSideOpen} />
       <Outlet />
       <Footer />

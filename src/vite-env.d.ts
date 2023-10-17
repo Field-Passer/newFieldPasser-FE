@@ -225,7 +225,7 @@ interface IInfinityScrollProps {
 }
 
 interface IModalPayload {
-  isOpen: boolean
+  isModalOpen: boolean
   isConfirm: boolean
   content: string[]
   navigateOption?: string

@@ -9,19 +9,20 @@ import { RootState } from '@src/store/config'
 import { Mobile, PC } from '@src/hooks/useScreenHook'
 
 const ModalWithHook = () => {
-  const { isOpen, isConfirm, content, navigateOption, confirmAction } = useSelector((state: RootState) => state.modal)
+  const { isModalOpen, isConfirm, content, navigateOption, confirmAction } = useSelector(
+    (state: RootState) => state.modal
+  )
   const { closeModal } = useModal()
 
   const navigate = useNavigate()
 
-  if (isOpen)
+  if (isModalOpen)
     return (
       <>
         <Container>
           <PC>
             <PcButton
               onClick={() => {
-                navigateOption && navigate(navigateOption)
                 closeModal()
               }}
             >

@@ -16,11 +16,14 @@ import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
 import { categoryNamesList } from '@src/constants/options'
 import Loading from '@src/components/loading'
+import { useDispatch } from 'react-redux'
+import { SET_MODAL } from '@src/store/slices/modalSlice'
 
 const Main = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const dispatch = useDispatch()
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
@@ -155,7 +158,20 @@ const Main = () => {
           <div className="background"></div>
           <div className="text">
             <div className="big">
-              <span>아까운</span>
+              <span
+                onClick={() => {
+                  dispatch(
+                    SET_MODAL({
+                      isModalOpen: true,
+                      isConfirm: false,
+                      content: ['어쩌구저쩌구', '어쩍저쩍'],
+                      navigateOption: '/login',
+                    })
+                  )
+                }}
+              >
+                아까운
+              </span>
               <span className="highlight">양도수수료</span>
             </div>
             <div>이제 버리지 말고 양도 하세요!</div>
