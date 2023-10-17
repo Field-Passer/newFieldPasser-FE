@@ -21,9 +21,9 @@ const Main = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
-  const [isDistrictOpen, setIsDistrictOpen] = useState(false)
-  const [isSortOpen, setIsSortOpen] = useState(false)
-  const [selectedSortOption, setSelectedSortOption] = useState('정렬')
+  const [isDistrictOpen, setIsDistrictOpen] = useState<boolean>(false)
+  const [isSortOpen, setIsSortOpen] = useState<boolean>(false)
+  const [selectedSortOption, setSelectedSortOption] = useState<string>('정렬')
   const [isActive, setIsActive] = useState({
     futsal: true,
     soccer: false,
@@ -35,13 +35,17 @@ const Main = () => {
     districtName: '',
     categoryName: '풋살장',
   })
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState<number>(1)
   const [postList, setPostList] = useState<POST_TYPE[]>([])
   const { isLoading, getPostList, ref } = useInfinityScroll({ payload, page, setPostList, setPage })
 
   useEffect(() => {
     getPostList(payload, page)
   }, [page, payload])
+
+  useEffect(() => {
+    setSelectedSortOption('정렬')
+  }, [payload])
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -61,7 +65,7 @@ const Main = () => {
         setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
         break
     }
-  }, [selectedSortOption, page])
+  }, [selectedSortOption])
 
   const categories: ICategories[] = [
     {
