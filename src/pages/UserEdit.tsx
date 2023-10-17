@@ -6,6 +6,7 @@ import { editUserInfo, getUserInfo } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
 import { useDispatch } from 'react-redux'
 import { SET_INFO } from '@src/store/slices/infoSlice'
+import PATH from '@src/constants/pathConst'
 
 const UserEdit = () => {
   const navigate = useNavigate()
@@ -69,7 +70,7 @@ const UserEdit = () => {
           memberPhone: userPhone,
         })
       )
-      navigate('/mypage')
+      navigate(PATH.MYPAGE)
       alert('회원 정보가 변경되었습니다.')
     }
   }

@@ -4,6 +4,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import React, { useEffect, useState } from 'react'
 import { checkDuplicateEmail, join } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
+import PATH from '@src/constants/pathConst'
 
 const Join = () => {
   // 인풋 유효성 검사
@@ -72,7 +73,7 @@ const Join = () => {
     })
     if (status === 200) {
       alert('회원가입에 성공했습니다!')
-      navigate('/login')
+      navigate(PATH.LOGIN)
     }
   }
 
