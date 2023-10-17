@@ -11,6 +11,7 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import searchBox from './slices/searchChkSlice'
 import commentData from './slices/commentSlice'
 import modal from './slices/modalSlice'
+import sidebar from './slices/sidebarSlice'
 
 const rootReducer = combineReducers({
   createTest: testSlice.reducer,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   searchBox: searchBox.reducer,
   commentData: commentData.reducer,
   modal: modal.reducer,
+  sidebar: sidebar.reducer,
 })
 
 const persistConfig = {

@@ -2,7 +2,6 @@ import { COLORS } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { CloseButton, InfoIcon } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
-import Overlay from './Overlay'
 import { useNavigate } from 'react-router'
 
 const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption, confirmFn }: IModalProps) => {
@@ -88,7 +87,6 @@ const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption, co
           )}
         </Container>
       )}
-      <Overlay modalOpen={modalOpen} />
     </>
   )
 }

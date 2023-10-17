@@ -169,10 +169,7 @@ interface QuestionAnswerTypes {
   memberName: string
 }
 
-interface ISidebarProps {
-  sideOpen: boolean
-  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
+//삭제예정
 interface IModalProps {
   modalOpen: boolean
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -180,11 +177,6 @@ interface IModalProps {
   isConfirm: boolean
   navigateOption?: string
   confirmFn?: () => void
-}
-interface IOverlayProps {
-  sideOpen?: boolean
-  setSideOpen?: React.Dispatch<React.SetStateAction<boolean>>
-  modalOpen?: boolean
 }
 
 interface ITimeSelectorProps {

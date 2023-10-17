@@ -1,21 +1,27 @@
+import useSidebar from '@src/hooks/useSidebar'
+import { RootState } from '@src/store/config'
+import { useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { styled } from 'styled-components'
 
-const Overlay = ({ sideOpen, setSideOpen, modalOpen }: IOverlayProps) => {
+const Overlay = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
+  const { isModalOpen } = useSelector((state: RootState) => state.modal)
+  const { isSidebarOpen } = useSelector((state: RootState) => state.sidebar)
+  const { closeSidebar } = useSidebar()
 
   return (
     <>
-      {sideOpen && isMobile ? (
+      {isSidebarOpen && isMobile && (
         <Container
           onClick={() => {
-            setSideOpen && setSideOpen(false)
+            closeSidebar()
           }}
         ></Container>
-      ) : null}
-      {modalOpen && <Container></Container>}
+      )}
+      {isModalOpen && <Container></Container>}
     </>
   )
 }

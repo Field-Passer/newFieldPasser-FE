@@ -1,7 +1,6 @@
 import { COLORS } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { CloseButton, InfoIcon } from '@src/constants/icons'
-import Overlay from './Overlay'
 import { useNavigate } from 'react-router'
 import useModal from '@src/hooks/useModal'
 import { useSelector } from 'react-redux'
@@ -13,7 +12,6 @@ const ModalWithHook = () => {
     (state: RootState) => state.modal
   )
   const { closeModal } = useModal()
-
   const navigate = useNavigate()
 
   if (isModalOpen)
@@ -23,6 +21,8 @@ const ModalWithHook = () => {
           <PC>
             <PcButton
               onClick={() => {
+                navigateOption && navigate(navigateOption)
+                confirmAction && confirmAction()
                 closeModal()
               }}
             >
@@ -92,7 +92,6 @@ const ModalWithHook = () => {
             )}
           </Mobile>
         </Container>
-        <Overlay modalOpen={true} />
       </>
     )
 }

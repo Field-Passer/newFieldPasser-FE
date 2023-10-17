@@ -64,7 +64,7 @@ const Main = () => {
         setPostList([...postList.sort((a, b) => +b.boardId - +a.boardId)])
         break
     }
-  }, [selectedSortOption])
+  }, [selectedSortOption, page])
 
   const categories: ICategories[] = [
     {
@@ -158,20 +158,7 @@ const Main = () => {
           <div className="background"></div>
           <div className="text">
             <div className="big">
-              <span
-                onClick={() => {
-                  dispatch(
-                    SET_MODAL({
-                      isModalOpen: true,
-                      isConfirm: false,
-                      content: ['어쩌구저쩌구', '어쩍저쩍'],
-                      navigateOption: '/login',
-                    })
-                  )
-                }}
-              >
-                아까운
-              </span>
+              <span>아까운</span>
               <span className="highlight">양도수수료</span>
             </div>
             <div>이제 버리지 말고 양도 하세요!</div>
