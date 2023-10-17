@@ -16,14 +16,11 @@ import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
 import { categoryNamesList } from '@src/constants/options'
 import Loading from '@src/components/loading'
-import { useDispatch } from 'react-redux'
-import { SET_MODAL } from '@src/store/slices/modalSlice'
 
 const Main = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
-  const dispatch = useDispatch()
   const [isDistrictOpen, setIsDistrictOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const [selectedSortOption, setSelectedSortOption] = useState('정렬')
