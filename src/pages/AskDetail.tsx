@@ -22,10 +22,14 @@ const AskDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getQuestionDetail(questionId)
-      setQuestion(response?.data)
-      const answerResponse = await getQuestionAnswer(questionId)
-      setAnswer(answerResponse?.data)
+      try {
+        const response = await getQuestionDetail(questionId)
+        setQuestion(response)
+        const answerResponse = await getQuestionAnswer(questionId)
+        setAnswer(answerResponse)
+      } catch (error) {
+        console.log(error)
+      }
     }
     fetchData()
   }, [])
