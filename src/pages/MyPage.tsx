@@ -9,13 +9,10 @@ import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import { getMyPost, getWishlist, getMyReply } from '@src/api/authApi'
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogout } from '@src/api/authApi'
-import { removeCookieToken } from '@src/storage/Cookie'
-import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { SET_WISHLIST } from '@src/store/slices/wishlistSlice'
 import { RootState } from '@src/store/config'
-import { DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
+import useLoginState from '@src/hooks/useLoginState'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
@@ -28,6 +25,7 @@ const MyPage = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { logoutHandler } = useLoginState()
 
   useEffect(() => {
     const randomNumFn = (total: number) => {
@@ -53,16 +51,6 @@ const MyPage = () => {
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
   })
-
-  const logoutHandler = async () => {
-    const { status } = (await userLogout()) as IResponseType
-    if (status === 200) {
-      removeCookieToken()
-      dispatch(DELETE_TOKEN())
-      dispatch(DELETE_INFO())
-      return navigate('/login')
-    }
-  }
 
   return (
     <div>

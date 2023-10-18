@@ -14,7 +14,7 @@ import MyPage from '@pages/MyPage'
 import MyPageDetail from '@src/pages/MyPageDetail'
 import UserEdit from '@src/pages/UserEdit'
 import FindPassword from '@src/pages/FindPassword'
-import Edit from '@src/pages/Edit'
+import EditPost from '@src/pages/EditPost'
 import ResetPw from '@src/components/ResetPassword/ResetPw'
 import Ask from '@src/pages/Ask'
 import AskDetail from '@src/pages/AskDetail'
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       { index: true, path: PATH.HOME, element: <Home /> },
       { path: PATH.BOARD_DETAILS, element: <BoardDetails /> },
       {
-        path: PATH.WRITE,
+        path: PATH.WRITE_POST,
         element: (
           <PrivateRoute>
             <Write />
@@ -41,10 +41,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: PATH.EDIT,
+        path: PATH.EDIT_POST,
         element: (
           <PrivateRoute>
-            <Edit />
+            <EditPost />
           </PrivateRoute>
         ),
       },

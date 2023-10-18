@@ -2,12 +2,13 @@ import { useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { COLORS } from '@src/globalStyles'
 import { NoticeIcon } from '@src/constants/icons'
+import PATH from '@src/constants/pathConst'
 
 const Error = () => {
   const navigate = useNavigate()
   return (
     <Main>
-      <div onClick={() => navigate('/', { replace: true })}>
+      <div onClick={() => navigate(PATH.HOME, { replace: true })}>
         <img src="/logo.png" alt="logo" />
       </div>
       <div className="notice">
@@ -15,7 +16,7 @@ const Error = () => {
         <span>존재하지 않는 페이지입니다.</span>
       </div>
       <div>
-        <button onClick={() => navigate('/', { replace: true })}>메인으로 돌아가기</button>
+        <button onClick={() => navigate(PATH.HOME, { replace: true })}>메인으로 돌아가기</button>
       </div>
     </Main>
   )

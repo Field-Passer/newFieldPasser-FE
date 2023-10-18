@@ -9,14 +9,17 @@ import { useLocation } from 'react-router'
 import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
-import Modal from '@src/components/Modal'
 import { ImageUploadIcon } from '@src/constants/icons'
+import useModal from '@src/hooks/useModal'
+import PATH from '@src/constants/pathConst'
 
+// props로 data받기
 const Write = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
   const location = useLocation()
+  const { openModal } = useModal()
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
@@ -36,10 +39,6 @@ const Write = () => {
   const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
-
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
 
   useEffect(() => {
     if (dataForEdit) {
@@ -63,8 +62,11 @@ const Write = () => {
     const fileReader = new FileReader()
 
     if (thisFile && thisFile.size > 10485760) {
-      setModalOpen(true)
-      setModalText(['첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.'],
+      })
       event.target.files = null
       return false
     }
@@ -124,20 +126,29 @@ const Write = () => {
     const target = event.target as HTMLFormElement
 
     if (selectedStartTime === selectedEndTime) {
-      setModalOpen(true)
-      setModalText(['시작 시간과 끝나는 시간이 동일합니다.', '예약 일시를 정확히 선택해주세요.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['시작 시간과 끝나는 시간이 동일합니다.', '예약 일시를 정확히 선택해주세요.'],
+      })
       return false
     }
 
     if (!selectedStartTime || !selectedEndTime) {
-      setModalOpen(true)
-      setModalText(['시작 시간과 끝나는 시간을 모두 선택해주세요.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['시작 시간과 끝나는 시간을 모두 선택해주세요.'],
+      })
       return false
     }
 
     if (writtenContent.length < 5) {
-      setModalOpen(true)
-      setModalText(['내용은 5자 이상 입력해주세요.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['내용을 5자 이상 입력해주세요.'],
+      })
       return false
     }
 
@@ -179,15 +190,21 @@ const Write = () => {
         try {
           const writeRes = await requestWrite(formData)
           if (writeRes === 200) {
-            setModalOpen(true)
-            setModalText(['게시글 작성이 완료되었습니다.'])
-            setModalNavigateOption('/')
+            openModal({
+              isModalOpen: true,
+              isConfirm: false,
+              content: ['게시글 작성이 완료되었습니다.'],
+              navigateOption: PATH.HOME,
+            })
           } else {
             throw new Error()
           }
         } catch (err) {
-          setModalOpen(false)
-          setModalText(['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'])
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'],
+          })
         }
         break
       default:
@@ -201,13 +218,19 @@ const Write = () => {
           }
           const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
           if (editRes === 200) {
-            setModalOpen(true)
-            setModalText(['게시글 수정이 완료되었습니다.'])
-            setModalNavigateOption(`/board-details/${dataForEdit?.boardId}`)
+            openModal({
+              isModalOpen: true,
+              isConfirm: false,
+              content: ['게시글 수정이 완료되었습니다.'],
+              navigateOption: `/board-details/${dataForEdit?.boardId}`,
+            })
           }
         } catch (err) {
-          setModalOpen(true)
-          setModalText(['정상적으로 등록되지 않았습니다.', '다시 시도해주세요.'])
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'],
+          })
         }
         break
     }
@@ -215,15 +238,6 @@ const Write = () => {
 
   return (
     <Container>
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={false}
-          navigateOption={modalNavigateOption}
-        />
-      )}
       {isMobile ? (
         <MobileForm
           onSubmit={(event) => {

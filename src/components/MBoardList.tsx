@@ -1,5 +1,5 @@
 import { Harticon } from '@src/constants/icons'
-import { randomImages, handleImgError } from '@src/hooks/utils'
+import { randomImages, handleImgError } from '@src/utils/utils'
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useNavigate } from 'react-router'
