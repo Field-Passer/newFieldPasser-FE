@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Write from './Write'
 import { getUserInfo } from '@src/api/authApi'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation } from 'react-router'
 import useModal from '@src/hooks/useModal'
 
 const EditPost = () => {
