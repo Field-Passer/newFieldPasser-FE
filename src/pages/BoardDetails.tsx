@@ -1,7 +1,7 @@
 import { addTransactionStatus, blindBoard, delLikeBoard, getPostDetail, postLikeBoard } from '@src/api/boardApi'
 import { BigHart, Harticon, MoreIcon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
-import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
+import { dateFormat, handleImgError, randomImages } from '@src/utils/utils'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
@@ -10,8 +10,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import BoardComment from '@src/components/Comment'
 import { PC, Mobile } from '@src/hooks/useScreenHook'
-import Modal from '@src/components/Modal'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const BoardDetails = () => {
   const { boardId } = useParams()
@@ -19,12 +19,9 @@ const BoardDetails = () => {
   const [detailData, setDetailData] = useState<POST_TYPE>()
   const [moreBtnChk, setMoreBtnChk] = useState(false)
   const [likeState, setLikeState] = useState(detailData?.likeBoard)
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigate, setModalNavigate] = useState<string>('')
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
   const userInfo = useSelector((state: RootState) => state.userInfo)
+  const { openModal } = useModal()
 
   const blindFn = async () => {
     try {
@@ -42,10 +39,14 @@ const BoardDetails = () => {
     } catch (err) {
       console.log(err)
       if (userInfo.role === '관리자') {
-        setModalOpen(true)
-        setModalIsConfirm(true)
-        setModalText(['블라인드 처리된 게시글입니다. 블라인드 해제하시겠습니까?'])
-        setModalNavigate(PATH.HOME)
+        openModal({
+          isModalOpen: true,
+          isConfirm: true,
+          content: ['블라인드 처리된 게시글입니다. 블라인드 해제하시겠습니까?'],
+          confirmAction: () => {
+            console.log('블라인드 해제 넣기')
+          },
+        })
       }
     }
   }
@@ -53,7 +54,7 @@ const BoardDetails = () => {
   const delPostFn = async (id: number | undefined) => {
     try {
       await delPost(id)
-      navigate('/')
+      navigate(PATH.HOME)
     } catch (err) {
       console.log(err)
     }
@@ -111,10 +112,12 @@ const BoardDetails = () => {
           <li>
             <button
               onClick={() => {
-                setModalOpen(true)
-                setModalIsConfirm(true)
-                setModalText(['블라인드 처리하시겠습니까?'])
-                setModalNavigate(PATH.HOME)
+                openModal({
+                  isModalOpen: true,
+                  isConfirm: true,
+                  content: ['게시글을 블라인드 처리 하시겠습니까?'],
+                  confirmAction: blindFn,
+                })
               }}
             >
               블라인드
@@ -127,10 +130,12 @@ const BoardDetails = () => {
         <li>
           <button
             onClick={() => {
-              setModalOpen(true)
-              setModalIsConfirm(true)
-              setModalText(['블라인드 처리하시겠습니까?'])
-              setModalNavigate(PATH.HOME)
+              openModal({
+                isModalOpen: true,
+                isConfirm: true,
+                content: ['게시글을 블라인드 처리 하시겠습니까?'],
+                confirmAction: blindFn,
+              })
             }}
           >
             블라인드
@@ -260,16 +265,6 @@ const BoardDetails = () => {
           </>
         )}
       </Container>
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={modalIsConfirm}
-          navigateOption={modalNavigate}
-          confirmFn={blindFn}
-        ></Modal>
-      )}
     </ThemeProvider>
   )
 }

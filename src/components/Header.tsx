@@ -4,37 +4,30 @@ import { COLORS } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import { Mobile } from '@src/hooks/useScreenHook'
 import type { RootState } from '@src/store/config'
-import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserInfo, userLogout } from '@src/api/authApi'
-import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
-import { useEffect, useState } from 'react'
+import { getUserInfo } from '@src/api/authApi'
+import { getCookieToken } from '@src/storage/Cookie'
+import { useEffect } from 'react'
 import { SET_INFO, DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
-import Modal from '@src/components/Modal'
 import { HamburgerIcon } from '@src/constants/icons'
+import { OPEN_SIDEBAR } from '@src/store/slices/sidebarSlice'
+import useLoginState from '@src/hooks/useLoginState'
 
-type PropsType = {
-  setSideOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const Header = ({ setSideOpen }: PropsType) => {
+const Header = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
   const navigate = useNavigate()
-  const openSidebar = () => {
-    setSideOpen(true)
-  }
   const dispatch = useDispatch()
 
-  const authenticated = useSelector((state: RootState) => state.accessToken.authenticated) // 스토어에 저장된 로그인 상태
+  const openSidebar = () => {
+    dispatch(OPEN_SIDEBAR())
+  }
+  const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
+  const userRole = useSelector((state: RootState) => state.userInfo.role)
   const refreshToken = getCookieToken()
-
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
+  const { accessAfterLoginAlert, logoutHandler } = useLoginState()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,25 +40,6 @@ const Header = ({ setSideOpen }: PropsType) => {
     }
     fetchData()
   }, [refreshToken])
-
-  const logoutHandler = async () => {
-    const { status } = (await userLogout()) as IResponseType
-    if (status === 200) {
-      removeCookieToken()
-      dispatch(DELETE_TOKEN())
-      dispatch(DELETE_INFO())
-      return navigate(PATH.LOGIN)
-    }
-  }
-
-  const clickWithoutLogin = () => {
-    setModalOpen(true)
-    setModalIsConfirm(false)
-    setModalText(['로그인 후 이용 가능합니다.'])
-    setModalNavigateOption(PATH.LOGIN)
-  }
-
-  const userRole = useSelector((state: RootState) => state.userInfo.role)
 
   return (
     <>
@@ -98,7 +72,7 @@ const Header = ({ setSideOpen }: PropsType) => {
               <button
                 onClick={() => {
                   {
-                    authenticated ? navigate(PATH.WRITE) : clickWithoutLogin()
+                    authenticated ? navigate(PATH.WRITE_POST) : accessAfterLoginAlert()
                   }
                 }}
               >
@@ -107,15 +81,6 @@ const Header = ({ setSideOpen }: PropsType) => {
             </div>
           </Inner>
         </Container>
-      )}
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={modalIsConfirm}
-          navigateOption={modalNavigateOption}
-        />
       )}
     </>
   )

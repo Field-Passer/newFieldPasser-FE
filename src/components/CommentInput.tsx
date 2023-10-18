@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { setCommentAdd, setCommentData, setCommentInput } from '@src/store/slices/commentSlice'
 import { useNavigate } from 'react-router'
 import { COLORS } from '@src/globalStyles'
+import PATH from '@src/constants/pathConst'
 
 type PropsType = {
   boardId: number
@@ -46,7 +47,7 @@ const BoardCommentInput = (props: PropsType) => {
           if (!props.loginVal) {
             alert('로그인 회원만 댓글 작성 가능합니다.')
             e.target.blur()
-            navigate('/login')
+            navigate(PATH.LOGIN)
           }
         }}
         onKeyUp={(e) => {

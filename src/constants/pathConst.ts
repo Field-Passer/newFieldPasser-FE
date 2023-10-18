@@ -1,8 +1,8 @@
 const PATH = {
   HOME: '/',
   BOARD_DETAILS: '/board-details/:boardId',
-  WRITE: '/write',
-  EDIT: '/edit/:postId',
+  WRITE_POST: '/write',
+  EDIT_POST: '/edit/:postId',
   BOARD_LIST: '/board-list',
   HELP: '/help',
   HELP_FORM: '/help-form',

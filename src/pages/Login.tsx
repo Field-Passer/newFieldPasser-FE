@@ -11,6 +11,7 @@ import { removeCookieToken, setRefreshToken } from '@src/storage/Cookie'
 import { userLogin } from '@src/api/authApi'
 import SocialLogin from '@src/components/SocialLogin'
 import Modal from '@src/components/Modal'
+import PATH from '@src/constants/pathConst'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -50,7 +51,7 @@ const Login = () => {
       // setRefreshToken(tokens.refreshToken)
       setRefreshToken(response.data.data.refreshToken)
       console.log('로그인함', new Date())
-      return navigate('/', { replace: true })
+      return navigate(PATH.HOME, { replace: true })
     } else {
       setModalOpen(true)
       setModalIsConfirm(false)

@@ -3,6 +3,11 @@
 커뮤니티형 체육시설 양도 시스템의 불편함을 해소하기 위한 <br />
 구장 양도 서비스 **_Field-Passer_**
 
+## 프로젝트 설명
+
+-
+-
+
 ## 배포 링크
 
 > [배포 링크](https://fieldpasser.netlify.app/)
@@ -90,6 +95,7 @@ npm run dev
     ├── routes/
     ├── storage/
     ├── store/
+    ├── utils/
     ├── App.tsx
     ├── globalStyles.tsx
     ├── main.tsx

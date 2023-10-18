@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { DELETE_INFO } from '@src/store/slices/infoSlice'
 import Modal from '@src/components/Modal'
+import PATH from '@src/constants/pathConst'
 
 const ResetPw = () => {
   const dispatch = useDispatch()
@@ -44,10 +45,8 @@ const ResetPw = () => {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      setModalOpen(true)
-      setModalIsConfirm(false)
-      setModalText(['비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.'])
-      navigate('/login')
+      alert('비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.')
+      navigate(PATH.LOGIN)
     }
   }
 

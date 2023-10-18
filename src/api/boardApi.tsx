@@ -1,7 +1,5 @@
 import { publicApi, privateApi } from './Instance'
 
-// state.searchVlaue.endDate.substr(0, 10) + 'T' + state.searchVlaue.endTime + ':59',
-
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
   if (!values.chkDate) {
     values.startTime = ''
@@ -17,9 +15,6 @@ export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
     .then((res) => {
       return res.data.data
     })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 
 export const getMainPostList = async (params: IMainListPayload, page = 1) => {
@@ -31,35 +26,22 @@ export const getMainPostList = async (params: IMainListPayload, page = 1) => {
 export const getPostDetail = async (userId: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
 
-  return await Instance.get(`/detail/${userId}`)
-    .then((res) => {
-      return res.data.data
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  return await Instance.get(`/detail/${userId}`).then((res) => {
+    return res.data.data
+  })
 }
 
 export const delPost = async (boardId: number | undefined) => {
-  return await privateApi
-    .delete(`/board/delete/${boardId}`)
-    .then(() => {
-      alert('삭제 되었습니다.')
-    })
-    .catch((err) => {
-      return err
-    })
+  return await privateApi.delete(`/board/delete/${boardId}`).then(() => {
+    alert('삭제 되었습니다.')
+  })
 }
 
 export const getComment = async (boardId: number, page: number, loginVal: boolean) => {
   const Instance = loginVal ? privateApi : publicApi
-  return await Instance.get(`comment-lookup/${boardId}/${page}`)
-    .then((res) => {
-      return res.data.data
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  return await Instance.get(`comment-lookup/${boardId}/${page}`).then((res) => {
+    return res.data.data
+  })
 }
 
 export const postComment = async (boardId: number, comment: string, parentId?: number) => {
@@ -71,9 +53,6 @@ export const postComment = async (boardId: number, comment: string, parentId?: n
     })
     .then((res) => {
       return res
-    })
-    .catch((err) => {
-      console.log(err)
     })
 }
 
@@ -87,9 +66,6 @@ export const postLikeBoard = async (boardId: number, loginVal: boolean) => {
     .then(() => {
       alert('관심글에 저장되었습니다.')
     })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 
 export const delLikeBoard = async (boardId: number) => {
@@ -102,20 +78,12 @@ export const delLikeBoard = async (boardId: number) => {
     .then(() => {
       alert('관심글에서 삭제되었습니다.')
     })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 
 export const delComment = async (commentId: number) => {
-  return await privateApi
-    .delete(`/comment/delete/${commentId}`)
-    .then(() => {
-      alert('삭제되었습니다.')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  return await privateApi.delete(`/comment/delete/${commentId}`).then(() => {
+    alert('삭제되었습니다.')
+  })
 }
 export const addComment = async (commentId: number, content: string) => {
   return await privateApi
@@ -125,20 +93,12 @@ export const addComment = async (commentId: number, content: string) => {
     .then(() => {
       alert('수정되었습니다.')
     })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 
 export const addTransactionStatus = async (commentId: number) => {
-  return await privateApi
-    .put(`/board/sold-out/${commentId}`)
-    .then(() => {
-      alert('변경 되었습니다.')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  return await privateApi.put(`/board/sold-out/${commentId}`).then(() => {
+    alert('변경 되었습니다.')
+  })
 }
 
 // 게시글 블라인드 처리

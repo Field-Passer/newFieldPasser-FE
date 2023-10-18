@@ -1,6 +1,7 @@
 // import React from 'react'
 
 import { getUserInfo } from '@src/api/authApi'
+import PATH from '@src/constants/pathConst'
 import { setRefreshToken } from '@src/storage/Cookie'
 import { SET_TOKEN } from '@src/store/slices/authSlice'
 import { SET_INFO } from '@src/store/slices/infoSlice'
@@ -30,7 +31,7 @@ const SocialLoginRedirect = () => {
         console.log(err)
       }
       console.log('소셜 로그인 성공', new Date())
-      return navigate('/', { replace: true })
+      return navigate(PATH.HOME, { replace: true })
     }
     socialLogin()
     //navigate('/', { replace: true })
