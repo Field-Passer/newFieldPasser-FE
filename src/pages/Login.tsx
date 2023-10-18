@@ -40,19 +40,16 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, tokens } = (await userLogin({
+    const response = await userLogin({
       userEmail,
       userPw,
-    })) as IResponseType
-    if (status === 200) {
+    })
+    if (response.status === 200) {
       removeCookieToken()
-      dispatch(SET_TOKEN(tokens.accessToken))
-      setRefreshToken(tokens.refreshToken)
+      dispatch(SET_TOKEN(response.data.data.accessToken))
+      // setRefreshToken(tokens.refreshToken)
+      setRefreshToken(response.data.data.refreshToken)
       console.log('로그인함', new Date())
-      // window.onpopstate = () => {
-      // console.log('뒤로가기 클릭')
-      // return navigate('/')
-      // }
       return navigate('/', { replace: true })
     } else {
       setModalOpen(true)

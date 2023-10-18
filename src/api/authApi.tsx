@@ -3,28 +3,14 @@ import { privateApi, publicApi } from './Instance'
 
 // 로그인
 export const userLogin = async ({ userEmail, userPw }: IUserInfoType) => {
-  try {
-    const response = await publicApi('/auth/login', {
-      method: 'POST',
-      data: {
-        memberId: userEmail,
-        password: userPw,
-      },
-    })
-    // if(!response) return
-    if (response.status && response.data.data) {
-      return {
-        status: response.status,
-        tokens: response.data.data,
-      }
-    }
-  } catch (error) {
-    if (axios.isAxiosError<IResponseErrorType>(error)) {
-      return {
-        status: error.response?.status,
-      }
-    }
-  }
+  const response = await publicApi('/auth/login', {
+    method: 'POST',
+    data: {
+      memberId: userEmail,
+      password: userPw,
+    },
+  })
+  return response
 }
 
 // 로그아웃

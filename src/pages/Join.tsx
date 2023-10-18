@@ -4,6 +4,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import React, { useEffect, useState } from 'react'
 import { checkDuplicateEmail, join } from '@src/api/authApi'
 import useInput from '@src/hooks/useInputHook'
+import Modal from '@src/components/Modal'
 
 const Join = () => {
   // 인풋 유효성 검사
@@ -48,6 +49,11 @@ const Join = () => {
   const [checkEmail, setCheckEmail] = useState(false)
   const [phoneError, setPhoneError] = useState(false)
 
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
+  const [modalText, setModalText] = useState<string[]>([])
+  // const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
+
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     if (!userEmail) return alert('이메일을 입력해주세요.')
@@ -55,7 +61,12 @@ const Join = () => {
     const status = await checkDuplicateEmail({ userEmail })
     if (status === 200) {
       setCheckEmail(true)
-    } else return alert('사용할 수 없는 이메일 입니다.')
+    } else {
+      setModalOpen(true)
+      setModalIsConfirm(false)
+      setModalText(['사용할 수 없는 이메일 입니다.'])
+      //return alert('사용할 수 없는 이메일 입니다.')
+    }
   }
 
   const joinHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -111,7 +122,7 @@ const Join = () => {
               value={userPw}
               required
             />
-            <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
+            <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자, 특수문자 조합이어야 합니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">
@@ -171,6 +182,11 @@ const Join = () => {
 
         <button className="btn_join">가입하기</button>
       </form>
+      <>
+        {modalOpen && (
+          <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} content={modalText} isConfirm={modalIsConfirm} />
+        )}
+      </>
     </Container>
   )
 }
