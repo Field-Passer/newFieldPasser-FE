@@ -15,7 +15,7 @@ const PriceInput = ({ priceValue, setPriceValue }: PropsType) => {
 
   return (
     <>
-      <div>가격</div>
+      <h2>가격</h2>
       <div>
         <PriceBox
           type="text"

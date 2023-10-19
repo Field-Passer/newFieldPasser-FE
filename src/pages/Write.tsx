@@ -14,6 +14,7 @@ import { useMediaQuery } from 'react-responsive'
 import FileUpload from '@src/components/Write/FileUpload'
 import TitleInput from '@src/components/Write/TitleInput'
 import PriceInput from '@src/components/Write/PriceInput'
+import ContentInput from '@src/components/Write/ContentInput'
 
 // props로 data받기
 const Write = () => {
@@ -303,17 +304,7 @@ const Write = () => {
             </MobileReservation>
           </section>
           <section>
-            <div>본문내용</div>
-            <div>
-              <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
-                required
-                minLength={5}
-                name="content"
-                value={writtenContent}
-                onChange={(e) => setWrittenContent(e.target.value)}
-              />
-            </div>
+            <ContentInput writtenContent={writtenContent} setWrittenContent={setWrittenContent} />
           </section>
           <button type="submit" className="submit-button">
             등록하기
@@ -431,17 +422,7 @@ const Write = () => {
             </PcReservation>
           </section>
           <section className="full-section">
-            <h2>본문내용</h2>
-            <div>
-              <ContentInput
-                placeholder="양도 사유, 주차 가능 여부 등 내용을 최소 5자 이상 입력해주세요."
-                required
-                minLength={5}
-                name="content"
-                value={writtenContent}
-                onChange={(e) => setWrittenContent(e.target.value)}
-              />
-            </div>
+            <ContentInput writtenContent={writtenContent} setWrittenContent={setWrittenContent} />
           </section>
           <button className="submit-button" type="submit">
             등록하기
@@ -881,30 +862,6 @@ const PcReservation = styled.div`
     .time-selector-selected {
       color: ${COLORS.font};
     }
-  }
-`
-
-const ContentInput = styled.textarea`
-  color: ${COLORS.font};
-  width: 328px;
-  height: 140px;
-  border: 1px solid ${COLORS.gray20};
-  border-radius: 8px;
-  padding: 0 10px;
-  box-sizing: border-box;
-  resize: none;
-  overflow-y: auto;
-  padding: 10px;
-
-  &::placeholder {
-    color: ${COLORS.gray40};
-  }
-
-  @media (min-width: 834px) {
-    width: 100%;
-    height: 180px;
-    padding: 16px;
-    font-size: ${FONT.pc};
   }
 `
 

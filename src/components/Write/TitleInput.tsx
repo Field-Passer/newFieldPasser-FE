@@ -8,7 +8,7 @@ type PropsType = {
 const TitleInput = ({ writtenTitle, setWrittenTitle }: PropsType) => {
   return (
     <>
-      <div>구장명</div>
+      <h2>구장명</h2>
       <TitleBox
         type="text"
         placeholder="양도할 구장명을 입력해주세요"
