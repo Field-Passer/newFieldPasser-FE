@@ -28,8 +28,8 @@ privateApi.interceptors.request.use(
     const atExpire = store.getState().accessToken.expireTime
     const curTime = new Date().getTime()
 
+    console.log(new Date(atExpire) + '/' + new Date(curTime), '만료 시간')
     if (atExpire < curTime) {
-      console.log(new Date(atExpire) + '/' + new Date(curTime))
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
@@ -38,6 +38,7 @@ privateApi.interceptors.request.use(
       return Promise.resolve()
     }
 
+    console.log('??????웨')
     const newConfig = await CheckAuthorization(config)
     if (newConfig === 'NoToken') {
       window.location.replace('/login')

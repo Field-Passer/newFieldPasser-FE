@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import React, { useState } from 'react'
-import { temporaryPassword, verifyUserEmail, verifyUserNum } from '@src/api/authApi'
+import { temporaryPassword, verifyUserEmail, verifyUserNum } from '@src/api/userApi'
 import useInput from '@src/hooks/useInputHook'
 import Modal from '@src/components/Modal'
 
@@ -49,10 +49,8 @@ const Verification = ({ setStep }: propsType) => {
   const verifyMailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setMailLoading(true)
-    const { status } = (await verifyUserEmail({
-      userEmail,
-    })) as IResponseType
-    if (status === 200) {
+    const response = await verifyUserEmail({ userEmail })
+    if (response.status === 200) {
       setPersonalVerify(false)
       setModalOpen(true)
       setModalIsConfirm(false)
@@ -85,6 +83,7 @@ const Verification = ({ setStep }: propsType) => {
         setStep(2)
       }
     } else {
+      // 모달 수정
       setModalOpen(true)
       setModalIsConfirm(false)
       setModalText(['인증에 실패하였습니다. 입력한 정보를 다시 확인해주세요.'])

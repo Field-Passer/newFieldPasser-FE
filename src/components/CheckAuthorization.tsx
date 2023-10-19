@@ -26,11 +26,11 @@ const CheckAuthorization = async (config: InternalAxiosRequestConfig) => {
     return config
   } else {
     if (refresh_token) {
-      const { status, tokens } = (await postRefereshToken()) as IResponseType
-      if (status === 200) {
+      const response = await postRefereshToken()
+      if (response.status === 200) {
         removeCookieToken()
-        dispatch(SET_TOKEN(tokens.accessToken))
-        setRefreshToken(tokens.refreshToken)
+        dispatch(SET_TOKEN(response.data.data.accessToken))
+        setRefreshToken(response.data.data.refreshToken)
         config.headers['Authorization'] = `Bearer ${access_token}`
         console.log('rf로 at 재발급')
         return config

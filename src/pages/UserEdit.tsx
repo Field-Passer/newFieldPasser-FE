@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
-import { editUserInfo, getUserInfo } from '@src/api/authApi'
+import { editUserInfo, getUserInfo } from '@src/api/userApi'
 import useInput from '@src/hooks/useInputHook'
 import { useDispatch } from 'react-redux'
 import { SET_INFO } from '@src/store/slices/infoSlice'
@@ -56,12 +56,12 @@ const UserEdit = () => {
     e.preventDefault()
     if (userName === '' || userNickName === '' || userPhone === '') return alert('양식은 비어있을 수 없습니다.')
     if (userPhoneError) return alert('양식을 다시 확인해주세요.')
-    const { status } = (await editUserInfo({
+    const response = await editUserInfo({
       userName,
       userNickName,
       userPhone,
-    })) as IResponseType
-    if (status === 200) {
+    })
+    if (response.status === 200) {
       dispatch(
         SET_INFO({
           memberId: userEmail,
@@ -72,6 +72,8 @@ const UserEdit = () => {
       )
       navigate(PATH.MYPAGE)
       alert('회원 정보가 변경되었습니다.')
+    } else {
+      alert('회원 정보 변경에 실패했습니다. 양식을 다시 확인해주세요.')
     }
   }
 

@@ -48,11 +48,11 @@ const Login = () => {
     if (response.status === 200) {
       removeCookieToken()
       dispatch(SET_TOKEN(response.data.data.accessToken))
-      // setRefreshToken(tokens.refreshToken)
       setRefreshToken(response.data.data.refreshToken)
       console.log('로그인함', new Date())
       return navigate(PATH.HOME, { replace: true })
     } else {
+      // 모달 수정
       setModalOpen(true)
       setModalIsConfirm(false)
       setModalText(['잘못된 로그인 정보입니다. 아이디와 비밀번호를 다시 확인해주세요.'])

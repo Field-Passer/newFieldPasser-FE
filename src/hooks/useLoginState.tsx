@@ -29,8 +29,8 @@ const useLoginState = () => {
   }
 
   const logoutHandler = async () => {
-    const { status } = (await userLogout()) as IResponseType
-    if (status === 200) {
+    const response = await userLogout()
+    if (response?.status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())

@@ -1,7 +1,7 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
-import { getMyReply } from '@src/api/authApi'
+import { getMyReply } from '@src/api/userApi'
 import ReactPaginate from 'react-paginate'
 
 interface IProps {
