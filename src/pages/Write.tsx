@@ -1,10 +1,6 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import { ko } from 'date-fns/esm/locale'
-import { categoryOptions } from '@src/constants/options'
-import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
@@ -17,6 +13,7 @@ import PriceInput from '@src/components/Write/PriceInput'
 import ContentInput from '@src/components/Write/ContentInput'
 import DistrictSelect from '@src/components/Write/DistrictSelect'
 import CategorySelect from '@src/components/Write/CategorySelect'
+import DateInput from '@src/components/Write/DateInput'
 
 // props로 data받기
 const Write = () => {
@@ -61,33 +58,6 @@ const Write = () => {
       setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
     }
   }, [dataForEdit])
-
-  const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
-    <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
-      {isMobile ? (
-        <>
-          <div className="icon"></div>
-          <span>{value}</span>
-        </>
-      ) : (
-        <>
-          <span className={isDateChange ? 'selected month' : 'month'}>{value.slice(0, 2)}</span>
-          <span>월</span>
-          <span className={isDateChange ? 'selected day' : 'day'}>{value.slice(2, 4)}</span>
-          <span>일</span>
-        </>
-      )}
-    </div>
-  ))
-  CustomDateInput.displayName = 'CustomDateInput'
-
-  // const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
-  //   if (type === 'district') {
-  //     setSelectedDistrict(event.target.value)
-  //   } else {
-  //     setSelectedCategory(event.target.value)
-  //   }
-  // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
@@ -233,23 +203,14 @@ const Write = () => {
             <CategorySelect selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
           </section>
           <section>
-            <div>예약일시</div>
+            <h2>예약일시</h2>
             <MobileReservation>
               <div className="date">
-                <DatePicker
-                  locale={ko}
-                  name="date"
-                  dateFormat="yyyy년 MM월 dd일"
-                  shouldCloseOnSelect
-                  selected={selectedDate}
-                  onChange={(date) => {
-                    setSelectedDate(date)
-                    setIsDateChange(true)
-                  }}
-                  className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
-                  minDate={new Date()}
-                  required
+                <DateInput
+                  isDateChange={isDateChange}
+                  setIsDateChange={setIsDateChange}
+                  setSelectedDate={setSelectedDate}
+                  selectedDate={selectedDate}
                 />
               </div>
               <div className="time">
@@ -326,20 +287,11 @@ const Write = () => {
             <PcReservation>
               <div className="date">
                 <div>날짜</div>
-                <DatePicker
-                  locale={ko}
-                  name="date"
-                  dateFormat="MMdd"
-                  shouldCloseOnSelect
-                  selected={selectedDate}
-                  onChange={(date) => {
-                    setSelectedDate(date)
-                    setIsDateChange(true)
-                  }}
-                  className={isDateChange ? 'selected' : ''}
-                  customInput={<CustomDateInput value={''} onClick={() => ''} />}
-                  minDate={new Date()}
-                  required
+                <DateInput
+                  isDateChange={isDateChange}
+                  setIsDateChange={setIsDateChange}
+                  setSelectedDate={setSelectedDate}
+                  selectedDate={selectedDate}
                 />
               </div>
               <div className="time">
@@ -404,86 +356,6 @@ const Container = styled.main`
       background-color: none;
     }
   }
-
-  .react-datepicker__triangle::before,
-  .react-datepicker__triangle::after {
-    display: none;
-  }
-
-  .react-datepicker-popper {
-    width: 100% !important;
-    inset: -10px 0 0 -12px !important;
-
-    @media (min-width: 834px) {
-      inset: -10px 0 0 -50px !important;
-    }
-  }
-
-  .react-datepicker {
-    width: 100%;
-    border: 1px solid ${COLORS.gray20};
-    border-radius: 10px;
-  }
-
-  .react-datepicker__header {
-    background: none;
-    border-bottom: 1px solid ${COLORS.gray20};
-  }
-
-  .react-datepicker__month-container {
-    width: 100%;
-    padding-top: 10px;
-  }
-
-  .react-datepicker__day-name {
-    color: ${COLORS.gray40};
-  }
-
-  .react-datepicker__day {
-    color: ${COLORS.font};
-
-    &:hover {
-      background: none;
-    }
-  }
-
-  .react-datepicker__day--disabled,
-  .react-datepicker__day--outside-month {
-    color: ${COLORS.gray40};
-  }
-
-  .react-datepicker__day-name,
-  .react-datepicker__day,
-  .react-datepicker__time-name {
-    width: calc((100% / 7) - (0.166rem * 2));
-    line-height: 3;
-  }
-
-  .react-datepicker__day--selected {
-    position: relative;
-    height: 100%;
-    border-radius: 50%;
-    background-color: ${COLORS.green};
-    color: #fff;
-
-    &:hover {
-      color: black;
-    }
-  }
-
-  .react-datepicker__navigation-icon {
-    margin-top: 12px;
-  }
-
-  .react-datepicker__navigation-icon--previous::before,
-  .react-datepicker__navigation-icon--next::before {
-    border-color: ${COLORS.green};
-  }
-
-  .react-datepicker__day--keyboard-selected {
-    background: none;
-  }
-
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
