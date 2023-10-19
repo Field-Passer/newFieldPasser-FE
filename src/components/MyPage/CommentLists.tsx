@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import { getMyReply } from '@src/api/userApi'
 import ReactPaginate from 'react-paginate'
+import { ChatBubbleIcon, MypageCalendarIcon } from '@src/constants/icons'
 
 interface IProps {
   screen: string
@@ -38,11 +39,11 @@ const CommentLists = ({ screen }: IProps) => {
               <Content screen={screen}>{comment.commentContent}</Content>
               <Des screen={screen}>
                 <div>
-                  <img src="/calendar.svg" alt="달력" />
+                  <MypageCalendarIcon />
                   <span>{comment.commentUpDate.slice(0, 10)}</span>
                 </div>
                 <div>
-                  <img src="/chat_bubble.svg" alt="댓글" />
+                  <ChatBubbleIcon />
                   <span>{comment.children.length}</span>
                 </div>
               </Des>

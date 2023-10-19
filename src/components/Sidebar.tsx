@@ -9,6 +9,7 @@ import { styled } from 'styled-components'
 import PATH from '@src/constants/pathConst'
 import useSidebar from '@src/hooks/useSidebar'
 import useLoginState from '@src/hooks/useLoginState'
+import { BoldCloseIcon, MyCommentIcon, MyHeartIcon, MyPageIcon, MyPostIcon } from '@src/constants/icons'
 
 const Sidebar = () => {
   const isMobile = useMediaQuery({
@@ -33,15 +34,13 @@ const Sidebar = () => {
     <>
       <SideContainer id="sidebar" className={isSidebarOpen && isMobile ? 'open' : ''}>
         <FirstSection>
-          <div>
-            <img
-              src="/close.svg"
-              alt="닫기"
-              className="close"
-              onClick={() => {
-                closeSidebar()
-              }}
-            />
+          <div
+            className="close"
+            onClick={() => {
+              closeSidebar()
+            }}
+          >
+            <BoldCloseIcon />
           </div>
           <div>
             <Link to={PATH.HOME} onClick={() => closeSidebar()}>
@@ -102,7 +101,7 @@ const Sidebar = () => {
               refreshToken ? navigate(PATH.MYPAGE) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_page.svg" alt="마이페이지" />
+            <MyPageIcon />
             <span>마이페이지</span>
           </div>
           <div
@@ -112,7 +111,7 @@ const Sidebar = () => {
               refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_heart.svg" alt="내 좋아요 목록" />
+            <MyHeartIcon />
             <span>내 좋아요 목록</span>
           </div>
           <div
@@ -122,7 +121,7 @@ const Sidebar = () => {
               refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_comment.svg" alt="내가 남긴 댓글" />
+            <MyCommentIcon />
             <span>내가 남긴 댓글</span>
           </div>
           <div
@@ -132,7 +131,7 @@ const Sidebar = () => {
               refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_post.svg" alt="나의 양도글" />
+            <MyPostIcon />
             <span>나의 양도글</span>
           </div>
         </MiddleSection>
