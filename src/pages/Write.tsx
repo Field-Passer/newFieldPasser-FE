@@ -6,18 +6,15 @@ import { ko } from 'date-fns/esm/locale'
 import { districtOptions, categoryOptions } from '@src/constants/options'
 import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation } from 'react-router'
-import { useMediaQuery } from 'react-responsive'
 import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
-import { ImageUploadIcon } from '@src/constants/icons'
 import useModal from '@src/hooks/useModal'
 import PATH from '@src/constants/pathConst'
+import { useMediaQuery } from 'react-responsive'
+import FileUpload from '@src/components/Write/FileUpload'
 
 // props로 data받기
 const Write = () => {
-  const isMobile = useMediaQuery({
-    query: '(max-width: 833px)',
-  })
   const location = useLocation()
   const { openModal } = useModal()
   const [imgSrc, setImgSrc] = useState<string>('')
@@ -39,6 +36,9 @@ const Write = () => {
   const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
+  const isMobile = useMediaQuery({
+    query: '(max-width: 833px)',
+  })
 
   useEffect(() => {
     if (dataForEdit) {
@@ -56,36 +56,6 @@ const Write = () => {
       setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
     }
   }, [dataForEdit])
-
-  const previewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const thisFile = event.target.files && event.target.files[0]
-    const fileReader = new FileReader()
-
-    if (thisFile && thisFile.size > 10485760) {
-      openModal({
-        isModalOpen: true,
-        isConfirm: false,
-        content: ['첨부파일 사이즈는 10MB 이내로만 등록 가능합니다.'],
-      })
-      event.target.files = null
-      return false
-    }
-
-    thisFile && fileReader.readAsDataURL(thisFile)
-    return new Promise<void>((resolve) => {
-      fileReader.onload = () => {
-        setImgSrc(fileReader.result + '')
-        resolve()
-      }
-    })
-  }
-  const removeImg = () => {
-    if (imgRef.current) {
-      imgRef.current.value = ''
-    }
-    setImgSrc('')
-    setIsFileEdit(true)
-  }
 
   // 통화단위 콤마 적용
   const checkMaxLength = (event: ChangeEvent<HTMLInputElement>) => {
@@ -246,45 +216,14 @@ const Write = () => {
           }}
         >
           <section>
-            <div>사진 추가</div>
-            <FileUpload htmlFor="file">
-              <input
-                id="file"
-                type="file"
-                name="file"
-                ref={imgRef}
-                accept="image/gif,image/jpeg,image/png"
-                onChange={(event) => {
-                  previewImg(event)
-                  setIsFileEdit(true)
-                }}
-              />
-              <ImageUploadIcon size="48px" />
-              <div className="img-text">
-                <span>예약 인증 사진을 올려주세요</span>
-                <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
-              </div>
-              {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-              {location.pathname.includes('edit') && !isFileEdit ? (
-                <div className="img-overlay">
-                  <ImageUploadIcon size="48px" />
-                  <div className="img-text">
-                    <span>예약 인증 사진을 올려주세요</span>
-                    <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
-                  </div>
-                </div>
-              ) : null}
-            </FileUpload>
-            {imgSrc && (
-              <div
-                className="delete"
-                onClick={() => {
-                  removeImg()
-                }}
-              >
-                삭제
-              </div>
-            )}
+            <h2>사진 추가</h2>
+            <FileUpload
+              imgRef={imgRef}
+              imgSrc={imgSrc}
+              setImgSrc={setImgSrc}
+              isFileEdit={isFileEdit}
+              setIsFileEdit={setIsFileEdit}
+            />
           </section>
           <section>
             <div>구장명</div>
@@ -425,44 +364,13 @@ const Write = () => {
           <PcDetail>
             <section className="half-section">
               <h2>사진 추가</h2>
-              <FileUpload htmlFor="file">
-                <input
-                  id="file"
-                  type="file"
-                  name="file"
-                  ref={imgRef}
-                  accept="image/gif,image/jpeg,image/png"
-                  onChange={(event) => {
-                    previewImg(event)
-                    setIsFileEdit(true)
-                  }}
-                />
-                <ImageUploadIcon size="54px" />
-                <div className="img-text">
-                  <span>예약 인증 사진을 올려주세요</span>
-                  <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
-                </div>
-                {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-                {location.pathname.includes('edit') && !isFileEdit ? (
-                  <div className="img-overlay">
-                    <ImageUploadIcon size="54px" />
-                    <div className="img-text">
-                      <span>예약 인증 사진을 올려주세요</span>
-                      <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
-                    </div>
-                  </div>
-                ) : null}
-              </FileUpload>
-              {imgSrc && (
-                <div
-                  className="delete"
-                  onClick={() => {
-                    removeImg()
-                  }}
-                >
-                  삭제
-                </div>
-              )}
+              <FileUpload
+                imgRef={imgRef}
+                imgSrc={imgSrc}
+                setImgSrc={setImgSrc}
+                isFileEdit={isFileEdit}
+                setIsFileEdit={setIsFileEdit}
+              />
             </section>
             <section className="half-section">
               <h2>세부사항</h2>
@@ -899,61 +807,6 @@ const MobileForm = styled.form`
       cursor: pointer;
       color: white;
     }
-  }
-`
-
-const FileUpload = styled.label`
-  position: relative;
-  width: 328px;
-  height: 160px;
-  border: 1px solid ${COLORS.gray20};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-  color: ${COLORS.gray40};
-  cursor: pointer;
-
-  .preview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    object-fit: contain;
-    border-radius: 8px;
-  }
-
-  input {
-    display: none;
-  }
-
-  .img-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .img-overlay {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.6);
-    gap: 16px;
-    justify-content: center;
-    align-items: center;
-    color: ${COLORS.gray40};
-  }
-
-  @media (min-width: 834px) {
-    width: 100%;
-    height: 100%;
   }
 `
 

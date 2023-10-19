@@ -9,6 +9,7 @@ const EditPost = () => {
   const [userId, setUserId] = useState('')
   const [isWriter, setIsWriter] = useState(false)
   const { openModal } = useModal()
+  const [dataForEdit] = useState<POST_TYPE>(location.pathname.includes('edit') && location.state.data)
 
   const goToBack = () => {
     openModal({
