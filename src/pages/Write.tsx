@@ -12,6 +12,8 @@ import useModal from '@src/hooks/useModal'
 import PATH from '@src/constants/pathConst'
 import { useMediaQuery } from 'react-responsive'
 import FileUpload from '@src/components/Write/FileUpload'
+import TitleInput from '@src/components/Write/TitleInput'
+import PriceInput from '@src/components/Write/PriceInput'
 
 // props로 data받기
 const Write = () => {
@@ -56,13 +58,6 @@ const Write = () => {
       setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
     }
   }, [dataForEdit])
-
-  // 통화단위 콤마 적용
-  const checkMaxLength = (event: ChangeEvent<HTMLInputElement>) => {
-    let price = event.target.value
-    price = Number(price.replace(/[^0-9]/g, '')).toLocaleString('ko-KR')
-    setPriceValue(price)
-  }
 
   const CustomDateInput = forwardRef<HTMLDivElement, CustomDateInputProps>(({ value, onClick }, ref) => (
     <div className={isDateChange ? 'date-input selected' : 'date-input'} onClick={onClick} ref={ref}>
@@ -216,7 +211,6 @@ const Write = () => {
           }}
         >
           <section>
-            <h2>사진 추가</h2>
             <FileUpload
               imgRef={imgRef}
               imgSrc={imgSrc}
@@ -226,36 +220,10 @@ const Write = () => {
             />
           </section>
           <section>
-            <div>구장명</div>
-            <div>
-              <TitleInput
-                type="text"
-                placeholder="양도할 구장명을 입력해주세요"
-                name="title"
-                required
-                minLength={2}
-                maxLength={20}
-                title="제목은 2~20자 이내로 입력해주세요"
-                value={writtenTitle}
-                onChange={(e) => setWrittenTitle(e.target.value)}
-              />
-            </div>
+            <TitleInput writtenTitle={writtenTitle} setWrittenTitle={setWrittenTitle} />
           </section>
           <section>
-            <div>가격</div>
-            <div>
-              <PriceInput
-                type="text"
-                placeholder="50,000"
-                minLength={1}
-                maxLength={7}
-                required
-                name="price"
-                value={priceValue}
-                onChange={(event) => checkMaxLength(event)}
-              />
-              <span className="won">원</span>
-            </div>
+            <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
           </section>
           <section>
             <div>지역</div>
@@ -363,7 +331,6 @@ const Write = () => {
           </div>
           <PcDetail>
             <section className="half-section">
-              <h2>사진 추가</h2>
               <FileUpload
                 imgRef={imgRef}
                 imgSrc={imgSrc}
@@ -375,39 +342,13 @@ const Write = () => {
             <section className="half-section">
               <h2>세부사항</h2>
               <div className="row-box">
-                <div className="box-title">구장명</div>
-                <div>
-                  <TitleInput
-                    type="text"
-                    placeholder="양도할 구장명을 입력해주세요"
-                    name="title"
-                    required
-                    minLength={2}
-                    maxLength={20}
-                    title="제목은 2~20자 이내로 입력해주세요"
-                    value={writtenTitle}
-                    onChange={(e) => setWrittenTitle(e.target.value)}
-                  />
-                </div>
+                <TitleInput writtenTitle={writtenTitle} setWrittenTitle={setWrittenTitle} />
               </div>
               <div className="row-box">
-                <div className="box-title">가격</div>
-                <div>
-                  <PriceInput
-                    type="text"
-                    placeholder="50,000"
-                    minLength={1}
-                    maxLength={7}
-                    required
-                    name="price"
-                    value={priceValue}
-                    onChange={(event) => checkMaxLength(event)}
-                  />
-                  <span className="won">원</span>
-                </div>
+                <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
               </div>
               <div className="row-box">
-                <div className="box-title">지역</div>
+                <div>지역</div>
                 <select
                   name="districtName"
                   onChange={(event) => handleChangeSelect(event, 'district')}
@@ -940,19 +881,6 @@ const PcReservation = styled.div`
     .time-selector-selected {
       color: ${COLORS.font};
     }
-  }
-`
-
-const TitleInput = styled.input`
-  width: 100%;
-`
-const PriceInput = styled.input`
-  width: 100%;
-
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
   }
 `
 

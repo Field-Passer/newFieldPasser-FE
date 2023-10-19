@@ -54,7 +54,8 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
 
   return (
     <>
-      <FileContainer htmlFor="file">
+      <h2>사진 추가</h2>
+      <FileLabel htmlFor="file">
         <input
           id="file"
           type="file"
@@ -80,7 +81,7 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
             </div>
           </div>
         ) : null}
-      </FileContainer>
+      </FileLabel>
       {imgSrc && (
         <div
           className="delete"
@@ -95,7 +96,7 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
   )
 }
 
-const FileContainer = styled.label`
+const FileLabel = styled.label`
   position: relative;
   width: 328px;
   height: 160px;
