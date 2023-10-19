@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale'
-import { districtOptions, categoryOptions } from '@src/constants/options'
+import { categoryOptions } from '@src/constants/options'
 import { useRef, useState, forwardRef, ChangeEvent, useEffect } from 'react'
 import { useLocation } from 'react-router'
 import { requestEdit, requestWrite } from '@src/api/postApi'
@@ -15,6 +15,8 @@ import FileUpload from '@src/components/Write/FileUpload'
 import TitleInput from '@src/components/Write/TitleInput'
 import PriceInput from '@src/components/Write/PriceInput'
 import ContentInput from '@src/components/Write/ContentInput'
+import DistrictSelect from '@src/components/Write/DistrictSelect'
+import CategorySelect from '@src/components/Write/CategorySelect'
 
 // props로 data받기
 const Write = () => {
@@ -79,13 +81,13 @@ const Write = () => {
   ))
   CustomDateInput.displayName = 'CustomDateInput'
 
-  const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
-    if (type === 'district') {
-      setSelectedDistrict(event.target.value)
-    } else {
-      setSelectedCategory(event.target.value)
-    }
-  }
+  // const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>, type: string) => {
+  //   if (type === 'district') {
+  //     setSelectedDistrict(event.target.value)
+  //   } else {
+  //     setSelectedCategory(event.target.value)
+  //   }
+  // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData()
@@ -227,35 +229,8 @@ const Write = () => {
             <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
           </section>
           <section>
-            <div>지역</div>
-            <select
-              name="districtName"
-              onChange={(event) => handleChangeSelect(event, 'district')}
-              value={selectedDistrict}
-            >
-              {districtOptions.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                )
-              })}
-            </select>
-            <div>종목</div>
-            <select
-              name="categoryName"
-              onChange={(event) => handleChangeSelect(event, 'category')}
-              value={selectedCategory}
-            >
-              {categoryOptions.map((item, index) => {
-                if (index)
-                  return (
-                    <option value={item} key={item}>
-                      {item}
-                    </option>
-                  )
-              })}
-            </select>
+            <DistrictSelect selectedDistrict={selectedDistrict} setSelectedDistrict={setSelectedDistrict} />
+            <CategorySelect selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
           </section>
           <section>
             <div>예약일시</div>
@@ -339,37 +314,10 @@ const Write = () => {
                 <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
               </div>
               <div className="row-box">
-                <div>지역</div>
-                <select
-                  name="districtName"
-                  onChange={(event) => handleChangeSelect(event, 'district')}
-                  value={selectedDistrict}
-                >
-                  {districtOptions.map((item) => {
-                    return (
-                      <option value={item} key={item}>
-                        {item}
-                      </option>
-                    )
-                  })}
-                </select>
+                <DistrictSelect selectedDistrict={selectedDistrict} setSelectedDistrict={setSelectedDistrict} />
               </div>
               <div className="row-box">
-                <div className="box-title">종목</div>
-                <select
-                  name="categoryName"
-                  onChange={(event) => handleChangeSelect(event, 'category')}
-                  value={selectedCategory}
-                >
-                  {categoryOptions.map((item, index) => {
-                    if (index)
-                      return (
-                        <option value={item} key={item}>
-                          {item}
-                        </option>
-                      )
-                  })}
-                </select>
+                <CategorySelect selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
               </div>
             </section>
           </PcDetail>
