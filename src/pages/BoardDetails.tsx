@@ -37,7 +37,6 @@ const BoardDetails = () => {
       setDetailData(postDetailData)
       setLikeState(postDetailData.likeBoard)
     } catch (err) {
-      console.log(err)
       if (userInfo.role === '관리자') {
         openModal({
           isModalOpen: true,
