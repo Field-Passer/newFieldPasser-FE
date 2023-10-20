@@ -29,6 +29,37 @@ const MyPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const postFetch = async () => {
+    try {
+      const postResponse = await getMyPost(1)
+      setMyPost(postResponse?.data)
+      setPostNum(postResponse?.totalElements)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const wishlistFetch = async () => {
+    try {
+      const wishlistResponse = await getWishlist(1)
+      setWishlist(wishlistResponse?.data)
+      dispatch(SET_WISHLIST(wishlistResponse?.data))
+      setWishNum(wishlistResponse?.totalElements)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const myReplyFetch = async () => {
+    try {
+      const replyResponse = await getMyReply(1)
+      setMyReply(replyResponse?.data)
+      setReplyNum(replyResponse?.totalElements)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     const randomNumFn = (total: number) => {
       const num = Math.floor(Math.random() * total + 1)
@@ -36,19 +67,13 @@ const MyPage = () => {
     }
     randomNumFn(3)
     const fetchData = async () => {
-      const postResponse = await getMyPost(1)
-      setMyPost(postResponse?.data)
-      const wishlistResponse = await getWishlist(1)
-      setWishlist(wishlistResponse?.data)
-      dispatch(SET_WISHLIST(postResponse?.data))
-      const replyResponse = await getMyReply(1)
-      setMyReply(replyResponse?.data)
-      setPostNum(postResponse?.totalElements)
-      setWishNum(wishlistResponse?.totalElements)
-      setReplyNum(replyResponse?.totalElements)
+      postFetch()
+      wishlistFetch()
+      myReplyFetch()
     }
     fetchData()
   }, [])
+
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
