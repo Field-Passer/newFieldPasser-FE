@@ -19,6 +19,7 @@ import DateInput from '@src/components/Write/DateInput'
 const Write = () => {
   const location = useLocation()
   const { openModal } = useModal()
+
   const [imgSrc, setImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)

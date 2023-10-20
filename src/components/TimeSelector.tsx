@@ -122,7 +122,6 @@ const SelectorContainer = styled.div`
   height: 250px;
   z-index: 10;
   position: absolute;
-  top: 43px;
   left: 0;
   background-color: white;
   border: 1px solid ${COLORS.gray20};

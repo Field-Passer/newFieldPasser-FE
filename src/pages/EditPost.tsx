@@ -9,7 +9,8 @@ const EditPost = () => {
   const [userId, setUserId] = useState('')
   const [isWriter, setIsWriter] = useState(false)
   const { openModal } = useModal()
-  const [dataForEdit] = useState<POST_TYPE>(location.pathname.includes('edit') && location.state.data)
+  const [{ boardId, categoryName, content, districtName, endTime, imageUrl, price, startTime, title, memberId }] =
+    useState<POST_TYPE>(location.state.data)
 
   const goToBack = () => {
     openModal({
@@ -41,7 +42,7 @@ const EditPost = () => {
 
   useEffect(() => {
     if (userId) {
-      userId === location.state.data.memberId ? setIsWriter(true) : goToBack()
+      userId === memberId ? setIsWriter(true) : goToBack()
     }
   }, [userId])
 
