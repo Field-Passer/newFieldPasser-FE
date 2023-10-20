@@ -30,9 +30,8 @@ export const requestEdit = async (formData: FormData, postId: number) => {
 
 // 관리자 문의글 답변 등록
 export const postAdmintQuestion = async (questionId: number, data: QuestionTypes) => {
-  const response = await privateApi.post(`/admin/answer/register?questionId=${questionId}`, {
-    data,
-  })
+  console.log(data)
+  const response = await privateApi.post(`/admin/answer/register?questionId=${questionId}`, data)
   return {
     status: response.status,
   }
@@ -40,9 +39,7 @@ export const postAdmintQuestion = async (questionId: number, data: QuestionTypes
 
 // 문의글 등록
 export const postQuestion = async (data: QuestionPostType) => {
-  const response = await privateApi.post('/question/register', {
-    data,
-  })
+  const response = await privateApi.post('/question/register', data)
   return {
     status: response.status,
   }
