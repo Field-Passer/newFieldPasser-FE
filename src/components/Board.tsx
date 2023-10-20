@@ -1,7 +1,7 @@
 import { Harticon } from '@src/constants/icons'
 import theme from '@src/constants/theme'
 import { COLORS, FONT } from '@src/globalStyles'
-import { dateFormat, handleImgError, randomImages } from '@src/hooks/utils'
+import { dateFormat, handleImgError, randomImages } from '@src/utils/utils'
 import { useNavigate } from 'react-router'
 import { ThemeProvider, styled } from 'styled-components'
 

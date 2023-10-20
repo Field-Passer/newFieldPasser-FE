@@ -1,26 +1,24 @@
-import { userLogout } from '@src/api/authApi'
 import { COLORS, FONT } from '@src/globalStyles'
-import { getCookieToken, removeCookieToken } from '@src/storage/Cookie'
+import { getCookieToken } from '@src/storage/Cookie'
 import { RootState } from '@src/store/config'
-import { DELETE_TOKEN } from '@src/store/slices/authSlice'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { useMediaQuery } from 'react-responsive'
 import { Link, useNavigate } from 'react-router-dom'
 import { styled } from 'styled-components'
 import PATH from '@src/constants/pathConst'
-import { DELETE_INFO } from '@src/store/slices/infoSlice'
-import Modal from '@src/components/Modal'
+import useSidebar from '@src/hooks/useSidebar'
+import useLoginState from '@src/hooks/useLoginState'
+import { BoldCloseIcon, MyCommentIcon, MyHeartIcon, MyPageIcon, MyPostIcon } from '@src/constants/icons'
 
-const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
+const Sidebar = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
   const navigate = useNavigate()
-
-  const closeSidebar = () => {
-    setSideOpen(false)
-  }
+  const { isSidebarOpen } = useSelector((state: RootState) => state.sidebar)
+  const { closeSidebar } = useSidebar()
+  const { accessAfterLoginAlert, logoutHandler } = useLoginState()
 
   useEffect(() => {
     if (!isMobile) {
@@ -28,50 +26,21 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
     }
   }, [isMobile])
 
-  const dispatch = useDispatch()
-
   const userName = useSelector((state: RootState) => state.userInfo.memberName)
   const userRole = useSelector((state: RootState) => state.userInfo.role)
   const refreshToken = getCookieToken()
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
-
-  const logoutHandler = async () => {
-    const { status } = (await userLogout()) as IResponseType
-    if (status === 200) {
-      removeCookieToken()
-      dispatch(DELETE_TOKEN())
-      dispatch(DELETE_INFO())
-      setModalOpen(true)
-      setModalIsConfirm(true)
-      setModalText(['로그아웃 되었습니다.'])
-      setModalNavigateOption(PATH.HOME)
-      return
-    }
-  }
-
-  const clickWithoutLogin = () => {
-    setModalOpen(true)
-    setModalText(['로그인 후 이용 가능합니다.'])
-    setModalNavigateOption(PATH.LOGIN)
-  }
-
   return (
     <>
-      <SideContainer id="sidebar" className={sideOpen && isMobile ? 'open' : ''}>
+      <SideContainer id="sidebar" className={isSidebarOpen && isMobile ? 'open' : ''}>
         <FirstSection>
-          <div>
-            <img
-              src="/close.svg"
-              alt="닫기"
-              className="close"
-              onClick={() => {
-                closeSidebar()
-              }}
-            />
+          <div
+            className="close"
+            onClick={() => {
+              closeSidebar()
+            }}
+          >
+            <BoldCloseIcon />
           </div>
           <div>
             <Link to={PATH.HOME} onClick={() => closeSidebar()}>
@@ -84,7 +53,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
                 <span>{userName}</span>
                 <span>님</span>
               </div>
-              <Link to={PATH.WRITE}>
+              <Link to={PATH.WRITE_POST}>
                 <button
                   onClick={() => {
                     closeSidebar()
@@ -129,40 +98,40 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_page.svg" alt="마이페이지" />
+            <MyPageIcon />
             <span>마이페이지</span>
           </div>
           <div
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_heart.svg" alt="내 좋아요 목록" />
+            <MyHeartIcon />
             <span>내 좋아요 목록</span>
           </div>
           <div
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_comment.svg" alt="내가 남긴 댓글" />
+            <MyCommentIcon />
             <span>내가 남긴 댓글</span>
           </div>
           <div
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : accessAfterLoginAlert()
             }}
           >
-            <img src="/my_post.svg" alt="나의 양도글" />
+            <MyPostIcon />
             <span>나의 양도글</span>
           </div>
         </MiddleSection>
@@ -171,7 +140,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.HELP) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.HELP) : accessAfterLoginAlert()
             }}
           >
             <span>고객센터</span>
@@ -180,7 +149,7 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
             className="block"
             onClick={() => {
               closeSidebar()
-              refreshToken ? navigate(PATH.ASK) : clickWithoutLogin()
+              refreshToken ? navigate(PATH.ASK) : accessAfterLoginAlert()
             }}
           >
             1:1 문의하기
@@ -212,15 +181,6 @@ const Sidebar = ({ sideOpen, setSideOpen }: ISidebarProps) => {
           </LastSection>
         )}
       </SideContainer>
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={modalIsConfirm}
-          navigateOption={modalNavigateOption}
-        />
-      )}
     </>
   )
 }

@@ -11,6 +11,7 @@ import { removeCookieToken, setRefreshToken } from '@src/storage/Cookie'
 import { userLogin } from '@src/api/authApi'
 import SocialLogin from '@src/components/SocialLogin'
 import Modal from '@src/components/Modal'
+import PATH from '@src/constants/pathConst'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -53,7 +54,7 @@ const Login = () => {
       // console.log('뒤로가기 클릭')
       // return navigate('/')
       // }
-      return navigate('/', { replace: true })
+      return navigate(PATH.HOME, { replace: true })
     } else {
       setModalOpen(true)
       setModalIsConfirm(false)

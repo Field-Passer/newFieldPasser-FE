@@ -8,6 +8,7 @@ import MobileMenu from '@src/components/MobileMenu'
 import Title from '@src/components/Title'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router'
+import PATH from '@src/constants/pathConst'
 
 const Help = () => {
   const menuLists = ['회원 / 계정', '거래 분쟁 / 운영 정책', '이용 방법 / 기타']
@@ -53,7 +54,7 @@ const Help = () => {
           </AskListStyle>
           <OtherAskStyle>
             <span>원하는 답변이 없다면?</span>
-            <button onClick={() => navigate('/help_form')}>등록하기</button>
+            <button onClick={() => navigate(PATH.HELP_FORM)}>등록하기</button>
           </OtherAskStyle>
         </Container>
       ) : (
