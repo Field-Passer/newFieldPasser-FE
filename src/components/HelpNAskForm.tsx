@@ -74,7 +74,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
           </FormStyle>
         </Inner>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="1:1 문의하기" />
           <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="mobile">

@@ -99,7 +99,7 @@ const Ask = () => {
           </OtherAskStyle>
         </Container>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="내 문의 목록" />
           <QuestionContainer screen="mobile">
             {questions?.length ? (
@@ -137,6 +137,7 @@ const Container = styled.div`
 
   margin: 64px auto;
   max-width: 1024px;
+  padding: 0 16px;
 `
 
 const QuestionContainer = styled.div<StyleProps>`

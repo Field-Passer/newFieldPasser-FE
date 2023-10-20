@@ -306,7 +306,7 @@ const PCList = styled.ul`
   flex-direction: column;
   font-size: ${FONT['pc-lg']};
   li {
-    padding: 16px 0;
+    padding: 16px;
     height: 60px;
     display: flex;
     align-items: center;

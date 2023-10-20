@@ -68,7 +68,7 @@ const AskDetail = () => {
           )}
         </Container>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="내 문의 목록" />
           <MobileContainer>
             <QuestionContent screen="mobile">
@@ -113,6 +113,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 0 16px;
 `
 
 const MobileContainer = styled.div`

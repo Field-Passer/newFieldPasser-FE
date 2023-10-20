@@ -86,6 +86,7 @@ const Container = styled.div`
 
   margin: 64px auto;
   max-width: 1024px;
+  padding: 0 16px;
 `
 
 const MenuStyle = styled.menu`
