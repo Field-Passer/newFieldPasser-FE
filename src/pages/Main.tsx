@@ -96,6 +96,7 @@ const Main = () => {
   ]
 
   const handleClickCategory = (category: string) => {
+    setPage(1)
     switch (category) {
       case 'futsal':
         setIsActive({
