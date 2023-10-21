@@ -52,7 +52,7 @@ const DateInput = ({ isDateChange, setIsDateChange, setSelectedDate, selectedDat
           setIsDateChange(true)
         }}
         className={isDateChange ? 'selected' : ''}
-        customInput={<CustomDateInput value={''} onClick={() => console.log('date input test')} />}
+        customInput={<CustomDateInput value={''} onClick={() => null} />}
         minDate={new Date()}
         required
       />

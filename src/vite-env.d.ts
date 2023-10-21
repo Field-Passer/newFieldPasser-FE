@@ -194,7 +194,7 @@ interface IWishlistType {
 }
 
 interface CustomDateInputProps {
-  value: ''
+  value: string
   onClick: () => void
 }
 
