@@ -2,7 +2,7 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { useRef, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
-import TimeSelector from '@src/components/TimeSelector'
+import TimeSelector from '@src/components/common/TimeSelector'
 import useModal from '@src/hooks/useModal'
 import { useMediaQuery } from 'react-responsive'
 import FileUpload from '@src/components/Write/FileUpload'
@@ -22,15 +22,12 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [isFileChanged, setIsFileChanged] = useState<boolean>(false)
-
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
-
   const [formattedPrice, setFormattedPrice] = useState<string>('')
   const [selectedStartTime, setSelectedStartTime] = useState<string>('')
   const [selectedEndTime, setSelectedEndTime] = useState<string>('')
-
   const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
   const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const isMobile = useMediaQuery({

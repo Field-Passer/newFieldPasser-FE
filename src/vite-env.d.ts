@@ -231,7 +231,7 @@ interface IWriteProps {
   submitData: (formData: FormData) => Promise<void>
 }
 
-type IWriteInputsProps = {
+interface IWriteInputsProps {
   postData: IWritePostData
   setPostData: React.Dispatch<React.SetStateAction<IWritePostData>>
 }
