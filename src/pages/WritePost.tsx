@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Write from './Write'
+import Write from '../components/Write/Write'
 import { requestWrite } from '@src/api/postApi'
 import useModal from '@src/hooks/useModal'
 import PATH from '@src/constants/pathConst'

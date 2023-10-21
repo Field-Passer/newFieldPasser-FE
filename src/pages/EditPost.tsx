@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Write from './Write'
+import Write from '../components/Write/Write'
 import { getUserInfo } from '@src/api/authApi'
 import { useLocation } from 'react-router'
 import useModal from '@src/hooks/useModal'
