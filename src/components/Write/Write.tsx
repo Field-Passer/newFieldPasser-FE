@@ -22,7 +22,7 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
   const [isFileChanged, setIsFileChanged] = useState<boolean>(false)
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
   const [formattedPrice, setFormattedPrice] = useState<string>('')
@@ -97,7 +97,7 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
       }
     }
 
-    const date = selectedDate?.toISOString().slice(0, 10)
+    const date = new Date(selectedDate?.getTime() - selectedDate.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
     const start = date + 'T' + selectedStartTime + ':00'
     let end = date + 'T' + selectedEndTime + ':00'
 

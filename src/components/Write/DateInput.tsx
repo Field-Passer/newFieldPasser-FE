@@ -10,7 +10,7 @@ type PropsType = {
   isDateChange: boolean
   setIsDateChange: React.Dispatch<React.SetStateAction<boolean>>
   selectedDate: Date | null
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>
 }
 
 const DateInput = ({ isDateChange, setIsDateChange, setSelectedDate, selectedDate }: PropsType) => {
@@ -48,7 +48,7 @@ const DateInput = ({ isDateChange, setIsDateChange, setSelectedDate, selectedDat
         shouldCloseOnSelect
         selected={selectedDate}
         onChange={(date) => {
-          setSelectedDate(date)
+          date && setSelectedDate(date)
           setIsDateChange(true)
         }}
         className={isDateChange ? 'selected' : ''}
