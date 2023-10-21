@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 
-type PropsType = {
-  writtenTitle: string
-  setWrittenTitle: React.Dispatch<React.SetStateAction<string>>
-}
+const TitleInput = ({ postData, setPostData }: IWriteInputsProps) => {
+  const setTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPostData((prev) => {
+      return { ...prev, title: e.target.value }
+    })
+  }
 
-const TitleInput = ({ writtenTitle, setWrittenTitle }: PropsType) => {
   return (
     <>
       <h2>구장명</h2>
@@ -17,8 +18,8 @@ const TitleInput = ({ writtenTitle, setWrittenTitle }: PropsType) => {
         minLength={2}
         maxLength={20}
         title="제목은 2~20자 이내로 입력해주세요"
-        value={writtenTitle}
-        onChange={(e) => setWrittenTitle(e.target.value)}
+        value={postData.title}
+        onChange={(e) => setTitle(e)}
       />
     </>
   )

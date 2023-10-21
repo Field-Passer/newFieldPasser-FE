@@ -1,19 +1,16 @@
 import { ChangeEvent } from 'react'
 import { categoryOptions } from '@src/constants/options'
 
-type PropsType = {
-  selectedCategory: string
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>
-}
-
-const CategorySelect = ({ selectedCategory, setSelectedCategory }: PropsType) => {
-  const handleChangeSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value)
+const CategorySelect = ({ postData, setPostData }: IWriteInputsProps) => {
+  const setSelectedCategory = (e: ChangeEvent<HTMLSelectElement>) => {
+    setPostData((prev) => {
+      return { ...prev, categoryName: e.target.value }
+    })
   }
   return (
     <>
       <h2>종목</h2>
-      <select name="categoryName" onChange={(event) => handleChangeSelect(event)} value={selectedCategory}>
+      <select name="categoryName" onChange={(e) => setSelectedCategory(e)} value={postData.categoryName}>
         {categoryOptions.map((item, index) => {
           if (index)
             return (

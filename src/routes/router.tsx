@@ -4,7 +4,6 @@ import Error from '@pages/Error'
 import PATH from '@src/constants/pathConst'
 import Home from '@pages/Main'
 import BoardDetails from '@pages/BoardDetails'
-import Write from '@src/pages/Write'
 import BoardList from '@pages/BoardList'
 import Help from '@pages/Help'
 import HelpForm from '@pages/HelpForm'
@@ -23,6 +22,7 @@ import PrivateRoute from './PrivateRoute'
 import BoradBlind from '@src/pages/BoradBlind'
 import Profile from '@src/pages/Profile'
 import SocialLoginRedirect from '@src/components/SocialLoginRedirect'
+import WritePost from '@src/pages/WritePost'
 
 const router = createBrowserRouter([
   {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         path: PATH.WRITE_POST,
         element: (
           <PrivateRoute>
-            <Write />
+            <WritePost />
           </PrivateRoute>
         ),
       },

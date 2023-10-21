@@ -1,12 +1,12 @@
 import { COLORS, FONT } from '@src/globalStyles'
 import styled from 'styled-components'
 
-type PropsType = {
-  writtenContent: string
-  setWrittenContent: React.Dispatch<React.SetStateAction<string>>
-}
-
-const ContentInput = ({ writtenContent, setWrittenContent }: PropsType) => {
+const ContentInput = ({ postData, setPostData }: IWriteInputsProps) => {
+  const setContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostData((prev) => {
+      return { ...prev, content: e.target.value }
+    })
+  }
   return (
     <>
       <h2>본문내용</h2>
@@ -16,8 +16,8 @@ const ContentInput = ({ writtenContent, setWrittenContent }: PropsType) => {
           required
           minLength={5}
           name="content"
-          value={writtenContent}
-          onChange={(e) => setWrittenContent(e.target.value)}
+          value={postData.content}
+          onChange={(e) => setContent(e)}
         />
       </div>
     </>

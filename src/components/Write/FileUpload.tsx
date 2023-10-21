@@ -6,13 +6,13 @@ import styled from 'styled-components'
 
 type PropsType = {
   imgRef: React.RefObject<HTMLInputElement>
-  imgSrc: string
-  setImgSrc: React.Dispatch<React.SetStateAction<string>>
-  isFileEdit: boolean
-  setIsFileEdit: React.Dispatch<React.SetStateAction<boolean>>
+  previewImgSrc: string
+  setPreviewImgSrc: React.Dispatch<React.SetStateAction<string>>
+  isFileChanged: boolean
+  setIsFileChanged: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: PropsType) => {
+const FileUpload = ({ imgRef, previewImgSrc, setPreviewImgSrc, isFileChanged, setIsFileChanged }: PropsType) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
@@ -35,7 +35,7 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
     thisFile && fileReader.readAsDataURL(thisFile)
     return new Promise<void>((resolve) => {
       fileReader.onload = () => {
-        setImgSrc(fileReader.result + '')
+        setPreviewImgSrc(fileReader.result + '')
         resolve()
       }
     })
@@ -44,12 +44,12 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
     if (imgRef.current) {
       imgRef.current.value = ''
     }
-    setImgSrc('')
-    setIsFileEdit(true)
+    setPreviewImgSrc('')
+    setIsFileChanged(true)
   }
   const changeImg = (event: React.ChangeEvent<HTMLInputElement>) => {
     previewImg(event)
-    setIsFileEdit(true)
+    setIsFileChanged(true)
   }
 
   return (
@@ -71,8 +71,8 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
           <span>예약 인증 사진을 올려주세요</span>
           <span>(첨부 불가능할 경우, 거래 시 개인에게 확인 필수)</span>
         </div>
-        {imgSrc && <img src={imgSrc} alt="업로드된 이미지" className="preview" />}
-        {location.pathname.includes('edit') && !isFileEdit ? (
+        {previewImgSrc && <img src={previewImgSrc} alt="업로드된 이미지" className="preview" />}
+        {location.pathname.includes('edit') && !isFileChanged ? (
           <div className="img-overlay">
             <ImageUploadIcon size={iconSize} />
             <div className="img-text">
@@ -82,7 +82,7 @@ const FileUpload = ({ imgRef, imgSrc, setImgSrc, isFileEdit, setIsFileEdit }: Pr
           </div>
         ) : null}
       </FileLabel>
-      {imgSrc && (
+      {previewImgSrc && (
         <div
           className="delete"
           onClick={() => {

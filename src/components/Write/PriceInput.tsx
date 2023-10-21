@@ -2,15 +2,15 @@ import { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 type PropsType = {
-  priceValue: string
-  setPriceValue: React.Dispatch<React.SetStateAction<string>>
+  formattedPrice: string
+  setFormattedPrice: React.Dispatch<React.SetStateAction<string>>
 }
 
-const PriceInput = ({ priceValue, setPriceValue }: PropsType) => {
+const PriceInput = ({ formattedPrice, setFormattedPrice }: PropsType) => {
   const priceFormatting = (event: ChangeEvent<HTMLInputElement>) => {
     let price = event.target.value
     price = Number(price.replace(/[^0-9]/g, '')).toLocaleString('ko-KR')
-    setPriceValue(price)
+    setFormattedPrice(price)
   }
 
   return (
@@ -24,7 +24,7 @@ const PriceInput = ({ priceValue, setPriceValue }: PropsType) => {
           maxLength={7}
           required
           name="price"
-          value={priceValue}
+          value={formattedPrice}
           onChange={(event) => priceFormatting(event)}
         />
         <span className="won">원</span>

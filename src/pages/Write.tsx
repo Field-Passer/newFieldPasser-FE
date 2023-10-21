@@ -2,10 +2,8 @@ import { COLORS, FONT } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { useRef, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
-import { requestEdit, requestWrite } from '@src/api/postApi'
 import TimeSelector from '@src/components/TimeSelector'
 import useModal from '@src/hooks/useModal'
-import PATH from '@src/constants/pathConst'
 import { useMediaQuery } from 'react-responsive'
 import FileUpload from '@src/components/Write/FileUpload'
 import TitleInput from '@src/components/Write/TitleInput'
@@ -15,55 +13,44 @@ import DistrictSelect from '@src/components/Write/DistrictSelect'
 import CategorySelect from '@src/components/Write/CategorySelect'
 import DateInput from '@src/components/Write/DateInput'
 
-// props로 data받기
-const Write = () => {
+const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => {
   const location = useLocation()
   const { openModal } = useModal()
-
-  const [imgSrc, setImgSrc] = useState<string>('')
+  const imgRef = useRef<HTMLInputElement>(null)
+  const [previewImgSrc, setPreviewImgSrc] = useState<string>('')
   const [isStartChange, setIsStartChange] = useState<boolean>(false)
   const [isEndChange, setIsEndChange] = useState<boolean>(false)
   const [isDateChange, setIsDateChange] = useState<boolean>(false)
+  const [isFileChanged, setIsFileChanged] = useState<boolean>(false)
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
-  const [priceValue, setPriceValue] = useState<string>('')
-  const imgRef = useRef<HTMLInputElement>(null)
-  const [selectedStartTime, setSelectedStartTime] = useState<string>('')
-  const [selectedEndTime, setSelectedEndTime] = useState<string>('')
-  const [writtenTitle, setWrittenTitle] = useState<string>('')
-  const [writtenContent, setWrittenContent] = useState<string>('')
-  const [selectedDistrict, setSelectedDistrict] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [dataForEdit] = useState<POST_TYPE>(location.pathname.includes('edit') && location.state.data)
-  const [isFileEdit, setIsFileEdit] = useState<boolean>(false)
-  const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
-  const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const [startTimeTemp, setStartTimeTemp] = useState<string>('')
   const [endTimeTemp, setEndTimeTemp] = useState<string>('')
+
+  const [formattedPrice, setFormattedPrice] = useState<string>('')
+  const [selectedStartTime, setSelectedStartTime] = useState<string>('')
+  const [selectedEndTime, setSelectedEndTime] = useState<string>('')
+
+  const [startTimeSelectorOpen, setStartTimeSelectorOpen] = useState<boolean>(false)
+  const [endTimeSelectorOpen, setEndTimeSelectorOpen] = useState<boolean>(false)
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
 
   useEffect(() => {
-    if (dataForEdit) {
-      setImgSrc(dataForEdit.imageUrl)
-      setPriceValue(dataForEdit.price.toLocaleString('ko-KR'))
+    if (pageName === 'edit') {
       setIsDateChange(true)
-      setSelectedDate(new Date(dataForEdit.startTime))
       setIsStartChange(true)
       setIsEndChange(true)
-      setWrittenTitle(dataForEdit.title)
-      setWrittenContent(dataForEdit.content)
-      setSelectedDistrict(dataForEdit.districtName)
-      setSelectedCategory(dataForEdit.categoryName)
-      setStartTimeTemp(dataForEdit.startTime.slice(11, 16))
-      setEndTimeTemp(dataForEdit.endTime.slice(11, 16))
+      setPreviewImgSrc(postData.imageUrl)
+      setFormattedPrice(postData.price.toLocaleString('ko-KR'))
+      setStartTimeTemp(postData.startTime.slice(11, 16))
+      setEndTimeTemp(postData.endTime.slice(11, 16))
+      setSelectedDate(new Date(postData.startTime))
     }
-  }, [dataForEdit])
+  }, [])
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const formData = new FormData()
-    const target = event.target as HTMLFormElement
-
+  const checkInputsValidity = () => {
     if (selectedStartTime === selectedEndTime) {
       openModal({
         isModalOpen: true,
@@ -82,7 +69,7 @@ const Write = () => {
       return false
     }
 
-    if (writtenContent.length < 5) {
+    if (postData.content.length < 5) {
       openModal({
         isModalOpen: true,
         isConfirm: false,
@@ -90,6 +77,13 @@ const Write = () => {
       })
       return false
     }
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData()
+    const target = event.target as HTMLFormElement
+
+    checkInputsValidity()
 
     for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
@@ -119,60 +113,20 @@ const Write = () => {
     formData.append('endTime', end)
     formData.append('transactionStatus', '판매중')
 
+    if (pageName === 'edit') {
+      if (postData.imageUrl && !formData.get('file') && !previewImgSrc) {
+        formData.append('imageUrlDel', 'true')
+      } else {
+        formData.append('imageUrlDel', 'false')
+      }
+    }
+
     const entries = formData.entries()
     for (const pair of entries) {
       console.log(pair[0] + ', ' + pair[1])
     }
 
-    switch (location.pathname) {
-      case '/write':
-        try {
-          const writeRes = await requestWrite(formData)
-          if (writeRes === 200) {
-            openModal({
-              isModalOpen: true,
-              isConfirm: false,
-              content: ['게시글 작성이 완료되었습니다.'],
-              navigateOption: PATH.HOME,
-            })
-          } else {
-            throw new Error()
-          }
-        } catch (err) {
-          openModal({
-            isModalOpen: true,
-            isConfirm: false,
-            content: ['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'],
-          })
-        }
-        break
-      default:
-        try {
-          if (dataForEdit?.imageUrl && !formData.get('file') && !imgSrc) {
-            formData.append('imageUrlDel', 'true')
-          } else if (dataForEdit?.imageUrl && !formData.get('file') && imgSrc) {
-            formData.append('imageUrlDel', 'false')
-          } else if (!dataForEdit?.imageUrl && !formData.get('file')) {
-            formData.append('imageUrlDel', 'false')
-          }
-          const editRes = dataForEdit && (await requestEdit(formData, dataForEdit.boardId))
-          if (editRes === 200) {
-            openModal({
-              isModalOpen: true,
-              isConfirm: false,
-              content: ['게시글 수정이 완료되었습니다.'],
-              navigateOption: `/board-details/${dataForEdit?.boardId}`,
-            })
-          }
-        } catch (err) {
-          openModal({
-            isModalOpen: true,
-            isConfirm: false,
-            content: ['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'],
-          })
-        }
-        break
-    }
+    submitData(formData)
   }
 
   return (
@@ -187,21 +141,21 @@ const Write = () => {
           <section>
             <FileUpload
               imgRef={imgRef}
-              imgSrc={imgSrc}
-              setImgSrc={setImgSrc}
-              isFileEdit={isFileEdit}
-              setIsFileEdit={setIsFileEdit}
+              previewImgSrc={previewImgSrc}
+              setPreviewImgSrc={setPreviewImgSrc}
+              isFileChanged={isFileChanged}
+              setIsFileChanged={setIsFileChanged}
             />
           </section>
           <section>
-            <TitleInput writtenTitle={writtenTitle} setWrittenTitle={setWrittenTitle} />
+            <TitleInput postData={postData} setPostData={setPostData} />
           </section>
           <section>
-            <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
+            <PriceInput formattedPrice={formattedPrice} setFormattedPrice={setFormattedPrice} />
           </section>
           <section>
-            <DistrictSelect selectedDistrict={selectedDistrict} setSelectedDistrict={setSelectedDistrict} />
-            <CategorySelect selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+            <DistrictSelect postData={postData} setPostData={setPostData} />
+            <CategorySelect postData={postData} setPostData={setPostData} />
           </section>
           <section>
             <h2>예약일시</h2>
@@ -222,7 +176,7 @@ const Write = () => {
                     isTimeChange={isStartChange}
                     setIsTimeChange={setIsStartChange}
                     setSelectedTime={setSelectedStartTime}
-                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
+                    timeTemp={startTimeTemp}
                   />
                 </div>
                 <span>부터</span>
@@ -233,7 +187,7 @@ const Write = () => {
                     isTimeChange={isEndChange}
                     setIsTimeChange={setIsEndChange}
                     setSelectedTime={setSelectedEndTime}
-                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
+                    timeTemp={endTimeTemp}
                   />
                 </div>
                 <span>까지</span>
@@ -241,7 +195,7 @@ const Write = () => {
             </MobileReservation>
           </section>
           <section>
-            <ContentInput writtenContent={writtenContent} setWrittenContent={setWrittenContent} />
+            <ContentInput postData={postData} setPostData={setPostData} />
           </section>
           <button type="submit" className="submit-button">
             등록하기
@@ -261,25 +215,25 @@ const Write = () => {
             <section className="half-section">
               <FileUpload
                 imgRef={imgRef}
-                imgSrc={imgSrc}
-                setImgSrc={setImgSrc}
-                isFileEdit={isFileEdit}
-                setIsFileEdit={setIsFileEdit}
+                previewImgSrc={previewImgSrc}
+                setPreviewImgSrc={setPreviewImgSrc}
+                isFileChanged={isFileChanged}
+                setIsFileChanged={setIsFileChanged}
               />
             </section>
             <section className="half-section">
               <h2>세부사항</h2>
               <div className="row-box">
-                <TitleInput writtenTitle={writtenTitle} setWrittenTitle={setWrittenTitle} />
+                <TitleInput postData={postData} setPostData={setPostData} />
               </div>
               <div className="row-box">
-                <PriceInput priceValue={priceValue} setPriceValue={setPriceValue} />
+                <PriceInput formattedPrice={formattedPrice} setFormattedPrice={setFormattedPrice} />
               </div>
               <div className="row-box">
-                <DistrictSelect selectedDistrict={selectedDistrict} setSelectedDistrict={setSelectedDistrict} />
+                <DistrictSelect postData={postData} setPostData={setPostData} />
               </div>
               <div className="row-box">
-                <CategorySelect selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+                <CategorySelect postData={postData} setPostData={setPostData} />
               </div>
             </section>
           </PcDetail>
@@ -304,7 +258,7 @@ const Write = () => {
                     isTimeChange={isStartChange}
                     setIsTimeChange={setIsStartChange}
                     setSelectedTime={setSelectedStartTime}
-                    timeTempForEdit={location.pathname.includes('/edit') ? startTimeTemp : undefined}
+                    timeTemp={startTimeTemp}
                   />
                 </div>
                 <span className="text-gray">부터</span>
@@ -315,7 +269,7 @@ const Write = () => {
                     isTimeChange={isEndChange}
                     setIsTimeChange={setIsEndChange}
                     setSelectedTime={setSelectedEndTime}
-                    timeTempForEdit={location.pathname.includes('/edit') ? endTimeTemp : undefined}
+                    timeTemp={endTimeTemp}
                   />
                 </div>
                 <span className="text-gray">까지</span>
@@ -323,7 +277,7 @@ const Write = () => {
             </PcReservation>
           </section>
           <section className="full-section">
-            <ContentInput writtenContent={writtenContent} setWrittenContent={setWrittenContent} />
+            <ContentInput postData={postData} setPostData={setPostData} />
           </section>
           <button className="submit-button" type="submit">
             등록하기
