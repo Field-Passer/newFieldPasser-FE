@@ -1,5 +1,4 @@
-import axios, { isAxiosError } from 'axios'
-import { privateApi, publicApi } from './Instance'
+import { publicApi, privateApi } from '@src/hooks/useAxiosInterceptor'
 
 // 로그인
 export const userLogin = async ({ userEmail: memberId, userPw: password }: IUserInfoType) => {
@@ -32,11 +31,15 @@ export async function checkTokenExpire() {
 // refreshToken 재발급
 export async function postRefereshToken() {
   const access_token = window.localStorage.getItem('accessToken')
-  const response = await publicApi.post('/auth/reissue', {
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  })
-  return response
+  try {
+    const response = await publicApi.post('/auth/reissue', {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }

@@ -1,4 +1,4 @@
-import { privateApi } from './Instance'
+import { privateApi } from '@src/hooks/useAxiosInterceptor'
 
 // 게시글 작성
 export const requestWrite = async (formData: FormData) => {

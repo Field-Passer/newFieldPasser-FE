@@ -1,5 +1,5 @@
 import { isAxiosError } from 'axios'
-import { privateApi, publicApi } from './Instance'
+import { publicApi, privateApi } from '@src/hooks/useAxiosInterceptor'
 
 // 승급
 export const promoteUser = async (memberId: string) => {

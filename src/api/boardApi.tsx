@@ -1,4 +1,4 @@
-import { publicApi, privateApi } from './Instance'
+import { publicApi, privateApi } from '@src/hooks/useAxiosInterceptor'
 
 export const getSearchPostList = async (values: SearchValueTypes, page = 1) => {
   if (!values.chkDate) {
