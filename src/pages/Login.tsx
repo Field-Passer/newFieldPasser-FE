@@ -46,7 +46,6 @@ const Login = () => {
         removeCookieToken()
         dispatch(SET_TOKEN(response.data.data.accessToken))
         setRefreshToken(response.data.data.refreshToken)
-        console.log('로그인함', new Date())
         return navigate(PATH.HOME, { replace: true })
       }
     } catch (error) {

@@ -19,7 +19,6 @@ const useInfinityScroll = ({ payload, page, setPostList, setPage }: IInfinityScr
         }
         setPostList((prevList) => [...prevList, ...postData.content])
         postData.last ? setLastPage(true) : setLastPage(false)
-        console.log('post', page)
       } catch (error) {
         alert(error)
       } finally {

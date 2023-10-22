@@ -65,10 +65,13 @@ const Join = () => {
         content: ['올바른 이메일 형식이 아닙니다.'],
       })
     }
-    const status = await checkDuplicateEmail({ userEmail })
-    if (status === 200) {
-      setCheckEmail(true)
-    } else {
+    try {
+      const status = await checkDuplicateEmail({ userEmail })
+      if (status === 200) {
+        setCheckEmail(true)
+      }
+    } catch (error) {
+      setCheckEmail(false)
       openModal({
         isModalOpen: true,
         isConfirm: false,

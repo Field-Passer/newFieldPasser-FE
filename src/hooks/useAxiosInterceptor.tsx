@@ -4,7 +4,7 @@ import { removeCookieToken } from '@src/storage/Cookie'
 import store from '@src/store/config'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { DELETE_INFO } from '@src/store/slices/infoSlice'
-import CheckAuthorization from '@src/components/CheckAuthorization'
+import CheckAuthorization from '@src/components/Authrization/CheckAuthorization'
 import axios, { InternalAxiosRequestConfig } from 'axios'
 import { useDispatch } from 'react-redux'
 import useModal from './useModal'
@@ -35,7 +35,6 @@ export const Interceptor = ({ children }: any) => {
       async function (config): Promise<InternalAxiosRequestConfig | any> {
         const atExpire = store.getState().accessToken.expireTime
         const curTime = new Date().getTime()
-        console.log(new Date(atExpire) + '/' + new Date(curTime), '만료 시간')
         if (atExpire < curTime) {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
@@ -50,7 +49,6 @@ export const Interceptor = ({ children }: any) => {
         }
 
         const newConfig = await CheckAuthorization(config)
-        console.log('newConfig: ', newConfig)
         if (newConfig === 'NoToken') {
           openModal({
             isModalOpen: true,
@@ -67,9 +65,8 @@ export const Interceptor = ({ children }: any) => {
             navigateOption: PATH.LOGIN,
           })
           return Promise.resolve()
-        } else {
-          return newConfig
         }
+        return newConfig
       },
       function (error) {
         return Promise.reject(error)
