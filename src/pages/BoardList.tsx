@@ -35,13 +35,7 @@ const BoardList = () => {
     }
   )
 
-  const [payload, setPayload] = useState({
-    title: searchValue.title,
-    districtNames: searchValue.district.join(),
-    startTime: searchValue.chkDate ? searchValue.startTime : '',
-    endTime: searchValue.chkDate ? searchValue.endTime : '',
-    categoryName: searchValue.category,
-  })
+  const [payload, setPayload] = useState({})
 
   const [page, setPage] = useState<number>(1)
   const [postList, setPostList] = useState<POST_TYPE[]>([])
@@ -58,7 +52,7 @@ const BoardList = () => {
   }, [title, startDate, endDate, district, category, startTime, endTime, chkDate])
 
   useEffect(() => {
-    getPostList(payload, page)
+    if (Object.keys(payload).length !== 0) getPostList(payload, page)
   }, [page, payload])
 
   return (
