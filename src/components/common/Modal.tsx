@@ -1,94 +1,99 @@
 import { COLORS } from '@src/globalStyles'
 import { styled } from 'styled-components'
 import { CloseButton, InfoIcon } from '@src/constants/icons'
-import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router'
+import useModal from '@src/hooks/useModal'
+import { useSelector } from 'react-redux'
+import { RootState } from '@src/store/config'
+import { Mobile, PC } from '@src/hooks/useScreenHook'
 
-const Modal = ({ modalOpen, setModalOpen, content, isConfirm, navigateOption, confirmFn }: IModalProps) => {
-  const isMobile = useMediaQuery({
-    query: '(max-width: 833px)',
-  })
-
+const Modal = () => {
+  const { isModalOpen, isConfirm, content, navigateOption, confirmAction } = useSelector(
+    (state: RootState) => state.modal
+  )
+  const { closeModal } = useModal()
   const navigate = useNavigate()
 
-  const closeModal = () => {
-    setModalOpen(false)
-  }
-
-  return (
-    <>
-      {modalOpen && (
+  if (isModalOpen)
+    return (
+      <>
         <Container>
-          {!isMobile && (
+          <PC>
             <PcButton
               onClick={() => {
                 navigateOption && navigate(navigateOption)
+                confirmAction && confirmAction()
                 closeModal()
               }}
             >
               <CloseButton />
             </PcButton>
-          )}
+          </PC>
+
           <InfoIcon />
           <Content>
             {content.map((text) => {
               return <span key={text}>{text}</span>
             })}
           </Content>
-          {!isMobile && isConfirm && (
-            <ConfirmContainer>
-              <ConfirmButton
+
+          <PC>
+            {isConfirm && (
+              <ConfirmContainer>
+                <ConfirmButton
+                  onClick={() => {
+                    confirmAction && confirmAction()
+                    navigateOption && navigate(navigateOption)
+                    closeModal()
+                  }}
+                >
+                  확인
+                </ConfirmButton>
+                <ConfirmButton
+                  onClick={() => {
+                    closeModal()
+                  }}
+                >
+                  취소
+                </ConfirmButton>
+              </ConfirmContainer>
+            )}
+          </PC>
+
+          <Mobile>
+            {!isConfirm ? (
+              <MobileButton
                 onClick={() => {
-                  confirmFn && confirmFn()
+                  confirmAction && confirmAction()
                   navigateOption && navigate(navigateOption)
                   closeModal()
                 }}
               >
                 확인
-              </ConfirmButton>
-              <ConfirmButton
-                onClick={() => {
-                  closeModal()
-                }}
-              >
-                취소
-              </ConfirmButton>
-            </ConfirmContainer>
-          )}
-          {isMobile && !isConfirm && (
-            <MobileButton
-              onClick={() => {
-                confirmFn && confirmFn()
-                navigateOption && navigate(navigateOption)
-                closeModal()
-              }}
-            >
-              확인
-            </MobileButton>
-          )}
-          {isMobile && isConfirm && (
-            <ConfirmContainer>
-              <ConfirmButton
-                onClick={() => {
-                  navigateOption && navigate(navigateOption)
-                  closeModal()
-                }}
-              >
-                확인
-              </ConfirmButton>
-              <ConfirmButton
-                onClick={() => {
-                  closeModal()
-                }}
-              >
-                취소
-              </ConfirmButton>
-            </ConfirmContainer>
-          )}
+              </MobileButton>
+            ) : (
+              <ConfirmContainer>
+                <ConfirmButton
+                  onClick={() => {
+                    navigateOption && navigate(navigateOption)
+                    closeModal()
+                  }}
+                >
+                  확인
+                </ConfirmButton>
+                <ConfirmButton
+                  onClick={() => {
+                    closeModal()
+                  }}
+                >
+                  취소
+                </ConfirmButton>
+              </ConfirmContainer>
+            )}
+          </Mobile>
         </Container>
-      )}
-    </>
-  )
+      </>
+    )
 }
 
 const Container = styled.div`

@@ -7,7 +7,7 @@ import Sidebar from './components/Main/Sidebar'
 import { useEffect } from 'react'
 import { cheakOpenBox } from './store/slices/searchChkSlice'
 import { useDispatch } from 'react-redux'
-import ModalWithHook from './components/ModalWithHook'
+import Modal from './components/common/Modal'
 import Overlay from './components/Style/Overlay'
 import Interceptor from './hooks/useAxiosInterceptor'
 
@@ -25,7 +25,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Interceptor>
         <Sidebar />
-        <ModalWithHook />
+        <Modal />
         <Overlay />
         <Header />
         <Outlet />
