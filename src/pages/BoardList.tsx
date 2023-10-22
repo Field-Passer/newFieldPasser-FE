@@ -1,17 +1,12 @@
 import Board from '@src/components/Board'
 import SearchForm from '@src/components/SearchForm'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { RootState } from '../store/config'
 import { useSelector } from 'react-redux'
-import { getSearchPostList } from '@src/api/boardApi'
-import { useInView } from 'react-intersection-observer'
+import useInfinityScroll from '@src/hooks/useInfinityScroll'
+import Loading from '@src/components/common/loading'
 
 const BoardList = () => {
-  const [postList, setPostList] = useState<POST_TYPE[]>([])
-  const [ref, inView] = useInView()
-  const [page, setPage] = useState(1)
-  const [lastPage, setLastPage] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const searchValue = useSelector((state: RootState) => {
     return {
       title: state.searchVlaue.title,
@@ -40,51 +35,38 @@ const BoardList = () => {
     }
   )
 
-  const getPostList = useCallback(async () => {
-    setIsLoading(true)
-    const postData = await getSearchPostList(searchValue, page)
-    setPostList((prevState) => [...prevState, ...postData.content])
+  const [payload, setPayload] = useState({
+    title: searchValue.title,
+    districtNames: searchValue.district.join(),
+    startTime: searchValue.chkDate ? searchValue.startTime : '',
+    endTime: searchValue.chkDate ? searchValue.endTime : '',
+    categoryName: searchValue.category,
+  })
 
-    if (postData.last) setLastPage(true)
-    else if (!postData.last) setLastPage(false)
-    setIsLoading(false)
-  }, [page])
-
-  const changePostList = async () => {
-    const postData = await getSearchPostList(searchValue, 1)
-    setPostList(postData.content)
-
-    if (postData.last) setLastPage(true)
-    else if (!postData.last) setLastPage(false)
-  }
+  const [page, setPage] = useState<number>(1)
+  const [postList, setPostList] = useState<POST_TYPE[]>([])
+  const { isLoading, getPostList, ref } = useInfinityScroll({ payload, page, setPostList, setPage })
 
   useEffect(() => {
-    setPage(1)
-    setLastPage(false)
-    changePostList()
+    setPayload({
+      title: searchValue.title,
+      districtNames: searchValue.district.join(),
+      startTime: searchValue.chkDate ? searchValue.startTime : '',
+      endTime: searchValue.chkDate ? searchValue.endTime : '',
+      categoryName: searchValue.category,
+    })
   }, [title, startDate, endDate, district, category, startTime, endTime, chkDate])
 
   useEffect(() => {
-    if (page !== 1) {
-      getPostList()
-    }
-  }, [getPostList])
-
-  useEffect(() => {
-    setPage(1)
-  }, [])
-
-  useEffect(() => {
-    if (inView && !isLoading && !lastPage) {
-      setPage((prev) => prev + 1)
-    }
-  }, [inView, isLoading, lastPage])
+    getPostList(payload, page)
+  }, [page, payload])
 
   return (
     <>
       <SearchForm />
-      <Board data={postList} message={'일치하는 조건의 게시글이 없습니다 !'} />
-      <div ref={ref}></div>
+      <Board data={postList} message={'일치하는 조건의 게시글이 없습니다.'} />
+      {!isLoading && <div ref={ref}></div>}
+      {isLoading && <Loading />}
     </>
   )
 }

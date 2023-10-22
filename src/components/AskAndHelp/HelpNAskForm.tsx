@@ -1,12 +1,12 @@
-import Inner from '@src/components/Inner'
-import Title from '@src/components/Title'
+import Inner from '@src/components/Style/Inner'
+import Title from '@src/components/Style/Title'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { postQuestion, postAdmintQuestion } from '@src/api/postApi'
 import PATH from '@src/constants/pathConst'
-import Modal from '@components/Modal'
+import useModal from '@src/hooks/useModal'
 
 interface Props {
   type: string
@@ -15,37 +15,76 @@ interface Props {
 const HelpNAskForm = ({ type, questionId }: Props) => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigate, setModalNavigate] = useState<string>('')
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
   })
 
+  const { openModal } = useModal()
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (type === 'help') {
-      try {
-        setModalOpen(true)
-        setModalIsConfirm(true)
-        setModalText(['문의 작성이 완료되었습니다. 메인으로 이동합니다.'])
-        setModalNavigate(PATH.HOME)
-      } catch (error) {
-        setModalOpen(true)
-        setModalIsConfirm(true)
-        setModalText(['문의 작성 오류가 있습니다.'])
+    if (title.length < 2) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['제목을 두 글자 이상 작성해 주세요.'],
+      })
+      return false
+    }
+
+    if (content.length < 5) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['내용을 다섯 글자 이상 작성해 주세요.'],
+      })
+      return false
+    }
+
+    if (type === 'help' && content.length >= 5 && title.length >= 2) {
+      const data = {
+        questionTitle: title,
+        questionContent: content,
+        questionCategory: 'TRANSACTION',
       }
-    } else if (type === 'ask') {
       try {
-        setModalOpen(true)
-        setModalIsConfirm(true)
-        setModalText(['문의 답변을 작성하였습니다. 문의 목록으로 돌아갑니다.'])
-        setModalNavigate(PATH.ASK)
+        openModal({
+          isModalOpen: true,
+          isConfirm: true,
+          content: ['문의 작성이 완료되었습니다.', '메인으로 이동합니다.'],
+          navigateOption: PATH.HOME,
+          confirmAction: () => {
+            postQuestion(data)
+          },
+        })
       } catch (error) {
-        setModalOpen(true)
-        setModalIsConfirm(true)
-        setModalText(['문의 작성 오류가 있습니다.'])
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['작성에 오류가 있습니다.'],
+        })
+      }
+    } else if (type === 'ask' && content.length >= 5 && title.length >= 2) {
+      const data = {
+        answerTitle: title,
+        answerContent: content,
+      }
+      try {
+        openModal({
+          isModalOpen: true,
+          isConfirm: true,
+          content: ['문의 답변 작성이 완료되었습니다.', '문의 목록으로 돌아갑니다.'],
+          navigateOption: PATH.ASK,
+          confirmAction: () => {
+            postAdmintQuestion(Number(questionId), data)
+          },
+        })
+      } catch (error) {
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['작성에 오류가 있습니다.'],
+        })
       }
     }
   }
@@ -57,7 +96,13 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
           <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="pc">
               <h2>제목</h2>
-              <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="제목을 두 글자 이상 작성해 주세요."
+                minLength={2}
+              />
             </FormDetailStyle>
             <FormDetailStyle screen="pc">
               <h2>내용</h2>
@@ -66,6 +111,8 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
                 rows={10}
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
+                placeholder="내용을 다섯 글자 이상 작성해 주세요."
+                minLength={5}
               ></textarea>
             </FormDetailStyle>
             <ButtonStyle screen="pc" type="submit">
@@ -74,7 +121,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
           </FormStyle>
         </Inner>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="1:1 문의하기" />
           <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="mobile">
@@ -95,31 +142,6 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
             </ButtonStyle>
           </FormStyle>
         </Inner>
-      )}
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={modalIsConfirm}
-          navigateOption={modalNavigate}
-          confirmFn={() => {
-            if (type === 'help') {
-              const data = {
-                questionTitle: title,
-                questionContent: content,
-                questionCategory: 'TRANSACTION',
-              }
-              postQuestion(data)
-            } else if (type === 'ask') {
-              const data = {
-                answerTitle: title,
-                answerContent: content,
-              }
-              postAdmintQuestion(Number(questionId), data)
-            }
-          }}
-        ></Modal>
       )}
     </>
   )

@@ -51,7 +51,9 @@ const Board = ({ data, message }: Props) => {
             ))}
           </ul>
         ) : (
-          <p>{message}</p>
+          <MessageBox>
+            <p>{message}</p>
+          </MessageBox>
         )}
       </BoardContainer>
     </ThemeProvider>
@@ -205,4 +207,8 @@ const PostListBox = styled.li<{ blind: string | null }>`
     top: 0;
     background: rgba(255, 255, 255, 0.5);
   }
+`
+
+const MessageBox = styled.div`
+  min-height: 500px;
 `
