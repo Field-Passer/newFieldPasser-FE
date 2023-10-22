@@ -43,3 +43,9 @@ export async function postRefereshToken() {
     console.log(error)
   }
 }
+
+// 회원 탈퇴
+export const userWithdrawal = async () => {
+  const response = await privateApi.delete('/my-page/withdrawal')
+  return response
+}
