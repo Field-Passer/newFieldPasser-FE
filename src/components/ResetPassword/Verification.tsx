@@ -3,13 +3,14 @@ import { COLORS, FONT } from '@src/globalStyles'
 import React, { useState } from 'react'
 import { temporaryPassword, verifyUserEmail, verifyUserNum } from '@src/api/userApi'
 import useInput from '@src/hooks/useInputHook'
-import Modal from '@src/components/Modal'
+import useModal from '@src/hooks/useModal'
 
 interface propsType {
   setStep: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Verification = ({ setStep }: propsType) => {
+  const { openModal } = useModal()
   // 인풋 유효성 검사
   const emailValidator = (userEmail: string) => {
     setPersonalVerify(true)
@@ -37,11 +38,6 @@ const Verification = ({ setStep }: propsType) => {
   const [personalVerify, setPersonalVerify] = useState(true)
   const [btnDisabled, setBtnDisabled] = useState(true)
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  // const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
-
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
   }
@@ -52,14 +48,18 @@ const Verification = ({ setStep }: propsType) => {
     const response = await verifyUserEmail({ userEmail })
     if (response.status === 200) {
       setPersonalVerify(false)
-      setModalOpen(true)
-      setModalIsConfirm(false)
-      setModalText(['인증 메일 발송이 완료되었습니다!'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['인증 메일 발송이 완료되었습니다!'],
+      })
     } else {
       setPersonalVerify(true)
-      setModalOpen(true)
-      setModalIsConfirm(false)
-      setModalText(['가입된 메일이 아닙니다! 다시 확인해주세요.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['가입된 메일이 아닙니다! 다시 확인해주세요.'],
+      })
     }
     setMailLoading(false)
   }
@@ -67,26 +67,29 @@ const Verification = ({ setStep }: propsType) => {
   const verifyNumHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setVerifyLoading(true)
-    const { status } = (await verifyUserNum({
+    const status = await verifyUserNum({
       userEmail,
       userVerifyNum,
-    })) as IResponseType
+    })
     if (status === 200) {
       const { status } = (await temporaryPassword({
         userEmail,
       })) as IResponseType
       if (status === 200) {
         setVerifyLoading(false)
-        setModalOpen(true)
-        setModalIsConfirm(false)
-        setModalText(['인증에 성공했습니다!'])
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['인증에 성공했습니다!'],
+        })
         setStep(2)
       }
     } else {
-      // 모달 수정
-      setModalOpen(true)
-      setModalIsConfirm(false)
-      setModalText(['인증에 실패하였습니다. 입력한 정보를 다시 확인해주세요.'])
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['인증에 실패하였습니다. 입력한 정보를 다시 확인해주세요.'],
+      })
     }
     setVerifyLoading(false)
   }
@@ -141,11 +144,6 @@ const Verification = ({ setStep }: propsType) => {
           인증하기
         </button>
       </Form>
-      <>
-        {modalOpen && (
-          <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} content={modalText} isConfirm={modalIsConfirm} />
-        )}
-      </>
     </>
   )
 }
