@@ -16,6 +16,7 @@ import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
 import { categoryNamesList } from '@src/constants/options'
 import Loading from '@src/components/common/loading'
+import ReorderButton from '@src/components/common/ReorderButton'
 
 const Main = () => {
   const isMobile = useMediaQuery({
@@ -24,6 +25,7 @@ const Main = () => {
   const [isDistrictOpen, setIsDistrictOpen] = useState<boolean>(false)
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false)
   const [selectedSortOption, setSelectedSortOption] = useState<string>('정렬')
+  const [displayReorderButton, setDisplayReorderButton] = useState<boolean>(false)
   const [isActive, setIsActive] = useState({
     futsal: true,
     soccer: false,
@@ -46,6 +48,12 @@ const Main = () => {
   useEffect(() => {
     setSelectedSortOption('정렬')
   }, [payload])
+
+  useEffect(() => {
+    if (selectedSortOption !== '가장 최신 순' && page !== 1) {
+      setDisplayReorderButton(true)
+    }
+  }, [selectedSortOption, page])
 
   useEffect(() => {
     switch (selectedSortOption) {
@@ -152,6 +160,13 @@ const Main = () => {
   }
   return (
     <Container>
+      {displayReorderButton && (
+        <ReorderButton
+          selectedSortOption={selectedSortOption}
+          setSelectedSortOption={setSelectedSortOption}
+          setDisplayReorderButton={setDisplayReorderButton}
+        />
+      )}
       {!isMobile && (
         <section
           className="banner-section"
@@ -284,6 +299,7 @@ const Main = () => {
 }
 
 const Container = styled.main`
+  position: relative;
   display: block;
   font-size: ${FONT.m};
   margin: auto;

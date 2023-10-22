@@ -7,7 +7,6 @@ const postDataSlice = createSlice({
   initialState,
   reducers: {
     createPostData: (state, action: PayloadAction<POST_TYPE[]>) => {
-      console.log(state)
       state = action.payload
     },
   },

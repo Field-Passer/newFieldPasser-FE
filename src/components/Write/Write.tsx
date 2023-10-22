@@ -80,7 +80,7 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
     const formData = new FormData()
     const target = event.target as HTMLFormElement
 
-    checkInputsValidity()
+    if (checkInputsValidity() === false) return
 
     for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
