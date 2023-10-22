@@ -22,7 +22,6 @@ const BoardDetails = () => {
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const { openModal } = useModal()
-
   const blindFn = async () => {
     try {
       await blindBoard(Number(boardId))
@@ -57,6 +56,14 @@ const BoardDetails = () => {
   }
 
   const delPostFn = async (id: number | undefined) => {
+    if (!authenticated)
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원전용 기능입니다.'],
+        navigateOption: PATH.LOGIN,
+      })
+
     try {
       await delPost(id)
       openModal({
@@ -75,6 +82,14 @@ const BoardDetails = () => {
   }
 
   const likePostFn = async (boardId: number) => {
+    if (!authenticated)
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원전용 기능입니다.'],
+        navigateOption: PATH.LOGIN,
+      })
+
     try {
       await postLikeBoard(boardId, authenticated)
       openModal({
