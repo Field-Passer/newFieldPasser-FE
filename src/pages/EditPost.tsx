@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react'
-import Write from './Write'
+import Write from '../components/Write/Write'
 import { getUserInfo } from '@src/api/authApi'
 import { useLocation } from 'react-router'
 import useModal from '@src/hooks/useModal'
+import { requestEdit } from '@src/api/postApi'
 
 const EditPost = () => {
-  const location = useLocation()
-  const [userId, setUserId] = useState('')
+  const { state } = useLocation()
   const [isWriter, setIsWriter] = useState(false)
   const { openModal } = useModal()
+  const [postData, setPostData] = useState<IWritePostData>({
+    categoryName: state.data.categoryName,
+    content: state.data.content,
+    districtName: state.data.districtName,
+    endTime: state.data.endTime,
+    imageUrl: state.data.imageUrl,
+    price: state.data.price,
+    startTime: state.data.startTime,
+    title: state.data.title,
+  })
 
   const goToBack = () => {
     openModal({
@@ -23,8 +33,10 @@ const EditPost = () => {
     const checkId = async () => {
       try {
         const idRes = await getUserInfo()
-        if (idRes?.memberId) {
-          setUserId(idRes.memberId)
+        if (idRes?.memberId === state.data.memberId) {
+          setIsWriter(true)
+        } else {
+          goToBack()
         }
       } catch (err) {
         openModal({
@@ -38,13 +50,29 @@ const EditPost = () => {
     checkId()
   }, [])
 
-  useEffect(() => {
-    if (userId) {
-      userId === location.state.data.memberId ? setIsWriter(true) : goToBack()
+  const submitData = async (formData: FormData) => {
+    try {
+      const editRes = await requestEdit(formData, state.data.boardId)
+      if (editRes === 200) {
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['게시글 수정이 완료되었습니다.'],
+          navigateOption: `/board-details/${state.data.boardId}`,
+        })
+      }
+    } catch (err) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정상적으로 등록되지 않았습니다. 다시 시도해주세요.'],
+      })
     }
-  }, [userId])
+  }
 
-  return <>{isWriter && <Write />}</>
+  return (
+    <>{isWriter && <Write postData={postData} setPostData={setPostData} pageName={'edit'} submitData={submitData} />}</>
+  )
 }
 
 export default EditPost

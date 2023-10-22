@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { LoadingIcon } from '../constants/icons'
+import { LoadingIcon } from '../../constants/icons'
 import { COLORS } from '@src/globalStyles'
 
 const Loading = () => {

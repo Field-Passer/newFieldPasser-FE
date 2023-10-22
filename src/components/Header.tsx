@@ -1,8 +1,7 @@
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { COLORS } from '@src/globalStyles'
-import { useMediaQuery } from 'react-responsive'
-import { Mobile } from '@src/hooks/useScreenHook'
+import { Mobile, PC } from '@src/hooks/useScreenHook'
 import type { RootState } from '@src/store/config'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserInfo } from '@src/api/authApi'
@@ -15,9 +14,6 @@ import { OPEN_SIDEBAR } from '@src/store/slices/sidebarSlice'
 import useLoginState from '@src/hooks/useLoginState'
 
 const Header = () => {
-  const isMobile = useMediaQuery({
-    query: '(max-width: 833px)',
-  })
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -56,7 +52,7 @@ const Header = () => {
           <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} />
         </MContainer>
       </Mobile>
-      {!isMobile && (
+      <PC>
         <Container>
           <Inner>
             <Link to="/" className="logo">
@@ -81,7 +77,7 @@ const Header = () => {
             </div>
           </Inner>
         </Container>
-      )}
+      </PC>
     </>
   )
 }
