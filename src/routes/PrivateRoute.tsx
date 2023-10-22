@@ -22,7 +22,6 @@ const PrivateRoute = ({ children }: IPrivateRoute) => {
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
       accessAfterLoginAlert()
-      console.log('privateRouter-----------')
     }
   }, [location])
   return <>{access_token && refresh_token && children}</>
