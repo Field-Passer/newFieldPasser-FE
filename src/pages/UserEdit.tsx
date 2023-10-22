@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import { editUserInfo, getUserInfo } from '@src/api/userApi'
@@ -7,17 +6,18 @@ import useInput from '@src/hooks/useInputHook'
 import { useDispatch } from 'react-redux'
 import { SET_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const UserEdit = () => {
-  const navigate = useNavigate()
+  const { openModal } = useModal()
   const dispatch = useDispatch()
 
   // 인풋 유효성 검사
   const nameValidator = (userName: string) => {
-    if (userName === '' || userName.length < 0 || userName.length > 5) return true
+    if (userName === '' || userName.length > 5) return true
   }
   const nickNameValidator = (userNickName: string) => {
-    if (userNickName === null || userNickName.length > 12) return true
+    if (userNickName === '' || userNickName.length > 12) return true
   }
   const userPhoneValidator = (uPhone: string) => {
     setUserPhone(
@@ -30,12 +30,10 @@ const UserEdit = () => {
     if (uPhone.length >= 11) return false
   }
 
-  const [userEmail, onChangeUserEmail, userEmailError, setUserEmail] = useInput('')
+  const [userEmail, onChangeUserEmail, , setUserEmail] = useInput('')
   const [userName, onChangeUserName, userNameError, setUserName] = useInput(nameValidator, '')
   const [userNickName, onChangeUserNickName, userNickNameError, setUserNickName] = useInput(nickNameValidator, '')
   const [userPhone, onChangeUserPhone, userPhoneError, setUserPhone] = useInput(userPhoneValidator, '')
-
-  console.log(userEmailError)
 
   // 회원 정보 불러오기
   useEffect(() => {
@@ -54,8 +52,22 @@ const UserEdit = () => {
   // 회원 정보 변경 요청
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (userName === '' || userNickName === '' || userPhone === '') return alert('양식은 비어있을 수 없습니다.')
-    if (userPhoneError) return alert('양식을 다시 확인해주세요.')
+    if (userName === '' || userNickName === '' || userPhone === '') {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['양식은 비어있을 수 없습니다.'],
+      })
+      return
+    }
+    if (userPhoneError) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['양식을 다시 확인해주세요.'],
+      })
+      return
+    }
     const response = await editUserInfo({
       userName,
       userNickName,
@@ -70,10 +82,19 @@ const UserEdit = () => {
           memberPhone: userPhone,
         })
       )
-      navigate(PATH.MYPAGE)
-      alert('회원 정보가 변경되었습니다.')
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원 정보가 변경되었습니다.'],
+        navigateOption: PATH.MYPAGE,
+      })
     } else {
-      alert('회원 정보 변경에 실패했습니다. 양식을 다시 확인해주세요.')
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원 정보 변경에 실패했습니다. 양식을 다시 확인해주세요.'],
+      })
+      return
     }
   }
 
@@ -103,7 +124,10 @@ const UserEdit = () => {
               placeholder="김필드"
               maxLength={5}
             />
-            <p className="error_message">{userNameError && '이름은 다섯글자를 넘을 수 없습니다.'}</p>
+            <p className="error_message">{userNameError && userName === '' && '필수값입니다.'}</p>
+            <p className="error_message">
+              {userNameError && userName.length > 5 && '이름은 다섯글자를 넘을 수 없습니다.'}
+            </p>
           </div>
 
           <div className="input_wrap_inner">
@@ -116,7 +140,10 @@ const UserEdit = () => {
               placeholder="김필드패서"
               maxLength={12}
             />
-            <p className="error_message">{userNickNameError && '닉네임은 열두글자를 넘을 수 없습니다.'}</p>
+            <p className="error_message">{userNickNameError && userNickName === '' && '필수값입니다.'}</p>
+            <p className="error_message">
+              {userNickNameError && userNickName.length > 12 && '닉네임은 열두글자를 넘을 수 없습니다.'}
+            </p>
           </div>
 
           <div className="input_wrap_inner">
@@ -129,7 +156,10 @@ const UserEdit = () => {
               placeholder="010-1234-5678"
               maxLength={13}
             />
-            <p className="error_message">{userPhoneError && '전화번호를 정확히 입력해주세요.'}</p>
+            <p className="error_message">
+              {userPhoneError && userPhone === '' && '필수값입니다.'}
+              {userPhoneError && userPhone.length >= 1 && userPhone.length <= 8 && '전화번호를 정확히 입력해주세요.'}
+            </p>
           </div>
         </div>
 
