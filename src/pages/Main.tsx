@@ -47,10 +47,11 @@ const Main = () => {
 
   useEffect(() => {
     setSelectedSortOption('정렬')
+    setDisplayReorderButton(false)
   }, [payload])
 
   useEffect(() => {
-    if (selectedSortOption !== '가장 최신 순' && page !== 1) {
+    if (selectedSortOption !== '가장 최신 순' && selectedSortOption !== '정렬' && page !== 1) {
       setDisplayReorderButton(true)
     }
   }, [selectedSortOption, page])
