@@ -16,7 +16,7 @@ import Board from '@src/components/Board'
 import useInfinityScroll from '@src/hooks/useInfinityScroll'
 import { categoryNamesList } from '@src/constants/options'
 import Loading from '@src/components/common/loading'
-import ReorderButton from '@src/components/common/ReorderButton'
+import ReorderButton from '@src/components/Main/ReorderButton'
 
 const Main = () => {
   const isMobile = useMediaQuery({

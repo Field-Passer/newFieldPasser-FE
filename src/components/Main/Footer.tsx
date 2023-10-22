@@ -13,8 +13,7 @@ const Footer = () => {
         <div className="top">
           <img src="/logo.png" alt="logo" />
           <div className="policy">
-            <span onClick={() => navigate(PATH.HELP)}>이용약관</span>
-            <span onClick={() => navigate(PATH.HELP)}>운영정책</span>
+            <span onClick={() => navigate(PATH.HELP)}>이용약관 및 운영정책</span>
           </div>
         </div>
         <a

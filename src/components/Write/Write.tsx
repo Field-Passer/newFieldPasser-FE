@@ -118,11 +118,6 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
       }
     }
 
-    const entries = formData.entries()
-    for (const pair of entries) {
-      console.log(pair[0] + ', ' + pair[1])
-    }
-
     submitData(formData)
   }
 
