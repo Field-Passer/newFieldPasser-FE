@@ -37,17 +37,6 @@ interface ISaveImgFile {
   imgSrc: string | undefined
 }
 
-interface IPostPayload {
-  title: string
-  file: File | null
-  price: number
-  districtName: string
-  categoryName: string
-  startTime: string
-  endTime: string
-  content: string
-}
-
 interface POST_TYPE {
   blind: boolean
   boardId: number
@@ -185,7 +174,7 @@ interface ITimeSelectorProps {
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>
   timeSelectorOpen: boolean
   setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
-  timeTempForEdit?: string
+  timeTemp: string
 }
 
 interface IWishlistType {
@@ -205,7 +194,7 @@ interface IWishlistType {
 }
 
 interface CustomDateInputProps {
-  value: ''
+  value: string
   onClick: () => void
 }
 
@@ -222,4 +211,27 @@ interface IModalPayload {
   content: string[]
   navigateOption?: string | number
   confirmAction?: () => void
+}
+
+interface IWritePostData {
+  categoryName: string
+  content: string
+  districtName: string
+  endTime: string
+  imageUrl: string
+  price: number
+  startTime: string
+  title: string
+}
+
+interface IWriteProps {
+  postData: IWritePostData
+  setPostData: React.Dispatch<React.SetStateAction<IWritePostData>>
+  pageName: string
+  submitData: (formData: FormData) => Promise<void>
+}
+
+interface IWriteInputsProps {
+  postData: IWritePostData
+  setPostData: React.Dispatch<React.SetStateAction<IWritePostData>>
 }

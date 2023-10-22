@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { ClockIcon } from '@src/constants/icons'
 import { useMediaQuery } from 'react-responsive'
-import { useLocation } from 'react-router'
 
 const TimeSelector = ({
   isTimeChange,
@@ -12,20 +11,19 @@ const TimeSelector = ({
   setSelectedTime,
   timeSelectorOpen,
   setTimeSelectorOpen,
-  timeTempForEdit,
+  timeTemp,
 }: ITimeSelectorProps) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 833px)',
   })
-  const location = useLocation()
   const [timeZone, setTimeZone] = useState<string>('오전')
   const [hour, setHour] = useState<string>('--')
   const [minute, setMinute] = useState<string>('--')
 
   useEffect(() => {
-    if (location.pathname.includes('edit') && timeTempForEdit) {
-      const selectedHour: string = timeTempForEdit.slice(0, 2)
-      const selectedMinute: string = timeTempForEdit.slice(-2)
+    if (timeTemp) {
+      const selectedHour: string = timeTemp.slice(0, 2)
+      const selectedMinute: string = timeTemp.slice(-2)
 
       if (selectedHour === '00') {
         setTimeZone('오전')
@@ -35,7 +33,7 @@ const TimeSelector = ({
       Number(selectedHour) > 12 ? setHour((+selectedHour - 12 + '').padStart(2, '0')) : setHour(selectedHour + '')
       setMinute(selectedMinute)
     }
-  }, [timeTempForEdit])
+  }, [timeTemp])
 
   useEffect(() => {
     if (hour !== '--' && minute !== '--') {
@@ -122,7 +120,6 @@ const SelectorContainer = styled.div`
   height: 250px;
   z-index: 10;
   position: absolute;
-  top: 43px;
   left: 0;
   background-color: white;
   border: 1px solid ${COLORS.gray20};
