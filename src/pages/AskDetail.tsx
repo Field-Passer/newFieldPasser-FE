@@ -1,5 +1,5 @@
 import { getQuestionDetail, getQuestionAnswer } from '@src/api/getApi'
-import Title from '@src/components/Title'
+import Title from '@src/components/Style/Title'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { useLocation, useNavigate } from 'react-router'
@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
-import Inner from '@src/components/Inner'
+import Inner from '@src/components/Style/Inner'
 import PATH from '@src/constants/pathConst'
 
 const AskDetail = () => {
@@ -68,7 +68,7 @@ const AskDetail = () => {
           )}
         </Container>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="내 문의 목록" />
           <MobileContainer>
             <QuestionContent screen="mobile">
@@ -113,6 +113,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 0 16px;
 `
 
 const MobileContainer = styled.div`

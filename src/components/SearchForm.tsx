@@ -13,12 +13,14 @@ import { createSearchValue } from '@src/store/slices/searchVlaueSlice'
 import { RootState } from '../store/config'
 import { cheakOpenBox } from '@src/store/slices/searchChkSlice'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const SearchForm = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const urlPathname = location.pathname
   const navigate = useNavigate()
+  const { openModal } = useModal()
 
   // text Input element
   const textInputEl = useRef<HTMLInputElement>(null)
@@ -114,7 +116,11 @@ const SearchForm = () => {
     const idx = valueState.districtValue.indexOf(value)
     // 선택 최대 갯수 처리
     if (valueState.districtValue.length === 5 && idx === -1) {
-      return alert('최대 5개 선택 가능합니다.')
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['지역은 최대 5개까지 선택 가능합니다.'],
+      })
     }
 
     // 선택시 state 배열 변경
@@ -133,7 +139,11 @@ const SearchForm = () => {
   // time input change function
   const timeChangeFn = (element: React.ChangeEvent<HTMLInputElement>, type: string) => {
     if (valueState.startDate.slice(0, 10) !== valueState.endDate.slice(0, 10))
-      return alert('동일 날짜에만 시간을 지정할 수 있습니다.')
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['동일 날짜에만 시간을 지정할 수 있습니다.'],
+      })
     if (!checkState.timeChange) checkValueStateChangeFn('timeChange', true)
 
     if (type === 'start') {
@@ -177,8 +187,20 @@ const SearchForm = () => {
 
   // search value dispatch function
   const dispatchSearchValue = () => {
-    if (dispatchValue.startDate > dispatchValue.endDate) return alert('날짜를 확인해주세요')
-    if (dispatchValue.startTime > dispatchValue.endTime) return alert('시간을 확인해주세요')
+    if (dispatchValue.startDate > dispatchValue.endDate) {
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['날짜를 확인해주세요.'],
+      })
+    }
+    if (dispatchValue.startTime > dispatchValue.endTime) {
+      return openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['시간을 확인해주세요.'],
+      })
+    }
     return dispatch(createSearchValue(dispatchValue)), navigate(PATH.BOARD_LIST), searchBoxOpenFn()
   }
 

@@ -79,8 +79,11 @@ interface SearchValueTypes {
 }
 
 interface IMainListPayload {
-  districtName: string
-  categoryName: string
+  districtNames?: string
+  categoryName?: string
+  startTime?: string
+  endTime?: string
+  title?: string
 }
 
 interface ValueStateType {

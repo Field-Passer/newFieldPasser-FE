@@ -3,7 +3,7 @@ import { Mobile } from '@src/hooks/useScreenHook'
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import Inner from '@src/components/Inner'
+import Inner from '@src/components/Style/Inner'
 import PCBoardCard from '@src/components/MyPage/PCBoardCard'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -13,6 +13,7 @@ import { SET_WISHLIST } from '@src/store/slices/wishlistSlice'
 import { RootState } from '@src/store/config'
 import PATH from '@src/constants/pathConst'
 import useLoginState from '@src/hooks/useLoginState'
+import useModal from '@src/hooks/useModal'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
@@ -22,10 +23,57 @@ const MyPage = () => {
   const [postNum, setPostNum] = useState(0)
   const [wishNum, setWishNum] = useState(0)
   const [replyNum, setReplyNum] = useState(0)
+  const { openModal } = useModal()
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { logoutHandler } = useLoginState()
+
+  const postFetch = async () => {
+    try {
+      const postResponse = await getMyPost(1)
+      setMyPost(postResponse?.data)
+      setPostNum(postResponse?.totalElements)
+    } catch (error) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
+    }
+  }
+
+  const wishlistFetch = async () => {
+    try {
+      const wishlistResponse = await getWishlist(1)
+      setWishlist(wishlistResponse?.data)
+      dispatch(SET_WISHLIST(wishlistResponse?.data))
+      setWishNum(wishlistResponse?.totalElements)
+    } catch (error) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
+    }
+  }
+
+  const myReplyFetch = async () => {
+    try {
+      const replyResponse = await getMyReply(1)
+      setMyReply(replyResponse?.data)
+      setReplyNum(replyResponse?.totalElements)
+    } catch (error) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
+    }
+  }
 
   useEffect(() => {
     const randomNumFn = (total: number) => {
@@ -34,19 +82,13 @@ const MyPage = () => {
     }
     randomNumFn(3)
     const fetchData = async () => {
-      const postResponse = await getMyPost(1)
-      setMyPost(postResponse?.data)
-      const wishlistResponse = await getWishlist(1)
-      setWishlist(wishlistResponse?.data)
-      dispatch(SET_WISHLIST(postResponse?.data))
-      const replyResponse = await getMyReply(1)
-      setMyReply(replyResponse?.data)
-      setPostNum(postResponse?.totalElements)
-      setWishNum(wishlistResponse?.totalElements)
-      setReplyNum(replyResponse?.totalElements)
+      postFetch()
+      wishlistFetch()
+      myReplyFetch()
     }
     fetchData()
   }, [])
+
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const isPC = useMediaQuery({
     query: '(min-width: 834px)',
@@ -281,7 +323,7 @@ const PCList = styled.ul`
   flex-direction: column;
   font-size: ${FONT['pc-lg']};
   li {
-    padding: 16px 0;
+    padding: 16px;
     height: 60px;
     display: flex;
     align-items: center;

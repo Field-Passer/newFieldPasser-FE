@@ -1,5 +1,5 @@
-import Inner from '@src/components/Inner'
-import Title from '@src/components/Title'
+import Inner from '@src/components/Style/Inner'
+import Title from '@src/components/Style/Title'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router'
 import styled from 'styled-components'
@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { getQuestion, getAdminQuestion } from '@src/api/getApi'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
-import OneOneOne from '@components/OneOnOne'
+import OneOneOne from '@src/components/AskAndHelp/OneOnOne'
 import PATH from '@src/constants/pathConst'
 import { useInView } from 'react-intersection-observer'
 
@@ -99,7 +99,7 @@ const Ask = () => {
           </OtherAskStyle>
         </Container>
       ) : (
-        <Inner width="100%" padding="16px 0">
+        <Inner width="100%" padding="0 16px">
           <Title screen="mobile" name="내 문의 목록" />
           <QuestionContainer screen="mobile">
             {questions?.length ? (
@@ -137,6 +137,7 @@ const Container = styled.div`
 
   margin: 64px auto;
   max-width: 1024px;
+  padding: 0 16px;
 `
 
 const QuestionContainer = styled.div<StyleProps>`
