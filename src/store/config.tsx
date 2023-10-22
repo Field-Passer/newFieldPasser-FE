@@ -46,5 +46,5 @@ setupListeners(store.dispatch)
 export default store
 export type ReducerType = ReturnType<typeof rootReducer>
 export type AppDispath = typeof store.dispatch
-export type RootState = ReturnType<typeof store.getState> // useSelector 타입 지정.
+export type RootState = ReturnType<typeof store.getState>
 export const persistor = persistStore(store)

@@ -1,76 +1,79 @@
-// import { useEffect } from 'react'
-// import { useNavigate } from 'react-router'
-// import { privateApi } from '@src/api/Instance'
-// import { removeCookieToken } from '@src/storage/Cookie'
-// import store from '@src/store/config'
-// import { DELETE_TOKEN } from '@src/store/slices/authSlice'
-// import { DELETE_INFO } from '@src/store/slices/infoSlice'
-// import CheckAuthorization from '@src/components/CheckAuthorization'
-// import { InternalAxiosRequestConfig } from 'axios'
-// import { useDispatch } from 'react-redux'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from 'react'
+import { removeCookieToken } from '@src/storage/Cookie'
+import store from '@src/store/config'
+import { DELETE_TOKEN } from '@src/store/slices/authSlice'
+import { DELETE_INFO } from '@src/store/slices/infoSlice'
+import CheckAuthorization from '@src/components/Authrization/CheckAuthorization'
+import axios, { InternalAxiosRequestConfig } from 'axios'
+import { useDispatch } from 'react-redux'
+import useModal from './useModal'
+import PATH from '@src/constants/pathConst'
 
-// // type Props = {}
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
-// const useAxiosInterceptor = () => {
-//   // const { dispatch } = store
-//   const dispatch = useDispatch()
-//   const navigate = useNavigate()
+// 전역에 쿠키 전송 허용 설정
+axios.defaults.withCredentials = true
 
-//   const requestHandler = async (config: Promise<InternalAxiosRequestConfig | any>) => {
-//     const atExpire = store.getState().accessToken.expireTime
-//     const curTime = new Date().getTime()
+// 토큰이 필요 없는 api 요청을 보내는 axios 인스턴스
+export const publicApi = axios.create({
+  baseURL: BASE_URL,
+  timeout: 10000,
+})
 
-//     if (atExpire < curTime) {
-//       console.log(new Date(atExpire) + '/' + new Date(curTime))
-//       removeCookieToken()
-//       dispatch(DELETE_TOKEN())
-//       dispatch(DELETE_INFO())
-//       navigate('/login', { replace: true })
-//       return console.log('at시간 만료로 스토리지 리셋')
-//       // return Promise.resolve()
-//     }
+// 토큰이 필요한 api 요청을 보내는 axios 인스턴스
+export const privateApi = axios.create({
+  baseURL: BASE_URL,
+})
 
-//     const newConfig = await CheckAuthorization(config)
-//     if (newConfig === 'NoToken') {
-//       // console.log(newConfig)
-//       console.log('CheckAuthorization === NoToken.')
-//       navigate('/login', { replace: true })
-//       return alert('토큰이 존재하지 않습니다. 로그인 페이지로 이동합니다.')
-//       // return Promise.resolve()
-//       // return
-//     } else if (newConfig === 'ExpiredToken') {
-//       console.log(newConfig)
-//       console.log('CheckAuthorization === ExpiredToken.')
-//       navigate('/login', { replace: true })
-//       return alert('토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.')
-//       // return Promise.resolve()
-//       // return
-//     }
-//     return newConfig
-//   }
+export const Interceptor = ({ children }: any) => {
+  const dispatch = useDispatch()
+  const { openModal } = useModal()
 
-//   const requestInterceptor = privateApi.interceptors.request.use(requestHandler)
+  useEffect(() => {
+    privateApi.interceptors.request.use(
+      async function (config): Promise<InternalAxiosRequestConfig | any> {
+        const atExpire = store.getState().accessToken.expireTime
+        const curTime = new Date().getTime()
+        if (atExpire < curTime) {
+          removeCookieToken()
+          dispatch(DELETE_TOKEN())
+          dispatch(DELETE_INFO())
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['자동 로그아웃 되었습니다. 다시 로그인 해주세요.'],
+            navigateOption: PATH.LOGIN,
+          })
+          return Promise.resolve()
+        }
 
-//   useEffect(() => {
-//     return () => {
-//       privateApi.interceptors.request.eject(requestInterceptor)
-//       // customAxios.interceptors.response.eject(responseInterceptor);
-//     }
-//   }, [requestInterceptor])
+        const newConfig = await CheckAuthorization(config)
+        if (newConfig === 'NoToken') {
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['토큰이 존재하지 않습니다. 로그인 페이지로 이동합니다.'],
+            navigateOption: PATH.LOGIN,
+          })
+          return Promise.resolve()
+        } else if (newConfig === 'ExpiredToken') {
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['토큰이 만료되어 자동으로 로그아웃 되었습니다. 다시 로그인 해주세요.'],
+            navigateOption: PATH.LOGIN,
+          })
+          return Promise.resolve()
+        }
+        return newConfig
+      },
+      function (error) {
+        return Promise.reject(error)
+      }
+    )
+  }, [])
+  return children
+}
 
-//   // return (
-//   //   <>
-//   //     {modalOpen && (
-//   //       <Modal
-//   //         modalOpen={modalOpen}
-//   //         setModalOpen={setModalOpen}
-//   //         content={modalText}
-//   //         isConfirm={modalIsConfirm}
-//   //         navigateOption={modalNavigateOption}
-//   //       />
-//   //     )}
-//   //   </>
-//   // )
-// }
-
-// export default useAxiosInterceptor
+export default Interceptor

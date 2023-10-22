@@ -1,8 +1,5 @@
-// import React from 'react'
-// import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
-// import { Link } from 'react-router-dom'
 import { SocialLoginGoogleIcon, SocialLoginNaverIcon } from '@src/constants/icons'
 
 const SocialLogin = () => {
@@ -33,7 +30,6 @@ const SocialLoginWrap = styled.div`
   gap: 10px;
   text-align: center;
   > button {
-    /* button { */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +48,6 @@ const SocialLoginWrap = styled.div`
     }
   }
   .btn_naverLogin {
-    /* border: none; */
     background-color: #03c75a;
     span {
       color: #ffffff;
@@ -61,6 +56,5 @@ const SocialLoginWrap = styled.div`
   .btn_googleLogin {
     border: 1px solid ${COLORS.gray30};
   }
-  /* } */
 `
 export default SocialLogin

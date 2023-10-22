@@ -11,15 +11,7 @@ const FindPassword = () => {
     if (step === 2) return <TemporaryPw />
   }
 
-  return (
-    <Container>
-      {/* <div className="text_wrap">
-        <h3>비밀번호 찾기</h3>
-      </div> */}
-
-      {activeStep(step)}
-    </Container>
-  )
+  return <Container>{activeStep(step)}</Container>
 }
 
 const Container = styled.div`

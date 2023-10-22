@@ -1,4 +1,3 @@
-// import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
 import React from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,9 +8,9 @@ import { SET_TOKEN } from '@src/store/slices/authSlice'
 import { useDispatch } from 'react-redux'
 import { removeCookieToken, setRefreshToken } from '@src/storage/Cookie'
 import { userLogin } from '@src/api/authApi'
-import SocialLogin from '@src/components/SocialLogin'
-import Modal from '@src/components/Style/Modal'
+import SocialLogin from '@src/components/SocialLogin/SocialLogin'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -20,10 +19,7 @@ const Login = () => {
     query: '(min-width: 834px)',
   })
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  // const [modalNavigateOption, setModalNavigateOption] = useState<string>('')
+  const { openModal } = useModal()
 
   const [inputs, setInputs] = useState({
     userEmail: '',
@@ -41,24 +37,23 @@ const Login = () => {
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { status, tokens } = (await userLogin({
-      userEmail,
-      userPw,
-    })) as IResponseType
-    if (status === 200) {
-      removeCookieToken()
-      dispatch(SET_TOKEN(tokens.accessToken))
-      setRefreshToken(tokens.refreshToken)
-      console.log('로그인함', new Date())
-      // window.onpopstate = () => {
-      // console.log('뒤로가기 클릭')
-      // return navigate('/')
-      // }
-      return navigate(PATH.HOME, { replace: true })
-    } else {
-      setModalOpen(true)
-      setModalIsConfirm(false)
-      setModalText(['잘못된 로그인 정보입니다. 아이디와 비밀번호를 다시 확인해주세요.'])
+    try {
+      const response = await userLogin({
+        userEmail,
+        userPw,
+      })
+      if (response.status === 200) {
+        removeCookieToken()
+        dispatch(SET_TOKEN(response.data.data.accessToken))
+        setRefreshToken(response.data.data.refreshToken)
+        return navigate(PATH.HOME, { replace: true })
+      }
+    } catch (error) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['잘못된 로그인 정보입니다. 아이디와 비밀번호를 다시 확인해주세요.'],
+      })
     }
   }
 
@@ -103,17 +98,11 @@ const Login = () => {
         </div>
         <SocialLogin></SocialLogin>
       </form>
-      <>
-        {modalOpen && (
-          <Modal modalOpen={modalOpen} setModalOpen={setModalOpen} content={modalText} isConfirm={modalIsConfirm} />
-        )}
-      </>
     </Container>
   )
 }
 
 const Container = styled.div`
-  // reset-css에 border-box 추가?
   * {
     box-sizing: border-box;
   }
@@ -164,36 +153,6 @@ const Container = styled.div`
     width: 100%;
     font-size: 12px;
   }
-
-  /* .socialLogin_wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 47px;
-      font-size: 15px;
-      border: 1px solid ${COLORS.gray30};
-      svg {
-        flex-shrink: 0;
-        margin-left: 14px;
-      }
-      span {
-        flex-grow: 1;
-        margin-left: -14px;
-      }
-    }
-    .btn_naverLogin {
-      border: none;
-      background-color: #03c75a;
-      span {
-        color: #ffffff;
-      }
-    }
-  } */
 `
 
 export default Login

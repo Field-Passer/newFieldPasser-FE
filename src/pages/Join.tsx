@@ -1,12 +1,14 @@
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
 import React, { useEffect, useState } from 'react'
-import { checkDuplicateEmail, join } from '@src/api/authApi'
+import { checkDuplicateEmail, join } from '@src/api/userApi'
 import useInput from '@src/hooks/useInputHook'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const Join = () => {
+  const { openModal } = useModal()
+
   // 인풋 유효성 검사
   const emailValidator = (userEmail: string) => {
     setCheckEmail(false)
@@ -37,8 +39,6 @@ const Join = () => {
     if (userPhone.length >= 11) setPhoneError(false)
   })
 
-  const navigate = useNavigate()
-
   const [userEmail, onChangeUserEmail, userEmailError] = useInput(emailValidator, '')
   const [userPw, onChangeUserPw, userPwError] = useInput(pwValidator, '')
   const [userConfirmPw, onChangeUserConfirmPw, userConfirmPwError] = useInput(pwValidator, '')
@@ -51,19 +51,51 @@ const Join = () => {
 
   const checkEmailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    if (!userEmail) return alert('이메일을 입력해주세요.')
-    if (userEmailError) return alert('올바른 이메일 형식이 아닙니다.')
-    const status = await checkDuplicateEmail({ userEmail })
-    if (status === 200) {
-      setCheckEmail(true)
-    } else return alert('사용할 수 없는 이메일 입니다.')
+    if (!userEmail) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['이메일을 입력해주세요.'],
+      })
+    }
+    if (userEmailError) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['올바른 이메일 형식이 아닙니다.'],
+      })
+    }
+    try {
+      const status = await checkDuplicateEmail({ userEmail })
+      if (status === 200) {
+        setCheckEmail(true)
+      }
+    } catch (error) {
+      setCheckEmail(false)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['사용할 수 없는 이메일 입니다.'],
+      })
+    }
   }
 
   const joinHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!checkEmail) return alert('이메일 중복확인을 해주세요.')
-    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError)
-      return alert('양식을 다시 확인해주세요.')
+    if (!checkEmail) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['이메일 중복확인을 해주세요.'],
+      })
+    }
+    if (userEmailError || userPwError || userConfirmPwError || userNameError || userNickNameError || userPhoneError) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['양식을 다시 확인해주세요.'],
+      })
+    }
     const status = await join({
       userEmail,
       userPw,
@@ -72,8 +104,18 @@ const Join = () => {
       userPhone,
     })
     if (status === 200) {
-      alert('회원가입에 성공했습니다!')
-      navigate(PATH.LOGIN)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원가입에 성공했습니다!'],
+        navigateOption: PATH.LOGIN,
+      })
+    } else {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원가입에 실패했습니다. 고객센터로 문의 바랍니다.'],
+      })
     }
   }
 
@@ -112,7 +154,7 @@ const Join = () => {
               value={userPw}
               required
             />
-            <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자 조합이어야 합니다.'}</p>
+            <p className="error_message">{userPwError && '8 ~ 16자 사이의 영문, 숫자, 특수문자 조합이어야 합니다.'}</p>
           </div>
 
           <div className="input_wrap_inner">

@@ -1,7 +1,6 @@
-import { publicApi, privateApi } from './Instance'
+import { publicApi, privateApi } from '@src/hooks/useAxiosInterceptor'
 
 export const getMainPostList = async (params: IMainListPayload, page = 1) => {
-  console.log(params)
   return await publicApi.get(`/search/${page}`, { params }).then((res) => {
     return res.data.data
   })

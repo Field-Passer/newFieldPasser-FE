@@ -1,16 +1,18 @@
+import React from 'react'
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
-import React from 'react'
 import { useNavigate } from 'react-router'
 import useInput from '@src/hooks/useInputHook'
-import { editUserPw } from '@src/api/authApi'
+import { editUserPw } from '@src/api/userApi'
 import { removeCookieToken } from '@src/storage/Cookie'
 import { useDispatch } from 'react-redux'
 import { DELETE_TOKEN } from '@src/store/slices/authSlice'
 import { DELETE_INFO } from '@src/store/slices/infoSlice'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const ResetPw = () => {
+  const { openModal } = useModal()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const newPwValidator = (newPw: string) => {
@@ -22,15 +24,39 @@ const ResetPw = () => {
 
   const changePwHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    if (newPwError) return alert('비밀번호 양식을 다시 확인해주세요.')
-    if (newPw !== newConfirmPw) return alert('입력한 비밀번호가 같지 않습니다.')
+    if (newPwError) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['비밀번호 양식을 다시 확인해주세요.'],
+      })
+      return
+    }
+    if (newPw !== newConfirmPw) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['입력한 비밀번호가 같지 않습니다.'],
+      })
+      return
+    }
     const { status } = (await editUserPw({ newPw })) as IResponseType
     if (status === 200) {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      alert('비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.')
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['비밀번호 변경에 성공했습니다. 다시 로그인 해주세요.'],
+      })
       navigate(PATH.LOGIN)
+    } else {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['비밀번호 변경에 실패했습니다. 양식을 다시 확인해주세요.'],
+      })
     }
   }
 
