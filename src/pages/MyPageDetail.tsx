@@ -12,6 +12,8 @@ import styled from 'styled-components'
 import MBoardList from '@src/components/MyPage/MBoardList'
 import ReactPaginate from 'react-paginate'
 import { COLORS } from '@src/globalStyles'
+import useModal from '@src/hooks/useModal'
+import PATH from '@src/constants/pathConst'
 
 const MyPageDetail = () => {
   const { state }: { state: number } = useLocation()
@@ -21,6 +23,7 @@ const MyPageDetail = () => {
   const [wishTotalPage, setWishTotalPage] = useState<number>(1)
   const [wishlists, setWishlists] = useState<IWishlistType[]>([])
   const menuLists = ['양도', '좋아요', '댓글']
+  const { openModal } = useModal()
 
   const activeList = (activeMenu: number, screen: string) => {
     if (activeMenu === 0 && screen === 'mobile') {
@@ -128,7 +131,12 @@ const MyPageDetail = () => {
       setPosts(postsResponse?.data)
       setPostTotalPage(postsResponse?.totalPages)
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
   const wishlistData = async (page = 1) => {
@@ -137,7 +145,12 @@ const MyPageDetail = () => {
       setWishlists(wishlistResponse?.data)
       setWishTotalPage(wishlistResponse?.totalPages)
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 

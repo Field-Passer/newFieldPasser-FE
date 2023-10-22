@@ -22,11 +22,17 @@ const BoardDetails = () => {
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const { openModal } = useModal()
+
   const blindFn = async () => {
     try {
       await blindBoard(Number(boardId))
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['오류가 발생하였습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 

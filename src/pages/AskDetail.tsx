@@ -9,12 +9,14 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import Inner from '@src/components/Style/Inner'
 import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const AskDetail = () => {
   const [question, setQuestion] = useState<QuestionGetTypes>()
   const [answer, setAnswer] = useState<QuestionAnswerTypes>()
   const { pathname } = useLocation()
   const questionId = Number(pathname.slice(5))
+  const { openModal } = useModal()
 
   const isPC = useMediaQuery({
     query: '(min-width: 450px)',
@@ -28,7 +30,12 @@ const AskDetail = () => {
         const answerResponse = await getQuestionAnswer(questionId)
         setAnswer(answerResponse)
       } catch (error) {
-        console.log(error)
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+          navigateOption: PATH.HOME,
+        })
       }
     }
     fetchData()
