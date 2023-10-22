@@ -31,157 +31,155 @@ const Sidebar = () => {
   const refreshToken = getCookieToken()
 
   return (
-    <>
-      <SideContainer id="sidebar" className={isSidebarOpen && isMobile ? 'open' : ''}>
-        <FirstSection>
-          <div
-            className="close"
-            onClick={() => {
-              closeSidebar()
-            }}
-          >
-            <BoldCloseIcon />
-          </div>
-          <div>
-            <Link to={PATH.HOME} onClick={() => closeSidebar()}>
-              <img src="/logo.png" alt="로고" className="logo" />
+    <SideContainer id="sidebar" className={isSidebarOpen && isMobile ? 'open' : ''}>
+      <FirstSection>
+        <div
+          className="close"
+          onClick={() => {
+            closeSidebar()
+          }}
+        >
+          <BoldCloseIcon />
+        </div>
+        <div>
+          <Link to={PATH.HOME} onClick={() => closeSidebar()}>
+            <img src="/logo.png" alt="로고" className="logo" />
+          </Link>
+        </div>
+        {refreshToken ? (
+          <>
+            <div className="name">
+              <span>{userName}</span>
+              <span>님</span>
+            </div>
+            <Link to={PATH.WRITE_POST}>
+              <button
+                onClick={() => {
+                  closeSidebar()
+                }}
+              >
+                양도하기
+              </button>
             </Link>
-          </div>
-          {refreshToken ? (
-            <>
-              <div className="name">
-                <span>{userName}</span>
-                <span>님</span>
-              </div>
-              <Link to={PATH.WRITE_POST}>
+          </>
+        ) : (
+          <>
+            <div className="name">
+              <span>로그인하고 양도하기!</span>
+            </div>
+            <div className="not-member">
+              <Link to={PATH.LOGIN}>
                 <button
+                  className="login"
                   onClick={() => {
                     closeSidebar()
                   }}
                 >
-                  양도하기
+                  로그인
                 </button>
               </Link>
-            </>
-          ) : (
-            <>
-              <div className="name">
-                <span>로그인하고 양도하기!</span>
-              </div>
-              <div className="not-member">
-                <Link to={PATH.LOGIN}>
-                  <button
-                    className="login"
-                    onClick={() => {
-                      closeSidebar()
-                    }}
-                  >
-                    로그인
-                  </button>
-                </Link>
-                <Link to={PATH.JOIN}>
-                  <button
-                    className="join"
-                    onClick={() => {
-                      closeSidebar()
-                    }}
-                  >
-                    회원가입
-                  </button>
-                </Link>
-              </div>
-            </>
-          )}
-        </FirstSection>
-        <MiddleSection>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE) : accessAfterLoginAlert()
-            }}
-          >
-            <MyPageIcon />
-            <span>마이페이지</span>
-          </div>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : accessAfterLoginAlert()
-            }}
-          >
-            <MyHeartIcon />
-            <span>내 좋아요 목록</span>
-          </div>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : accessAfterLoginAlert()
-            }}
-          >
-            <MyCommentIcon />
-            <span>내가 남긴 댓글</span>
-          </div>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : accessAfterLoginAlert()
-            }}
-          >
-            <MyPostIcon />
-            <span>나의 양도글</span>
-          </div>
-        </MiddleSection>
-        <MiddleSection>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.HELP) : accessAfterLoginAlert()
-            }}
-          >
-            <span>고객센터</span>
-          </div>
-          <div
-            className="block"
-            onClick={() => {
-              closeSidebar()
-              refreshToken ? navigate(PATH.ASK) : accessAfterLoginAlert()
-            }}
-          >
-            1:1 문의하기
-          </div>
-          {userRole === '관리자' && (
-            <div
-              className="block"
-              onClick={() => {
-                closeSidebar()
-                navigate(PATH.BOARD_BLIND)
-              }}
-            >
-              게시글 관리
+              <Link to={PATH.JOIN}>
+                <button
+                  className="join"
+                  onClick={() => {
+                    closeSidebar()
+                  }}
+                >
+                  회원가입
+                </button>
+              </Link>
             </div>
-          )}
-        </MiddleSection>
-        {refreshToken && (
-          <LastSection>
-            <div
-              onClick={() => {
-                logoutHandler()
-              }}
-            >
-              로그아웃
-            </div>
-            <div className="blur" onClick={() => console.log('회원탈퇴')}>
-              회원탈퇴
-            </div>
-          </LastSection>
+          </>
         )}
-      </SideContainer>
-    </>
+      </FirstSection>
+      <MiddleSection>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.MYPAGE) : accessAfterLoginAlert()
+          }}
+        >
+          <MyPageIcon />
+          <span>마이페이지</span>
+        </div>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 1 }) : accessAfterLoginAlert()
+          }}
+        >
+          <MyHeartIcon />
+          <span>내 좋아요 목록</span>
+        </div>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 2 }) : accessAfterLoginAlert()
+          }}
+        >
+          <MyCommentIcon />
+          <span>내가 남긴 댓글</span>
+        </div>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.MYPAGE_DETAIL, { state: 0 }) : accessAfterLoginAlert()
+          }}
+        >
+          <MyPostIcon />
+          <span>나의 양도글</span>
+        </div>
+      </MiddleSection>
+      <MiddleSection>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.HELP) : accessAfterLoginAlert()
+          }}
+        >
+          <span>고객센터</span>
+        </div>
+        <div
+          className="block"
+          onClick={() => {
+            closeSidebar()
+            refreshToken ? navigate(PATH.ASK) : accessAfterLoginAlert()
+          }}
+        >
+          1:1 문의하기
+        </div>
+        {userRole === '관리자' && (
+          <div
+            className="block"
+            onClick={() => {
+              closeSidebar()
+              navigate(PATH.BOARD_BLIND)
+            }}
+          >
+            게시글 관리
+          </div>
+        )}
+      </MiddleSection>
+      {refreshToken && (
+        <LastSection>
+          <div
+            onClick={() => {
+              logoutHandler()
+            }}
+          >
+            로그아웃
+          </div>
+          <div className="blur" onClick={() => console.log('회원탈퇴')}>
+            회원탈퇴
+          </div>
+        </LastSection>
+      )}
+    </SideContainer>
   )
 }
 
