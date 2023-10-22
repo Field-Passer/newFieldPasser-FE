@@ -19,36 +19,29 @@ const CheckAuthorization = async (config: InternalAxiosRequestConfig) => {
     console.log('at, rf 없음')
     return 'NoToken'
   }
-  try {
-    const status = await checkTokenExpire()
-    if (status === 200) {
+  const status = await checkTokenExpire()
+  if (status === 200) {
+    config.headers['Authorization'] = `Bearer ${access_token}`
+    return config
+  } else if (refresh_token) {
+    const response = await postRefereshToken()
+    if (response?.status === 200) {
+      removeCookieToken()
+      dispatch(SET_TOKEN(response.data.data.accessToken))
+      setRefreshToken(response.data.data.refreshToken)
       config.headers['Authorization'] = `Bearer ${access_token}`
       return config
-    }
-  } catch (error) {
-    if (refresh_token) {
-      const response = await postRefereshToken()
-      if (response?.status === 200) {
-        removeCookieToken()
-        dispatch(SET_TOKEN(response.data.data.accessToken))
-        setRefreshToken(response.data.data.refreshToken)
-        config.headers['Authorization'] = `Bearer ${access_token}`
-        // console.log('rf로 at 재발급')
-        return config
-      } else {
-        removeCookieToken()
-        dispatch(DELETE_TOKEN())
-        dispatch(DELETE_INFO())
-        // console.log('만료된 rf로 at재발급 실패')
-        return 'ExpiredToken'
-      }
     } else {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      // console.log('rf 아예 없음')
-      return 'NoToken'
+      return 'ExpiredToken'
     }
+  } else {
+    removeCookieToken()
+    dispatch(DELETE_TOKEN())
+    dispatch(DELETE_INFO())
+    return 'NoToken'
   }
 }
 
