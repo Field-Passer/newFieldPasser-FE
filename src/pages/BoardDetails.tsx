@@ -59,20 +59,64 @@ const BoardDetails = () => {
   const delPostFn = async (id: number | undefined) => {
     try {
       await delPost(id)
-      navigate(PATH.HOME)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        navigateOption: PATH.HOME,
+        content: ['삭제 되었습니다.'],
+      })
     } catch (err) {
-      console.log(err)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+      })
     }
   }
 
-  const likePostFn = async (boardId: number, likeVal: boolean) => {
+  const likePostFn = async (boardId: number) => {
     try {
-      likeVal ? await delLikeBoard(boardId) : await postLikeBoard(boardId, authenticated)
+      await postLikeBoard(boardId, authenticated)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['좋아요 등록되었습니다.'],
+      })
     } catch (err) {
-      console.log(err)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+      })
     } finally {
       getDetailData()
     }
+  }
+
+  const delLikePostFn = async (boardId: number) => {
+    openModal({
+      isModalOpen: true,
+      isConfirm: true,
+      content: ['좋아요 게시글에서 삭제하시겠습니까?'],
+      confirmAction: async () => {
+        try {
+          await delLikeBoard(boardId)
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['삭제 완료되었습니다.'],
+          })
+        } catch (err) {
+          openModal({
+            isModalOpen: true,
+            isConfirm: false,
+            content: ['오류가 발생했습니다 다시 시도해주세요.'],
+          })
+        } finally {
+          getDetailData()
+        }
+      },
+    })
   }
 
   useEffect(() => {
@@ -99,15 +143,59 @@ const BoardDetails = () => {
         <>
           <li>
             <button
-              onClick={() =>
-                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId || 0)
-              }
+              onClick={() => {
+                openModal({
+                  isModalOpen: true,
+                  isConfirm: true,
+                  content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
+                  confirmAction: () => {
+                    try {
+                      addTransactionStatus(detailData?.boardId || 0)
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['양도완료 상태로 변경되었습니다.'],
+                      })
+                    } catch (err) {
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+                      })
+                    }
+                  },
+                })
+              }}
             >
               양도 완료하기
             </button>
           </li>
           <li>
-            <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData?.boardId)}>
+            <button
+              onClick={() => {
+                openModal({
+                  isModalOpen: true,
+                  isConfirm: true,
+                  content: ['정말 삭제하시겠습니까?'],
+                  confirmAction: () => {
+                    try {
+                      delPostFn(detailData?.boardId)
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['삭제되었습니다.'],
+                      })
+                    } catch (err) {
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+                      })
+                    }
+                  },
+                })
+              }}
+            >
               삭제
             </button>
           </li>
@@ -154,15 +242,59 @@ const BoardDetails = () => {
         <>
           <li>
             <button
-              onClick={() =>
-                window.confirm('양도 완료 상태로 변경하시겠습니까?') && addTransactionStatus(detailData?.boardId || 0)
-              }
+              onClick={() => {
+                openModal({
+                  isModalOpen: true,
+                  isConfirm: true,
+                  content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
+                  confirmAction: () => {
+                    try {
+                      addTransactionStatus(detailData?.boardId || 0)
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['양도완료 상태로 변경되었습니다.'],
+                      })
+                    } catch (err) {
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+                      })
+                    }
+                  },
+                })
+              }}
             >
               양도 완료하기
             </button>
           </li>
           <li>
-            <button onClick={() => window.confirm('정말 삭제하시겠습니까?') && delPostFn(detailData?.boardId)}>
+            <button
+              onClick={() => {
+                openModal({
+                  isModalOpen: true,
+                  isConfirm: true,
+                  content: ['정말 삭제하시겠습니까?'],
+                  confirmAction: () => {
+                    try {
+                      delPostFn(detailData?.boardId)
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['삭제되었습니다.'],
+                      })
+                    } catch (err) {
+                      openModal({
+                        isModalOpen: true,
+                        isConfirm: false,
+                        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+                      })
+                    }
+                  },
+                })
+              }}
+            >
               삭제
             </button>
           </li>
@@ -198,7 +330,11 @@ const BoardDetails = () => {
               <div>
                 <p className="title">{detailData.title}</p>
                 <PC>
-                  <button onClick={() => likePostFn(detailData.boardId, detailData.likeBoard)}>
+                  <button
+                    onClick={() =>
+                      detailData.likeBoard ? delLikePostFn(detailData.boardId) : likePostFn(detailData.boardId)
+                    }
+                  >
                     <BigHart size="20" color={likeState ? '#5FCA7B' : ''} />
                   </button>
                 </PC>
@@ -214,7 +350,11 @@ const BoardDetails = () => {
               <Mobile>
                 <div>
                   <p className="price">{detailData.price.toLocaleString()}</p>
-                  <button onClick={() => likePostFn(detailData.boardId, detailData.likeBoard)}>
+                  <button
+                    onClick={() =>
+                      detailData.likeBoard ? delLikePostFn(detailData.boardId) : likePostFn(detailData.boardId)
+                    }
+                  >
                     <BigHart size="20" color={likeState ? '#5FCA7B' : ''} />
                   </button>
                 </div>
