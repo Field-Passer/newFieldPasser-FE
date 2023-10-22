@@ -9,7 +9,7 @@ import { cheakOpenBox } from './store/slices/searchChkSlice'
 import { useDispatch } from 'react-redux'
 import ModalWithHook from './components/ModalWithHook'
 import Overlay from './components/Overlay'
-// import useAxiosInterceptor from './hooks/useAxiosInterceptor'
+import Interceptor from './hooks/useAxiosInterceptor'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -23,12 +23,14 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Sidebar />
-      <ModalWithHook />
-      <Overlay />
-      <Header />
-      <Outlet />
-      <Footer />
+      <Interceptor>
+        <Sidebar />
+        <ModalWithHook />
+        <Overlay />
+        <Header />
+        <Outlet />
+        <Footer />
+      </Interceptor>
     </ThemeProvider>
   )
 }
