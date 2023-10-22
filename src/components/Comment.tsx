@@ -8,6 +8,7 @@ import { BalloonIcon, ClackIcon, MoreIcon } from '@src/constants/icons'
 import { dateFormat } from '@src/utils/utils'
 import CommentOptions from '../components/CommentOptions'
 import { setCommentAdd, setCommentInput, setCommentOptions } from '@src/store/slices/commentSlice'
+import useModal from '@src/hooks/useModal'
 
 type PropsType = {
   boardId: number
@@ -19,6 +20,7 @@ const BoardComment = (props: PropsType) => {
   const [comments, setComments] = useState<CommentTypes[]>([])
   const dispatch = useDispatch()
   const [totalPage, setTotalPage] = useState<number[]>([])
+  const { openModal } = useModal()
 
   //element
   const commentMoreBtn = useRef<HTMLButtonElement>(null)
@@ -45,7 +47,11 @@ const BoardComment = (props: PropsType) => {
         setTotalPage(total)
         setComments(CommentData.content)
       } catch (err) {
-        console.log(err)
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['오류가 발생했습니다 다시 시도해주세요.'],
+        })
       }
     },
     [commentData.data, commentData.commentAdd, page]
