@@ -10,6 +10,8 @@ import PATH from '@src/constants/pathConst'
 import useSidebar from '@src/hooks/useSidebar'
 import useLoginState from '@src/hooks/useLoginState'
 import { BoldCloseIcon, MyCommentIcon, MyHeartIcon, MyPageIcon, MyPostIcon } from '@src/constants/icons'
+import { userWithdrawal } from '@src/api/authApi'
+import useModal from '@src/hooks/useModal'
 
 const Sidebar = () => {
   const isMobile = useMediaQuery({
@@ -19,6 +21,7 @@ const Sidebar = () => {
   const { isSidebarOpen } = useSelector((state: RootState) => state.sidebar)
   const { closeSidebar } = useSidebar()
   const { accessAfterLoginAlert, logoutHandler } = useLoginState()
+  const { openModal } = useModal()
 
   useEffect(() => {
     if (!isMobile) {
@@ -29,6 +32,27 @@ const Sidebar = () => {
   const userName = useSelector((state: RootState) => state.userInfo.memberName)
   const userRole = useSelector((state: RootState) => state.userInfo.role)
   const refreshToken = getCookieToken()
+
+  const deleteAccount = async () => {
+    try {
+      const response = await userWithdrawal()
+      if (response.status === 200) {
+        logoutHandler()
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['회원탈퇴에 성공했습니다.'],
+          navigateOption: PATH.HOME,
+        })
+      }
+    } catch (error) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['회원탈퇴에 실패했습니다. 고객센터로 문의해주세요.'],
+      })
+    }
+  }
 
   return (
     <SideContainer id="sidebar" className={isSidebarOpen && isMobile ? 'open' : ''}>
@@ -174,7 +198,7 @@ const Sidebar = () => {
           >
             로그아웃
           </div>
-          <div className="blur" onClick={() => console.log('회원탈퇴')}>
+          <div className="blur" onClick={() => deleteAccount()}>
             회원탈퇴
           </div>
         </LastSection>
