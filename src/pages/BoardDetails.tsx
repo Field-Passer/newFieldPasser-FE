@@ -47,7 +47,7 @@ const BoardDetails = () => {
       } else {
         openModal({
           isModalOpen: true,
-          content: ['블라인드 처리된 게시글입니다.', '메인으로 돌아갑니다.'],
+          content: ['사용자를 확인할 수 없습니다.', '메인으로 돌아갑니다.'],
           navigateOption: PATH.HOME,
           isConfirm: false,
         })
