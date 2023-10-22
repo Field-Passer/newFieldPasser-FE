@@ -23,8 +23,25 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (title.length < 2) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['제목을 두 글자 이상 작성해 주세요.'],
+      })
+      return false
+    }
 
-    if (type === 'help') {
+    if (content.length < 5) {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['내용을 다섯 글자 이상 작성해 주세요.'],
+      })
+      return false
+    }
+
+    if (type === 'help' && content.length >= 5 && title.length >= 2) {
       const data = {
         questionTitle: title,
         questionContent: content,
@@ -34,7 +51,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
         openModal({
           isModalOpen: true,
           isConfirm: true,
-          content: ['문의 작성이 완료되었습니다. 메인으로 이동합니다.'],
+          content: ['문의 작성이 완료되었습니다.', '메인으로 이동합니다.'],
           navigateOption: PATH.HOME,
           confirmAction: () => {
             postQuestion(data)
@@ -47,7 +64,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
           content: ['작성에 오류가 있습니다.'],
         })
       }
-    } else if (type === 'ask') {
+    } else if (type === 'ask' && content.length >= 5 && title.length >= 2) {
       const data = {
         answerTitle: title,
         answerContent: content,
@@ -56,7 +73,7 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
         openModal({
           isModalOpen: true,
           isConfirm: true,
-          content: ['문의 답변 작성이 완료되었습니다. 문의 목록으로 돌아갑니다.'],
+          content: ['문의 답변 작성이 완료되었습니다.', '문의 목록으로 돌아갑니다.'],
           navigateOption: PATH.ASK,
           confirmAction: () => {
             postAdmintQuestion(Number(questionId), data)
@@ -79,7 +96,13 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
           <FormStyle onSubmit={handleSubmit}>
             <FormDetailStyle screen="pc">
               <h2>제목</h2>
-              <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="제목을 두 글자 이상 작성해 주세요."
+                minLength={2}
+              />
             </FormDetailStyle>
             <FormDetailStyle screen="pc">
               <h2>내용</h2>
@@ -88,6 +111,8 @@ const HelpNAskForm = ({ type, questionId }: Props) => {
                 rows={10}
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
+                placeholder="내용을 다섯 글자 이상 작성해 주세요."
+                minLength={5}
               ></textarea>
             </FormDetailStyle>
             <ButtonStyle screen="pc" type="submit">

@@ -25,7 +25,6 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
   const [memberName, setMemberName] = useState('')
-  console.log(memberName)
 
   const getPost = async () => {
     try {
