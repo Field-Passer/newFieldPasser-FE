@@ -36,16 +36,21 @@ const BoardDetails = () => {
       const postDetailData = await getPostDetail(Number(boardId), authenticated)
       setDetailData(postDetailData)
       setLikeState(postDetailData.likeBoard)
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
       if (userInfo.role === '관리자') {
         openModal({
           isModalOpen: true,
           isConfirm: true,
-          content: ['블라인드 처리된 게시글입니다. 블라인드 해제하시겠습니까?'],
-          confirmAction: () => {
-            console.log('블라인드 해제 넣기')
-          },
+          content: ['블라인드 처리된 게시글입니다.', '블라인드 해제하시겠습니까?'],
+          navigateOption: PATH.BOARD_BLIND,
+          confirmAction: blindFn,
+        })
+      } else {
+        openModal({
+          isModalOpen: true,
+          content: ['블라인드 처리된 게시글입니다.', '메인으로 돌아갑니다.'],
+          navigateOption: PATH.HOME,
+          isConfirm: false,
         })
       }
     }
@@ -203,7 +208,8 @@ const BoardDetails = () => {
                 openModal({
                   isModalOpen: true,
                   isConfirm: true,
-                  content: ['게시글을 블라인드 처리 하시겠습니까?'],
+                  content: ['게시글을 블라인드 처리하시겠습니까?', '블라인드 처리 시 메인으로 돌아갑니다.'],
+                  navigateOption: PATH.HOME,
                   confirmAction: blindFn,
                 })
               }}
@@ -221,7 +227,8 @@ const BoardDetails = () => {
               openModal({
                 isModalOpen: true,
                 isConfirm: true,
-                content: ['게시글을 블라인드 처리 하시겠습니까?'],
+                content: ['게시글을 블라인드 처리하시겠습니까?', '블라인드 처리 시 메인으로 돌아갑니다.'],
+                navigateOption: PATH.HOME,
                 confirmAction: blindFn,
               })
             }}
@@ -451,6 +458,10 @@ const TitleBox = styled.div`
       display: flex;
       align-items: center;
       gap: 4px;
+    }
+
+    .user_name {
+      cursor: pointer;
     }
   }
 
