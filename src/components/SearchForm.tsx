@@ -21,7 +21,6 @@ const SearchForm = () => {
   const urlPathname = location.pathname
   const navigate = useNavigate()
   const { openModal } = useModal()
-
   // text Input element
   const textInputEl = useRef<HTMLInputElement>(null)
   const textInputTitle = useRef<HTMLParagraphElement>(null)
