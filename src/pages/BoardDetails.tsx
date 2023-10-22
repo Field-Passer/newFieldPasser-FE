@@ -22,11 +22,17 @@ const BoardDetails = () => {
   const authenticated = useSelector((state: RootState) => state.accessToken.authenticated)
   const userInfo = useSelector((state: RootState) => state.userInfo)
   const { openModal } = useModal()
+
   const blindFn = async () => {
     try {
       await blindBoard(Number(boardId))
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['오류가 발생하였습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 
@@ -47,7 +53,7 @@ const BoardDetails = () => {
       } else {
         openModal({
           isModalOpen: true,
-          content: ['블라인드 처리된 게시글입니다.', '메인으로 돌아갑니다.'],
+          content: ['사용자를 확인할 수 없습니다.', '메인으로 돌아갑니다.'],
           navigateOption: PATH.HOME,
           isConfirm: false,
         })
@@ -163,9 +169,9 @@ const BoardDetails = () => {
                   isModalOpen: true,
                   isConfirm: true,
                   content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
-                  confirmAction: () => {
+                  confirmAction: async () => {
                     try {
-                      addTransactionStatus(detailData?.boardId || 0)
+                      await addTransactionStatus(detailData?.boardId as number)
                       openModal({
                         isModalOpen: true,
                         isConfirm: false,
@@ -262,9 +268,9 @@ const BoardDetails = () => {
                   isModalOpen: true,
                   isConfirm: true,
                   content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
-                  confirmAction: () => {
+                  confirmAction: async () => {
                     try {
-                      addTransactionStatus(detailData?.boardId || 0)
+                      await addTransactionStatus(detailData?.boardId || 0)
                       openModal({
                         isModalOpen: true,
                         isConfirm: false,
@@ -566,7 +572,7 @@ const TitleBox = styled.div`
     background: #fff;
     border: 1px solid #ddd;
     width: 120px;
-    /* height: 120px; */
+    height: 100px;
     padding: 20px;
     box-sizing: border-box;
     font-size: 14px;

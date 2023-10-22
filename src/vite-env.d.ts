@@ -177,7 +177,7 @@ interface ITimeSelectorProps {
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>
   timeSelectorOpen: boolean
   setTimeSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
-  timeTemp: string
+  timeTemp?: string
 }
 
 interface IWishlistType {

@@ -80,7 +80,7 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
     const formData = new FormData()
     const target = event.target as HTMLFormElement
 
-    checkInputsValidity()
+    if (checkInputsValidity() === false) return
 
     for (let i = 0; i < target.length; i += 1) {
       const item = target[i] as HTMLInputElement
@@ -116,11 +116,6 @@ const Write = ({ postData, setPostData, pageName, submitData }: IWriteProps) => 
       } else {
         formData.append('imageUrlDel', 'false')
       }
-    }
-
-    const entries = formData.entries()
-    for (const pair of entries) {
-      console.log(pair[0] + ', ' + pair[1])
     }
 
     submitData(formData)

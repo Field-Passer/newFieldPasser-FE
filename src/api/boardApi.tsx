@@ -15,9 +15,7 @@ export const getPostDetail = async (userId: number, loginVal: boolean) => {
 }
 
 export const delPost = async (boardId: number | undefined) => {
-  return await privateApi.delete(`/board/delete/${boardId}`).then(() => {
-    return
-  })
+  return await privateApi.delete(`/board/delete/${boardId}`)
 }
 
 export const getComment = async (boardId: number, page: number, loginVal: boolean) => {
@@ -41,46 +39,30 @@ export const postComment = async (boardId: number, comment: string, parentId?: n
 
 export const postLikeBoard = async (boardId: number, loginVal: boolean) => {
   if (!loginVal) return false
-  return await privateApi
-    .post('/board/register/wish-list', {
-      boardId: boardId,
-    })
-    .then(() => {
-      return
-    })
+  return await privateApi.post('/board/register/wish-list', {
+    boardId: boardId,
+  })
 }
 
 export const delLikeBoard = async (boardId: number) => {
-  return await privateApi
-    .delete('board/delete/wish-list', {
-      data: {
-        boardId: boardId,
-      },
-    })
-    .then(() => {
-      return
-    })
+  return await privateApi.delete('board/delete/wish-list', {
+    data: {
+      boardId: boardId,
+    },
+  })
 }
 
 export const delComment = async (commentId: number) => {
-  return await privateApi.delete(`/comment/delete/${commentId}`).then(() => {
-    return
-  })
+  return await privateApi.delete(`/comment/delete/${commentId}`)
 }
 export const addComment = async (commentId: number, content: string) => {
-  return await privateApi
-    .put(`/comment/edit/${commentId}`, {
-      commentContent: content,
-    })
-    .then(() => {
-      return
-    })
+  return await privateApi.put(`/comment/edit/${commentId}`, {
+    commentContent: content,
+  })
 }
 
 export const addTransactionStatus = async (commentId: number) => {
-  return await privateApi.put(`/board/sold-out/${commentId}`).then(() => {
-    alert('변경 되었습니다.')
-  })
+  return await privateApi.put(`/board/sold-out/${commentId}`)
 }
 
 // 게시글 블라인드 처리
