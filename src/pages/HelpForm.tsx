@@ -1,4 +1,4 @@
-import HelpNAskForm from '@src/components/HelpNAskForm'
+import HelpNAskForm from '@src/components/AskAndHelp/HelpNAskForm'
 
 const HelpForm = () => {
   return <HelpNAskForm type="help" />

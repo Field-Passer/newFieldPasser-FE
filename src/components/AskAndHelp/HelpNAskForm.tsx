@@ -1,5 +1,5 @@
-import Inner from '@src/components/Inner'
-import Title from '@src/components/Title'
+import Inner from '@src/components/Style/Inner'
+import Title from '@src/components/Style/Title'
 import { COLORS, FONT } from '@src/globalStyles'
 import { useMediaQuery } from 'react-responsive'
 import styled from 'styled-components'

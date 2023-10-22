@@ -1,5 +1,5 @@
 import { getQuestionDetail, getQuestionAnswer } from '@src/api/getApi'
-import Title from '@src/components/Title'
+import Title from '@src/components/Style/Title'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { useLocation, useNavigate } from 'react-router'
@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
-import Inner from '@src/components/Inner'
+import Inner from '@src/components/Style/Inner'
 import PATH from '@src/constants/pathConst'
 
 const AskDetail = () => {

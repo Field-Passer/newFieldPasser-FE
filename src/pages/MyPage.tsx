@@ -3,7 +3,7 @@ import { Mobile } from '@src/hooks/useScreenHook'
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import Inner from '@src/components/Inner'
+import Inner from '@src/components/Style/Inner'
 import PCBoardCard from '@src/components/MyPage/PCBoardCard'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -13,6 +13,7 @@ import { SET_WISHLIST } from '@src/store/slices/wishlistSlice'
 import { RootState } from '@src/store/config'
 import PATH from '@src/constants/pathConst'
 import useLoginState from '@src/hooks/useLoginState'
+import useModal from '@src/hooks/useModal'
 
 const MyPage = () => {
   const [random, setRandom] = useState(0)
@@ -22,6 +23,7 @@ const MyPage = () => {
   const [postNum, setPostNum] = useState(0)
   const [wishNum, setWishNum] = useState(0)
   const [replyNum, setReplyNum] = useState(0)
+  const { openModal } = useModal()
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -33,7 +35,12 @@ const MyPage = () => {
       setMyPost(postResponse?.data)
       setPostNum(postResponse?.totalElements)
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 
@@ -44,7 +51,12 @@ const MyPage = () => {
       dispatch(SET_WISHLIST(wishlistResponse?.data))
       setWishNum(wishlistResponse?.totalElements)
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 
@@ -54,7 +66,12 @@ const MyPage = () => {
       setMyReply(replyResponse?.data)
       setReplyNum(replyResponse?.totalElements)
     } catch (error) {
-      console.log(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['정보를 불러올 수 없습니다.', '메인으로 돌아갑니다.'],
+        navigateOption: PATH.HOME,
+      })
     }
   }
 

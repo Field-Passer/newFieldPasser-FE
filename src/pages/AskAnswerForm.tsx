@@ -1,4 +1,4 @@
-import HelpNAskForm from '@src/components/HelpNAskForm'
+import HelpNAskForm from '@src/components/AskAndHelp/HelpNAskForm'
 import { useLocation } from 'react-router'
 
 const AskAnswerForm = () => {
