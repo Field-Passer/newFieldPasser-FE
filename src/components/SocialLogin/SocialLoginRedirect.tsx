@@ -1,5 +1,3 @@
-// import React from 'react'
-
 import { getUserInfo } from '@src/api/userApi'
 import PATH from '@src/constants/pathConst'
 import { setRefreshToken } from '@src/storage/Cookie'
@@ -34,7 +32,6 @@ const SocialLoginRedirect = () => {
       return navigate(PATH.HOME, { replace: true })
     }
     socialLogin()
-    //navigate('/', { replace: true })
   })
 
   return <></>

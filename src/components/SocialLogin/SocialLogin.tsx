@@ -1,8 +1,5 @@
-// import React from 'react'
-// import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { COLORS } from '@src/globalStyles'
-// import { Link } from 'react-router-dom'
 import { SocialLoginGoogleIcon, SocialLoginNaverIcon } from '@src/constants/icons'
 
 const SocialLogin = () => {

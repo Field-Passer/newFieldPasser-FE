@@ -1,4 +1,3 @@
-// import { Mobile, Tablet, PC } from '@src/hooks/useScreenHook'
 import React from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
@@ -105,7 +104,6 @@ const Login = () => {
 }
 
 const Container = styled.div`
-  // reset-css에 border-box 추가?
   * {
     box-sizing: border-box;
   }
