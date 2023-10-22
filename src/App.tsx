@@ -1,14 +1,14 @@
 import { Outlet, useLocation } from 'react-router'
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from './components/Main/Header'
+import Footer from './components/Main/Footer'
 import { ThemeProvider } from 'styled-components'
 import theme from './constants/theme'
-import Sidebar from './components/Sidebar'
+import Sidebar from './components/Main/Sidebar'
 import { useEffect } from 'react'
 import { cheakOpenBox } from './store/slices/searchChkSlice'
 import { useDispatch } from 'react-redux'
 import ModalWithHook from './components/ModalWithHook'
-import Overlay from './components/Overlay'
+import Overlay from './components/Style/Overlay'
 // import useAxiosInterceptor from './hooks/useAxiosInterceptor'
 
 const App = () => {

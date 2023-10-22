@@ -1,9 +1,9 @@
 import Board from '@src/components/Board'
-import Inner from '@src/components/Inner'
+import Inner from '@src/components/Style/Inner'
 import { useMediaQuery } from 'react-responsive'
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
-import MBoardList from '@src/components/MBoardList'
+import MBoardList from '@src/components/MyPage/MBoardList'
 import { useState, useEffect } from 'react'
 import { getUserPost } from '@src/api/authApi'
 import { useLocation } from 'react-router'
@@ -11,14 +11,12 @@ import { useInView } from 'react-intersection-observer'
 import { useSelector } from 'react-redux'
 import { RootState } from '@src/store/config'
 import { promoteUser, demoteUser } from '@src/api/userApi'
-import Modal from '@src/components/Modal'
-import PATH from '@src/constants/pathConst'
+import useModal from '@src/hooks/useModal'
 
 const Profile = () => {
-  const { state } = useLocation()
   const { pathname } = useLocation()
-  const memberName = state.memberName
   const memberId = pathname.slice(9)
+  const { openModal } = useModal()
 
   const [posts, setPosts] = useState<POST_TYPE_INFO[]>([])
 
@@ -26,16 +24,16 @@ const Profile = () => {
   const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalIsConfirm, setModalIsConfirm] = useState<boolean>(false)
-  const [modalText, setModalText] = useState<string[]>([])
-  const [modalNavigate, setModalNavigate] = useState<string>('')
+  const [memberName, setMemberName] = useState('')
 
   const getPost = async () => {
     try {
       setIsLoading(true)
       const response = await getUserPost(page, memberId)
-      if (page === 1) setPosts(response?.data)
+      setMemberName(response?.data[0].memberName)
+      if (page === 1) {
+        setPosts(response?.data)
+      }
       // eslint-disable-next-line no-unsafe-optional-chaining
       else setPosts((prev) => [...prev, ...response?.data])
 
@@ -81,22 +79,24 @@ const Profile = () => {
 
   // 등급 조정 함수
   const promoteFn = (role: string) => {
-    setModalOpen(true)
-    setModalIsConfirm(true)
     if (role === 'USER') {
-      try {
-        setModalText(['관리자로 승급하시겠습니까?'])
-        setModalNavigate(PATH.HOME)
-      } catch (error) {
-        setModalText(['오류가 발생하였습니다.'])
-      }
+      openModal({
+        isModalOpen: true,
+        isConfirm: true,
+        content: ['관리자로 승급하시겠습니까?'],
+        confirmAction: () => {
+          promoteUser(memberId)
+        },
+      })
     } else {
-      try {
-        setModalText(['일반회원으로 강등하시겠습니까?'])
-        setModalNavigate(PATH.HOME)
-      } catch (error) {
-        setModalText(['오류가 발생하였습니다.'])
-      }
+      openModal({
+        isModalOpen: true,
+        isConfirm: true,
+        content: ['일반회원으로 승급하시겠습니까?'],
+        confirmAction: () => {
+          demoteUser(memberId)
+        },
+      })
     }
   }
 
@@ -106,7 +106,7 @@ const Profile = () => {
         <Inner>
           <TopStyle screen="pc">
             <div className="title">
-              <span>{memberName}</span> 님의 게시물
+              <span>{memberName.length > 0 ? memberName : '필드패서'}</span> 님의 게시물
             </div>
             {userInfo.role === '관리자' && checkRole(posts[0]?.memberRole)}
           </TopStyle>
@@ -117,7 +117,7 @@ const Profile = () => {
         <div>
           <TopStyle screen="mobile">
             <div className="title">
-              <span>{memberName}</span> 님의 게시물
+              <span>{memberName.length > 0 ? memberName : '필드패서'}</span> 님의 게시물
             </div>
             {userInfo.role === '관리자' && checkRole(posts[0]?.memberRole)}
           </TopStyle>
@@ -130,22 +130,6 @@ const Profile = () => {
             {!isLoading && <div ref={ref}></div>}
           </PostContainer>
         </div>
-      )}
-      {modalOpen && (
-        <Modal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          content={modalText}
-          isConfirm={modalIsConfirm}
-          navigateOption={modalNavigate}
-          confirmFn={() => {
-            if (posts[0].memberRole === 'USER') {
-              promoteUser(memberId)
-            } else {
-              demoteUser(memberId)
-            }
-          }}
-        ></Modal>
       )}
     </>
   )

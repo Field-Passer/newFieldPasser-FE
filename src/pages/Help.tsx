@@ -2,10 +2,10 @@ import styled from 'styled-components'
 import { useState } from 'react'
 import { COLORS } from '@src/globalStyles'
 import { memberAccountList, dealManagementList, useEctlist } from '@src/constants/helpList'
-import Ask from '@src/components/Ask'
+import Ask from '@src/components/AskAndHelp/Ask'
 import { Mobile } from '@src/hooks/useScreenHook'
-import MobileMenu from '@src/components/MobileMenu'
-import Title from '@src/components/Title'
+import MobileMenu from '@src/components/Style/MobileMenu'
+import Title from '@src/components/Style/Title'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router'
 import PATH from '@src/constants/pathConst'
@@ -86,6 +86,7 @@ const Container = styled.div`
 
   margin: 64px auto;
   max-width: 1024px;
+  padding: 0 16px;
 `
 
 const MenuStyle = styled.menu`
