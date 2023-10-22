@@ -48,7 +48,6 @@ const FooterContainer = styled.footer`
   background-color: ${COLORS.gray10};
   color: ${COLORS.font};
   margin-top: 50px;
-  /* bottom: 0; */
   width: 100%;
   position: relative;
   padding: 30px 0;
