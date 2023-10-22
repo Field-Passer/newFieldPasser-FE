@@ -163,9 +163,9 @@ const BoardDetails = () => {
                   isModalOpen: true,
                   isConfirm: true,
                   content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
-                  confirmAction: () => {
+                  confirmAction: async () => {
                     try {
-                      addTransactionStatus(detailData?.boardId || 0)
+                      await addTransactionStatus(detailData?.boardId as number)
                       openModal({
                         isModalOpen: true,
                         isConfirm: false,
@@ -262,9 +262,9 @@ const BoardDetails = () => {
                   isModalOpen: true,
                   isConfirm: true,
                   content: ['게시글을 양도완료 상태로 변경하시겠습니까?'],
-                  confirmAction: () => {
+                  confirmAction: async () => {
                     try {
-                      addTransactionStatus(detailData?.boardId || 0)
+                      await addTransactionStatus(detailData?.boardId || 0)
                       openModal({
                         isModalOpen: true,
                         isConfirm: false,
