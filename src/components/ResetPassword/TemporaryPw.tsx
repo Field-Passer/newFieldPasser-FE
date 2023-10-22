@@ -1,14 +1,8 @@
 import styled from 'styled-components'
-// import { useNavigate } from 'react-router-dom'
 import { COLORS, FONT } from '@src/globalStyles'
-// import React, { useState } from 'react'
-// import { useNavigate } from 'react-router'
-// import useInput from '@src/hooks/useInputHook'
 import { Link } from 'react-router-dom'
 
 const TemporaryPw = () => {
-  // const navigate = useNavigate()
-
   return (
     <Container>
       <div className="text_wrap">

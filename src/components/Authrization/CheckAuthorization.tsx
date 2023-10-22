@@ -10,13 +10,10 @@ const { dispatch } = store
 const CheckAuthorization = async (config: InternalAxiosRequestConfig) => {
   const refresh_token = getCookieToken()
   const access_token = localStorage.getItem('accessToken')
-
   if (!access_token || !refresh_token) {
     removeCookieToken()
     dispatch(DELETE_TOKEN())
     dispatch(DELETE_INFO())
-    console.log('at, rf 없음')
-    // return 'Failed'
     return 'NoToken'
   }
   const status = await checkTokenExpire()
@@ -26,27 +23,23 @@ const CheckAuthorization = async (config: InternalAxiosRequestConfig) => {
     return config
   } else {
     if (refresh_token) {
-      const { status, tokens } = (await postRefereshToken()) as IResponseType
-      if (status === 200) {
+      const response = await postRefereshToken()
+      if (response?.status === 200) {
         removeCookieToken()
-        dispatch(SET_TOKEN(tokens.accessToken))
-        setRefreshToken(tokens.refreshToken)
+        dispatch(SET_TOKEN(response.data.data.accessToken))
+        setRefreshToken(response.data.data.refreshToken)
         config.headers['Authorization'] = `Bearer ${access_token}`
-        console.log('rf로 at 재발급')
         return config
       } else {
         removeCookieToken()
         dispatch(DELETE_TOKEN())
         dispatch(DELETE_INFO())
-        console.log('만료된 rf로 at재발급 실패')
         return 'ExpiredToken'
       }
     } else {
       removeCookieToken()
       dispatch(DELETE_TOKEN())
       dispatch(DELETE_INFO())
-      console.log('rf 아예 없음')
-      // return 'Failed'
       return 'NoToken'
     }
   }

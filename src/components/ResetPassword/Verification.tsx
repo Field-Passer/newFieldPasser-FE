@@ -1,23 +1,33 @@
 import styled from 'styled-components'
 import { COLORS, FONT } from '@src/globalStyles'
 import React, { useState } from 'react'
-import { temporaryPassword, verifyUserEmail, verifyUserNum } from '@src/api/authApi'
+import { temporaryPassword, verifyUserEmail, verifyUserNum } from '@src/api/userApi'
 import useInput from '@src/hooks/useInputHook'
+import useModal from '@src/hooks/useModal'
 
 interface propsType {
   setStep: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Verification = ({ setStep }: propsType) => {
+  const { openModal } = useModal()
   // 인풋 유효성 검사
   const emailValidator = (userEmail: string) => {
-    setPersonalVerify(false)
-    const rUserEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
-    if (userEmail === '' || !rUserEmail.test(userEmail)) return true
+    setPersonalVerify(true)
+    const rUserEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,}$/i
+    if (rUserEmail.test(userEmail)) setBtnDisabled(false)
+    if (userEmail === '' || !rUserEmail.test(userEmail)) {
+      setBtnDisabled(true)
+      return true
+    }
   }
   const verifyNumValidator = (userVerifyNum: string) => {
-    const rUserVerifyNum = /^[0-9]{1,6}$/
-    if (userVerifyNum === null || !rUserVerifyNum.test(userVerifyNum)) return true
+    const rUserVerifyNum = /^[0-9]{6}$/
+    if (rUserVerifyNum.test(userVerifyNum)) setPersonalVerify(false)
+    if (userVerifyNum === null || !rUserVerifyNum.test(userVerifyNum)) {
+      setPersonalVerify(true)
+      return true
+    }
   }
 
   const [userEmail, onChangeUserEmail, userEmailError] = useInput(emailValidator, '')
@@ -25,7 +35,8 @@ const Verification = ({ setStep }: propsType) => {
 
   const [mailLoading, setMailLoading] = useState(false)
   const [verifyLoading, setVerifyLoading] = useState(false)
-  const [personalVerify, setPersonalVerify] = useState(false)
+  const [personalVerify, setPersonalVerify] = useState(true)
+  const [btnDisabled, setBtnDisabled] = useState(true)
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -34,33 +45,52 @@ const Verification = ({ setStep }: propsType) => {
   const verifyMailHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setMailLoading(true)
-    const { status } = (await verifyUserEmail({
-      userEmail,
-    })) as IResponseType
-    if (status === 200) {
+    const response = await verifyUserEmail({ userEmail })
+    if (response.status === 200) {
+      setPersonalVerify(false)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['인증 메일 발송이 완료되었습니다!'],
+      })
+    } else {
       setPersonalVerify(true)
-      alert('인증 메일 발송이 완료되었습니다!')
-    } else alert('가입된 메일이 아닙니다! 다시 확인해주세요.')
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['가입된 메일이 아닙니다! 다시 확인해주세요.'],
+      })
+    }
     setMailLoading(false)
   }
 
   const verifyNumHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setVerifyLoading(true)
-    const { status } = (await verifyUserNum({
+    const status = await verifyUserNum({
       userEmail,
       userVerifyNum,
-    })) as IResponseType
+    })
     if (status === 200) {
       const { status } = (await temporaryPassword({
         userEmail,
       })) as IResponseType
       if (status === 200) {
         setVerifyLoading(false)
-        alert('인증에 성공했습니다!')
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['인증에 성공했습니다!'],
+        })
         setStep(2)
       }
-    } else alert('인증에 실패하였습니다. 입력한 정보를 다시 확인해주세요.')
+    } else {
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['인증에 실패하였습니다. 입력한 정보를 다시 확인해주세요.'],
+      })
+    }
     setVerifyLoading(false)
   }
   return (
@@ -80,12 +110,7 @@ const Verification = ({ setStep }: propsType) => {
               value={userEmail}
               required
             />
-            <button
-              type="button"
-              onClick={verifyMailHandler}
-              className="btn_verifyNum"
-              disabled={userEmailError || personalVerify}
-            >
+            <button type="button" onClick={verifyMailHandler} className="btn_verifyNum" disabled={btnDisabled}>
               요청
             </button>
             <p className="error_message">{userEmailError && '올바른 이메일 형식이 아닙니다.'}</p>
@@ -110,7 +135,12 @@ const Verification = ({ setStep }: propsType) => {
           <p className="help_message">{verifyLoading && '인증 번호 확인중... 잠시 기다려주세요.'}</p>
         </div>
 
-        <button className="btn_verify" onClick={verifyNumHandler} disabled={verifyLoading}>
+        <button
+          className="btn_verify"
+          onClick={verifyNumHandler}
+          // disabled={verifyLoading}
+          disabled={personalVerify}
+        >
           인증하기
         </button>
       </Form>

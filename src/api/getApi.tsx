@@ -1,4 +1,4 @@
-import { privateApi } from './Instance'
+import { privateApi } from '@src/hooks/useAxiosInterceptor'
 
 // 관리자 문의글 전체 조회
 export const getAdminQuestion = async (page: number) => {

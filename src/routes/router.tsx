@@ -21,7 +21,7 @@ import AskAnswerForm from '@src/pages/AskAnswerForm'
 import PrivateRoute from './PrivateRoute'
 import BoradBlind from '@src/pages/BoradBlind'
 import Profile from '@src/pages/Profile'
-import SocialLoginRedirect from '@src/components/SocialLoginRedirect'
+import SocialLoginRedirect from '@src/components/SocialLogin/SocialLoginRedirect'
 import WritePost from '@src/pages/WritePost'
 
 const router = createBrowserRouter([
