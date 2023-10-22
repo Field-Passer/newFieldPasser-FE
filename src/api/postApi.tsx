@@ -30,7 +30,6 @@ export const requestEdit = async (formData: FormData, postId: number) => {
 
 // 관리자 문의글 답변 등록
 export const postAdmintQuestion = async (questionId: number, data: QuestionTypes) => {
-  console.log(data)
   const response = await privateApi.post(`/admin/answer/register?questionId=${questionId}`, data)
   return {
     status: response.status,
