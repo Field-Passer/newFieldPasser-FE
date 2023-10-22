@@ -566,7 +566,7 @@ const TitleBox = styled.div`
     background: #fff;
     border: 1px solid #ddd;
     width: 120px;
-    /* height: 120px; */
+    height: 100px;
     padding: 20px;
     box-sizing: border-box;
     font-size: 14px;
