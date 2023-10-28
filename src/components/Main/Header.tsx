@@ -49,22 +49,22 @@ const Header = () => {
           >
             <HamburgerIcon />
           </div>
-          <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} />
+          <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} className="logo" />
         </MContainer>
       </Mobile>
       <PC>
-        <Container>
+        <PCContainer>
           <Inner>
-            <Link to="/" className="logo">
+            <Link to={PATH.HOME} className="logo">
               <img src="/logo.png" alt="logo" />
             </Link>
             <div className="menu">
               {authenticated && userRole === '관리자' && <Link to={PATH.BOARD_BLIND}>게시글 관리</Link>}
-              <Link to="/help">고객센터</Link>
+              <Link to={PATH.HELP}>고객센터</Link>
               {authenticated && <Link to={PATH.MYPAGE}>마이페이지</Link>}
               {!authenticated && <Link to={PATH.JOIN}>회원가입</Link>}
               {authenticated && <Link to={PATH.ASK}>1:1 문의</Link>}
-              {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to="/login">로그인</Link>}
+              {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to={PATH.LOGIN}>로그인</Link>}
               <button
                 onClick={() => {
                   {
@@ -76,7 +76,7 @@ const Header = () => {
               </button>
             </div>
           </Inner>
-        </Container>
+        </PCContainer>
       </PC>
     </>
   )
@@ -93,6 +93,8 @@ const MContainer = styled.header`
   .logo {
     width: 160px;
     height: 24px;
+    margin: auto auto;
+    cursor: pointer;
   }
 
   .sidebar {
@@ -105,15 +107,9 @@ const MContainer = styled.header`
       cursor: pointer;
     }
   }
-
-  img {
-    width: 160px;
-    margin: auto auto;
-    cursor: pointer;
-  }
 `
 
-const Container = styled.header`
+const PCContainer = styled.header`
   padding: 12px 20px;
   height: 60px;
   box-sizing: border-box;
@@ -126,11 +122,11 @@ const Inner = styled.div`
   margin: 0 auto;
 
   .logo {
-    margin: auto 0;
-    cursor: pointer;
     img {
       width: 160px;
       height: 24px;
+      margin: auto 0;
+      cursor: pointer;
     }
   }
 

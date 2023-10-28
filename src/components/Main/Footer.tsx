@@ -75,6 +75,7 @@ const FooterContainer = styled.footer`
 
       img {
         width: 144px;
+        height: 21.59px;
         right: 0;
       }
 
