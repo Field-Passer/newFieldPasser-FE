@@ -2,6 +2,7 @@ import Board from '@src/components/Board'
 import { useState, useEffect, useCallback } from 'react'
 import { getAdminBlind } from '@src/api/getApi'
 import { useInView } from 'react-intersection-observer'
+import useModal from '@src/hooks/useModal'
 
 const BoradBlind = () => {
   const [blind, setBlind] = useState<POST_TYPE[]>([])
@@ -9,6 +10,7 @@ const BoradBlind = () => {
   const [lastPage, setLastPage] = useState<boolean>(false)
   const [ref, inView] = useInView()
   const [isLoading, setIsLoading] = useState(false)
+  const { openModal } = useModal()
 
   const fetchData = useCallback(async () => {
     try {
@@ -21,7 +23,11 @@ const BoradBlind = () => {
       if (response?.last) setLastPage(true)
       else setLastPage(false)
     } catch (error) {
-      alert(error)
+      openModal({
+        isModalOpen: true,
+        isConfirm: false,
+        content: ['오류가 발생했습니다 다시 시도해주세요.'],
+      })
     } finally {
       setIsLoading(false)
     }
