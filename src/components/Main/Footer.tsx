@@ -16,24 +16,26 @@ const Footer = () => {
             <span onClick={() => navigate(PATH.HELP)}>이용약관 및 운영정책</span>
           </div>
         </div>
-        <a
-          href="https://github.com/Field-Passer/newFieldPasser-BE"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="link"
-        >
-          <GithubIcon />
-          Backend Repository
-        </a>
-        <a
-          href="https://github.com/Field-Passer/newFieldPasser-FE"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="link"
-        >
-          <GithubIcon />
-          Frontend Repository
-        </a>
+        <div className="repo">
+          <a
+            href="https://github.com/Field-Passer/newFieldPasser-BE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            <GithubIcon />
+            Backend Repository
+          </a>
+          <a
+            href="https://github.com/Field-Passer/newFieldPasser-FE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            <GithubIcon />
+            Frontend Repository
+          </a>
+        </div>
         <div className="alert">
           필드패서는 통신판매중개자이며 통신판매의 당사자가 아닙니다. 따라서 필드패서는 공간 거래정보 및 거래에 대해
           책임지지 않습니다.
@@ -73,6 +75,7 @@ const FooterContainer = styled.footer`
 
       img {
         width: 144px;
+        height: 21.59px;
         right: 0;
       }
 
@@ -81,6 +84,17 @@ const FooterContainer = styled.footer`
         gap: 16px;
         line-height: 20px;
         cursor: pointer;
+      }
+    }
+
+    .repo {
+      display: flex;
+      gap: 15px;
+      flex-direction: column;
+      font-size: 15px;
+
+      @media (min-width: 834px) {
+        font-size: 13px;
       }
     }
 
