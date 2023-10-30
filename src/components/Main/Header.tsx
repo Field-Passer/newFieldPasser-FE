@@ -58,23 +58,53 @@ const Header = () => {
             <Link to={PATH.HOME} className="logo">
               <img src="/logo.png" alt="logo" />
             </Link>
-            <div className="menu">
-              {authenticated && userRole === '관리자' && <Link to={PATH.BOARD_BLIND}>게시글 관리</Link>}
-              <Link to={PATH.HELP}>고객센터</Link>
-              {authenticated && <Link to={PATH.MYPAGE}>마이페이지</Link>}
-              {!authenticated && <Link to={PATH.JOIN}>회원가입</Link>}
-              {authenticated && <Link to={PATH.ASK}>1:1 문의</Link>}
-              {authenticated ? <a onClick={logoutHandler}>로그아웃</a> : <Link to={PATH.LOGIN}>로그인</Link>}
-              <button
-                onClick={() => {
-                  {
-                    authenticated ? navigate(PATH.WRITE_POST) : accessAfterLoginAlert()
-                  }
-                }}
-              >
-                양도하기
-              </button>
-            </div>
+            <nav className="menu">
+              <ul>
+                {authenticated && userRole === '관리자' && (
+                  <li>
+                    <Link to={PATH.BOARD_BLIND}>게시글 관리</Link>
+                  </li>
+                )}
+                <li>
+                  <Link to={PATH.HELP}>고객센터</Link>
+                </li>
+                {authenticated && (
+                  <li>
+                    <Link to={PATH.MYPAGE}>마이페이지</Link>
+                  </li>
+                )}
+                {!authenticated && (
+                  <li>
+                    <Link to={PATH.JOIN}>회원가입</Link>
+                  </li>
+                )}
+                {authenticated && (
+                  <li>
+                    <Link to={PATH.ASK}>1:1 문의</Link>
+                  </li>
+                )}
+                {authenticated ? (
+                  <li>
+                    <a onClick={logoutHandler}>로그아웃</a>
+                  </li>
+                ) : (
+                  <li>
+                    <Link to={PATH.LOGIN}>로그인</Link>
+                  </li>
+                )}
+                <li>
+                  <button
+                    onClick={() => {
+                      {
+                        authenticated ? navigate(PATH.WRITE_POST) : accessAfterLoginAlert()
+                      }
+                    }}
+                  >
+                    양도하기
+                  </button>
+                </li>
+              </ul>
+            </nav>
           </Inner>
         </PCContainer>
       </PC>
