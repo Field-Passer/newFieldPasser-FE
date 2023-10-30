@@ -160,7 +160,7 @@ const Inner = styled.div`
     }
   }
 
-  .menu {
+  ul {
     display: flex;
     gap: 20px;
     height: 32px;
