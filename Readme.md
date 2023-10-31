@@ -1,14 +1,14 @@
 # Field-Passer
 
 커뮤니티형 체육시설 양도 시스템의 불편함을 해소하기 위한 <br />
-구장 양도 서비스 **_Field-Passer_**
+구장 양도 플랫폼 **_Field-Passer_**
 
-## 프로젝트 설명
+## 📌 프로젝트 설명
 
 -
 -
 
-## 배포 링크
+## ✨ 배포 링크
 
 > [배포 링크](https://fieldpasser.netlify.app/)
 
@@ -18,35 +18,45 @@
   <tbody>
     <tr>
       <td align="center" width="200px">
-        <img width="100%" src="https://avatars.githubusercontent.com/u/106734517?v=4"  alt="강현주"/><br />
-        <a href="https://github.com/iziz9">
-          <img src="https://img.shields.io/badge/강현주-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/>
-        </a>
+        <img width="100%" src="https://avatars.githubusercontent.com/u/106734517?v=4"  alt="강현주"/>
       </td>
       <td align="center" width="200px">
-        <img width="100%" src="https://avatars.githubusercontent.com/u/114797992?v=4"  alt="배현수"/><br />
-        <a href="https://github.com/HyunSooBae">
-          <img src="https://img.shields.io/badge/배현수-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/>
-        </a>
+        <img width="100%" src="https://avatars.githubusercontent.com/u/114797992?v=4"  alt="배현수"/>
       </td>
       <td align="center" width="200px">
-        <img width="100%" src="https://avatars.githubusercontent.com/u/113992260?v=4"  alt="조민정"/>
-        <a href="https://github.com/quokka-eating-carrots">
-          <img src="https://img.shields.io/badge/조민정-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/>
-        </a>
+        <img width="100%" src="https://avatars.githubusercontent.com/u/113992260?v=4"  alt="조민정"/></td>
+      <td align="center" width="200px">
+        <img width="100%" src="https://avatars.githubusercontent.com/u/76930602?v=4"  alt="한수산"/></td>
+     </tr>
+    <tr>
+      <td align="center" width="200px"><a href="https://github.com/iziz9"><img src="https://img.shields.io/badge/강현주-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/></a></td>
+      <td align="center" width="200px"><a href="https://github.com/HyunSooBae"><img src="https://img.shields.io/badge/배현수-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/></a></td>
+      <td align="center" width="200px"><a href="https://github.com/quokka-eating-carrots"><img src="https://img.shields.io/badge/조민정-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/></a></td>
+      <td align="center" width="200px"><a href="https://github.com/0nesan"><img src="https://img.shields.io/badge/한수산-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/></a></td>
+    </tr>
+    <tr>
+      <td align="center" width="200px">
+        <p>강현주1</p>
+        <p>강현주2</p>
       </td>
       <td align="center" width="200px">
-        <img width="100%" src="https://avatars.githubusercontent.com/u/76930602?v=4"  alt="한수산"/>
-        <a href="https://github.com/0nesan">
-          <img src="https://img.shields.io/badge/한수산-5FCA7B?style=flat-round&logo=GitHub&logoColor=white"/>
-        </a>
+        <p>배현수1</p>
+        <p>배현수2</p>
+      </td>
+      <td align="center" width="200px">
+        <p>조민정1</p>
+        <p>조민정2</p>
+      </td>
+      <td align="center" width="200px">
+        <p>한수산1</p>
+        <p>한수산2</p>
       </td>
      </tr>
   </tbody>
 </table>
 <br/>
 
-## 로컬 실행 방법
+## 💻 로컬 실행 방법
 
 1. 로컬 환경에 프로젝트 복사본 생성
 
@@ -72,7 +82,7 @@ npm install
 npm run dev
 ```
 
-## 기술 스택
+## 🛠️ 기술 스택
 
 ![React](https://img.shields.io/badge/ReactJS-61DAFB?style=for-the-badge&logo=React&logoColor=white)
 ![Typescript](https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white)
@@ -82,7 +92,7 @@ npm run dev
 ![ESLint](https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white)
 ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 
-## 프로젝트 구조
+## 📋 프로젝트 구조
 
 ```bash
 .
@@ -101,3 +111,19 @@ npm run dev
     ├── main.tsx
     └── vite-env.d.ts
 ```
+
+## 🤝 협업 방식
+
+![Github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+
+- GITHUB <br />
+  - description
+  - description
+- SLACK <br />
+  - description
+  - description
+- FIGMA <br />
+  - description
+  - description

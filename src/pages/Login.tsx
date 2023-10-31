@@ -62,7 +62,7 @@ const Login = () => {
       <form onSubmit={onSubmitHandler}>
         {isPC && (
           <div className="logo">
-            <img src="/logo.png" alt="필드패서" />
+            <img src="/logo.webp" alt="필드패서" />
           </div>
         )}
 

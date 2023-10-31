@@ -49,14 +49,14 @@ const Header = () => {
           >
             <HamburgerIcon />
           </div>
-          <img src="/logo.png" alt="logo" onClick={() => navigate(PATH.HOME)} className="logo" />
+          <img src="/logo.webp" alt="logo" onClick={() => navigate(PATH.HOME)} className="logo" />
         </MContainer>
       </Mobile>
       <PC>
         <PCContainer>
           <Inner>
             <Link to={PATH.HOME} className="logo">
-              <img src="/logo.png" alt="logo" />
+              <img src="/logo.webp" alt="logo" />
             </Link>
             <nav className="menu">
               <ul>
