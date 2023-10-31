@@ -35,6 +35,7 @@ export const Interceptor = ({ children }: any) => {
       async function (config): Promise<InternalAxiosRequestConfig | any> {
         const atExpire = store.getState().accessToken.expireTime
         const curTime = new Date().getTime()
+
         if (atExpire < curTime) {
           removeCookieToken()
           dispatch(DELETE_TOKEN())
