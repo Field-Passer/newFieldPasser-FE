@@ -1,11 +1,13 @@
 import { getMainPostList } from '@src/api/boardApi'
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import useModal from './useModal'
 
 const useInfinityScroll = ({ payload, page, setPostList, setPage }: IInfinityScrollProps) => {
   const [ref, inView] = useInView()
   const [isLoading, setIsLoading] = useState(false)
   const [lastPage, setLastPage] = useState(false)
+  const { openModal } = useModal()
 
   const getPostList = useCallback(
     async (payload: IMainListPayload, page: number) => {
@@ -20,7 +22,11 @@ const useInfinityScroll = ({ payload, page, setPostList, setPage }: IInfinityScr
         setPostList((prevList) => [...prevList, ...postData.content])
         postData.last ? setLastPage(true) : setLastPage(false)
       } catch (error) {
-        alert(error)
+        openModal({
+          isModalOpen: true,
+          isConfirm: false,
+          content: ['게시글 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'],
+        })
       } finally {
         setIsLoading(false)
       }

@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Sitemap: https://fieldpasser.netlify.app/sitemap.xml
+Disallow: /mypage/
+Disallow: /board-list/blind/
+Disallow: /profile/

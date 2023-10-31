@@ -237,7 +237,8 @@ const FirstSection = styled.section`
   }
 
   .logo {
-    width: 116px;
+    width: 132px;
+    height: 20px;
   }
 
   .close {
