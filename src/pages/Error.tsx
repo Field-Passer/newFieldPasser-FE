@@ -9,7 +9,7 @@ const Error = () => {
   return (
     <Main>
       <div onClick={() => navigate(PATH.HOME, { replace: true })}>
-        <img src="/logo.png" alt="logo" />
+        <img src="/logo.webp" alt="logo" />
       </div>
       <div className="notice">
         <NoticeIcon />

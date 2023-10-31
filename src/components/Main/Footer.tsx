@@ -11,7 +11,7 @@ const Footer = () => {
     <FooterContainer>
       <div className="inner">
         <div className="top">
-          <img src="/logo.png" alt="logo" />
+          <img src="/logo.webp" alt="logo" />
           <div className="policy">
             <span onClick={() => navigate(PATH.HELP)}>이용약관 및 운영정책</span>
           </div>
