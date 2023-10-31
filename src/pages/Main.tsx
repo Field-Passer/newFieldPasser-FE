@@ -171,7 +171,7 @@ const Main = () => {
       {!isMobile && (
         <section
           className="banner-section"
-          style={{ backgroundImage: `url('/banner${Math.floor(Math.random() * 5)}.png')` }}
+          style={{ backgroundImage: `url('/banner${Math.floor(Math.random() * 5)}.webp')` }}
         >
           <div className="background"></div>
           <div className="text">

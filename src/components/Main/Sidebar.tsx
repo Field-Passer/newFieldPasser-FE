@@ -67,7 +67,7 @@ const Sidebar = () => {
         </div>
         <div>
           <Link to={PATH.HOME} onClick={() => closeSidebar()}>
-            <img src="/logo.png" alt="로고" className="logo" />
+            <img src="/logo.webp" alt="로고" className="logo" />
           </Link>
         </div>
         {refreshToken ? (

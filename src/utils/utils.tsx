@@ -14,11 +14,11 @@ export const dateFormat = (dateVal: string, type?: string) => {
 export const randomImages = (category: string, imgNum: number) => {
   const randomNum = imgNum % 3
   const publicPath = import.meta.env.BASE_URL
-  const badminton = ['badminton0.png', 'badminton1.png', 'badminton2.png']
-  const basketball = ['basketball0.png', 'basketball1.png', 'basketball2.png']
-  const soccer = ['soccer0.png', 'soccer1.png', 'soccer2.png']
-  const tennis = ['tennis0.png', 'tennis1.png', 'tennis2.png']
-  const futsal = ['futsal0.png', 'futsal1.png', 'futsal2.png']
+  const badminton = ['badminton0.webp', 'badminton1.webp', 'badminton2.webp']
+  const basketball = ['basketball0.webp', 'basketball1.webp', 'basketball2.webp']
+  const soccer = ['soccer0.webp', 'soccer1.webp', 'soccer2.webp']
+  const tennis = ['tennis0.webp', 'tennis1.webp', 'tennis2.webp']
+  const futsal = ['futsal0.webp', 'futsal1.webp', 'futsal2.webp']
 
   type Category = {
     배드민턴장: string
