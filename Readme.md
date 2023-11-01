@@ -47,8 +47,8 @@
         <p>배현수2</p>
       </td>
       <td align="center" width="200px">
-        <p>조민정1</p>
-        <p>조민정2</p>
+        <p>회원 게시글, 댓글 조회</p>
+        <p>관리자 게시글 관리 및 고객센터 답변</p>
       </td>
       <td align="center" width="200px">
         <p>검색</p>
