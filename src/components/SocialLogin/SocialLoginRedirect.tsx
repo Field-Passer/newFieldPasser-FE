@@ -1,9 +1,6 @@
-// import { getUserInfo } from '@src/api/userApi'
 import PATH from '@src/constants/pathConst'
-// import useModal from '@src/hooks/useModal'
 import { setRefreshToken } from '@src/storage/Cookie'
 import { SET_TOKEN } from '@src/store/slices/authSlice'
-// import { SET_INFO } from '@src/store/slices/infoSlice'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -22,19 +19,10 @@ const SocialLoginRedirect = () => {
     const socialLogin = async () => {
       dispatch(SET_TOKEN(accessToken))
       setRefreshToken(refreshToken)
-      // try {
-      //   const response = await getUserInfo()
-      //   if (response) {
-      //     dispatch(SET_INFO(response?.data))
-      //   }
-      // } catch (err) {
-      //   console.log(err)
-      // }
       console.log('소셜 로그인 성공', new Date())
       return navigate(PATH.HOME, { replace: true })
     }
     socialLogin()
-    //navigate('/', { replace: true })
   })
 
   return <></>
