@@ -568,11 +568,10 @@ const TitleBox = styled.div`
     right: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 5px;
     background: #fff;
     border: 1px solid #ddd;
     width: 120px;
-    height: 100px;
     padding: 20px;
     box-sizing: border-box;
     font-size: 14px;

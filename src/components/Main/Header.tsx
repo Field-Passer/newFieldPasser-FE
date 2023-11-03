@@ -152,10 +152,12 @@ const Inner = styled.div`
   margin: 0 auto;
 
   .logo {
+    height: 32px;
+
     img {
       width: 160px;
       height: 24px;
-      margin: auto 0;
+      margin: 4px 0;
       cursor: pointer;
     }
   }

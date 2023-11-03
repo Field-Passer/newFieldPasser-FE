@@ -1,7 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import testSlice from './slices/testSlice'
 import authReducer from './slices/authSlice'
 import searchVlaue from './slices/searchVlaueSlice'
 import infoSlice from './slices/infoSlice'
@@ -13,7 +12,6 @@ import modal from './slices/modalSlice'
 import sidebar from './slices/sidebarSlice'
 
 const rootReducer = combineReducers({
-  createTest: testSlice.reducer,
   accessToken: authReducer.reducer,
   searchVlaue: searchVlaue.reducer,
   userInfo: infoSlice.reducer,
@@ -27,6 +25,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['searchVlaue', 'searchBox', 'sidebar', 'modal'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
