@@ -49,3 +49,13 @@
 
 <img src="./public/demo/mypage.gif">
 <br>
+
+### 모바일사이즈 로그인 - 마이페이지
+
+<img src="./public/demo/mobile.gif">
+<br>
+
+### 관리자 로그인 - 게시글 블라인드
+
+<img src="./public/demo/admin.gif">
+<br>
