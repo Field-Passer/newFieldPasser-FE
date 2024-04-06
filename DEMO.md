@@ -10,6 +10,12 @@
 <img src="./public/demo/login-logout.gif">
 <br>
 
+### 소셜 로그인(네이버, 구글)
+
+<img src="./public/demo/login-naver.gif">
+<img src="./public/demo/login-google.gif">
+<br>
+
 ### 메인페이지 게시글 무한스크롤 - 필터(인기순)
 
 <img src="./public/demo/scroll-popular.gif">
